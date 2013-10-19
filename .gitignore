@@ -1,6 +1,8 @@
-Src\Position\DataAccess\bin\Debug\DataAccess.*
+Src/Position/DataAccess/bin/Debug/DataAccess.*
 DB/
 bin/DataAccess.*
-bin/Web.*
+Src/Position/Web/bin/Web.*
+Src/Position/Web/bin/DataAccess.*
 obj/
 packages/
+Src/Position/Position.v11.suo
