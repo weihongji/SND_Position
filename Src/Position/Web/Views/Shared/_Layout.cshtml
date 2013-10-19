@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryajax")
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div>
+        <div>
+            @Html.ActionLink("Back to Report", "Index", "Report")
+        </div>
+        @RenderBody()
+    </div>
+</body>
+</html>

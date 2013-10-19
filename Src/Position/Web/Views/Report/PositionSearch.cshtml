@@ -1,0 +1,111 @@
+﻿@model PositionSearchModel
+
+@{
+    ViewBag.Title = "位置查询";
+}
+<style type="text/css">
+    table.grid {
+        border-collapse: collapse;
+    }
+
+        table.grid td, table.grid th {
+            border: 1px solid #808080;
+            padding: 3px;
+        }
+
+    select.PositionSearchTypeListBox {
+        min-width: 120px;
+        height: 160px;
+    }
+
+    fieldset > div {
+        margin: 10px 0px 0px 7px;
+    }
+</style>
+
+<h2>人员查询</h2>
+@using (Ajax.BeginForm("PositionSearch", new AjaxOptions { UpdateTargetId = "reportGrid", InsertionMode = InsertionMode.Replace })) {
+    <div>
+        <fieldset style="float: left;">
+            <legend>范围</legend>
+            <div>
+                <label>
+                    <input type="radio" name="SearchType" value="1" checked="checked" />查询区域范围人员</label>
+            </div>
+            <div>
+                <label>
+                    <input type="radio" name="SearchType" value="2" />查询分站范围人员</label>
+            </div>
+            <div>
+                <label>
+                    <input type="radio" name="SearchType" value="3" />查询收发器范围人员</label>
+            </div>
+            <div>
+                <label>
+                    <input type="radio" name="SearchType" value="4" />查询地标范围人员</label>
+            </div>
+        </fieldset>
+
+        <fieldset style="float: left; margin-left: 10px;">
+            <legend>选择</legend>
+            @Html.ListBox("RegionId", Model.Regions)
+            @Html.ListBox("BranchId", Model.Branches)
+            @Html.ListBox("ReceiverId", Model.Receivers)
+            @Html.ListBox("PositionId", Model.Positions)
+            <input type="hidden" name="TypeId" id="TypeId" />
+        </fieldset>
+
+        <fieldset style="float: left; margin-left: 10px;">
+            <legend>控制</legend>
+            <div>
+                <label>
+                    <input type="radio" name="rdoReportTime" value="0" checked="checked" />指定：</label>
+                <input type="text" id="ReportTime" name="ReportTime" />
+                <input type="button" value="example" onclick="sampleTime()" />
+            </div>
+            <div>
+                <label>
+                    <input type="radio" name="rdoReportTime" value="1" />当前时间</label>
+            </div>
+
+        </fieldset>
+        <div style="clear: both"></div>
+        <div>
+            <input type="submit" value="Search" style="width: 80px; margin-left: 40px;" />
+        </div>
+    </div>
+}
+
+
+@Html.Partial("PositionSearchList", Model)
+
+
+<script type="text/javascript">
+    var searchType = ["#RegionId", "#BranchId", "#ReceiverId", "#PositionId"];
+    $(function () {
+        $(":radio[name=SearchType]").click(function () {
+            $(searchType.join()).hide().add("#TypeId").val("");
+            var displayType = searchType[parseInt(this.value) - 1];
+            $(displayType).show();
+        });
+
+        $(searchType.join())
+            .addClass("PositionSearchTypeListBox")
+            .click(function () {
+                $("#TypeId").val($(this).val());
+            });
+
+        $(":radio[name=rdoReportTime]").click(function () {
+            $("#ReportTime").attr("disabled", this.value == "1");
+        });
+        $(":radio[name=rdoReportTime]").first().click();
+
+        $("#txtReportTime").datepicker($.datepicker.regional['zh-CN']);
+
+        $(":radio[name=SearchType]:first").click();
+    });
+
+    function sampleTime() {
+        $("#ReportTime").val("2013-08-14 10:00");
+    }
+</script>

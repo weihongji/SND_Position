@@ -1,0 +1,6 @@
+Src\Position\DataAccess\bin\Debug\DataAccess.*
+DB/
+bin/DataAccess.*
+bin/Web.*
+obj/
+packages/

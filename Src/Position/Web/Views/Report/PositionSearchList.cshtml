@@ -1,0 +1,30 @@
+﻿@model PositionSearchModel
+
+<table id="reportGrid" class="grid" style="margin-top:20px;">
+	<tr>
+		<th>序号</th>
+		<th>发射器号</th>
+		<th>工号</th>
+		<th>姓名</th>
+		<th>性别</th>
+		<th>部门</th>
+		<th>工种</th>
+		<th>职务</th>
+		<th>当前位置编号</th>
+		<th>当前位置信息</th>
+	</tr>
+	@foreach (var item in Model.ReportItems) {
+	<tr>
+		<td>@Html.DisplayFor(modelItem => item.Index)</td>
+		<td>@Html.DisplayFor(modelItem => item.SenderId)</td>
+		<td>@Html.DisplayFor(modelItem => item.PeopleId)</td>
+		<td>@Html.DisplayFor(modelItem => item.PeopleName)</td>
+		<td>@Html.DisplayFor(modelItem => item.Gender)</td>
+		<td>@Html.DisplayFor(modelItem => item.DepartmentName)</td>
+		<td>@Html.DisplayFor(modelItem => item.WorkType)</td>
+		<td>@Html.DisplayFor(modelItem => item.Rank)</td>
+		<td>@Html.DisplayFor(modelItem => item.PositionId)</td>
+		<td>@Html.DisplayFor(modelItem => item.PositionName)</td>
+	</tr>
+	}
+</table>

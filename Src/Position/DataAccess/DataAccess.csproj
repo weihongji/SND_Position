@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{98763B5D-87FE-439A-AE7B-8D28069EBD6C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DataAccess</RootNamespace>
+    <AssemblyName>DataAccess</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Dao.cs" />
+    <Compile Include="Models\Branch.cs" />
+    <Compile Include="Models\Department.cs" />
+    <Compile Include="Models\Enum\XEnum.cs" />
+    <Compile Include="Models\Lamp.cs" />
+    <Compile Include="Models\Mapping\BranchMap.cs" />
+    <Compile Include="Models\Mapping\DepartmentMap.cs" />
+    <Compile Include="Models\Mapping\LampMap.cs" />
+    <Compile Include="Models\Mapping\PeopleSenderMap.cs" />
+    <Compile Include="Models\Mapping\PeopleShiftMap.cs" />
+    <Compile Include="Models\Mapping\PeopleWorkPathMap.cs" />
+    <Compile Include="Models\Mapping\PersonMap.cs" />
+    <Compile Include="Models\Mapping\PositionMap.cs" />
+    <Compile Include="Models\Mapping\ProductMap.cs" />
+    <Compile Include="Models\Mapping\RankMap.cs" />
+    <Compile Include="Models\Mapping\ReceiverMap.cs" />
+    <Compile Include="Models\Mapping\RegionMap.cs" />
+    <Compile Include="Models\Mapping\SenderMap.cs" />
+    <Compile Include="Models\Mapping\ShiftGroupMap.cs" />
+    <Compile Include="Models\Mapping\ShiftMap.cs" />
+    <Compile Include="Models\Mapping\WorkTypeMap.cs" />
+    <Compile Include="Models\Receiver.cs" />
+    <Compile Include="Models\Region.cs" />
+    <Compile Include="Models\Report\PositionSearchCriteria.cs" />
+    <Compile Include="Models\Report\PositionSearchReportItem.cs" />
+    <Compile Include="Models\Report\PeopleOverviewReportItem.cs" />
+    <Compile Include="Models\Report\PeopleSearchReportItem.cs" />
+    <Compile Include="Models\PeopleSender.cs" />
+    <Compile Include="Models\PeopleShift.cs" />
+    <Compile Include="Models\PeopleWorkPath.cs" />
+    <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Position.cs" />
+    <Compile Include="Models\PositionContext.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\Rank.cs" />
+    <Compile Include="Models\Sender.cs" />
+    <Compile Include="Models\Shift.cs" />
+    <Compile Include="Models\ShiftGroup.cs" />
+    <Compile Include="Models\WorkType.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
