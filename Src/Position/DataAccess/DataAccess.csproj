@@ -68,6 +68,7 @@
     <Compile Include="Models\Mapping\WorkTypeMap.cs" />
     <Compile Include="Models\Receiver.cs" />
     <Compile Include="Models\Region.cs" />
+    <Compile Include="Models\Report\PeopleCountReportItem.cs" />
     <Compile Include="Models\Report\PositionSearchCriteria.cs" />
     <Compile Include="Models\Report\PositionSearchReportItem.cs" />
     <Compile Include="Models\Report\PeopleOverviewReportItem.cs" />

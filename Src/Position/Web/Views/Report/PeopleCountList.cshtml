@@ -1,0 +1,45 @@
+﻿@model PeopleCountModel
+
+<table id="reportGrid" class="grid" style="margin-top: 20px;">
+    <tr>
+        <th>序号</th>
+        @switch (Model.SearchType) {
+            case PeopleCountSearchType.Region:
+                <th>区域名称</th>
+                break;
+            case PeopleCountSearchType.Department:
+                <th>部门名称</th>
+                break;
+            case PeopleCountSearchType.WorkType:
+                <th>工种名称</th>
+                break;
+            case PeopleCountSearchType.Rank:
+                <th>职务名称</th>
+                break;
+            default:
+                throw new ArgumentException("Invalid SearchType " + Model.SearchType);
+         }
+            @if (Model.SearchType == PeopleCountSearchType.Region) {
+                <th>人数</th>
+            }
+            else {
+                <th>注册人数</th>
+                <th>井下人数</th>
+                <th>井上人数</th>
+            }
+    </tr>
+    @foreach (var item in Model.ReportItems) {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Index)</td>
+            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+            @if (Model.SearchType == PeopleCountSearchType.Region) {
+                <td>@Html.DisplayFor(modelItem => item.Number)</td>
+            }
+            else {
+                <td>@Html.DisplayFor(modelItem => item.Registration)</td>
+                <td>@Html.DisplayFor(modelItem => item.Well)</td>
+                <td>@Html.DisplayFor(modelItem => item.Ground)</td>
+            }
+        </tr>
+    }
+</table>

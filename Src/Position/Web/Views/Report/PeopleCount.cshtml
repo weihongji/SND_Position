@@ -1,0 +1,147 @@
+﻿@model PeopleCountModel
+
+@{
+    ViewBag.Title = "人数总汇";
+}
+<style type="text/css">
+    table.grid {
+        border-collapse: collapse;
+    }
+
+        table.grid td, table.grid th {
+            border: 1px solid #808080;
+            padding: 3px;
+        }
+
+    select.PositionSearchTypeListBox {
+        min-width: 120px;
+        height: 160px;
+    }
+
+    fieldset.searchType > label {
+        margin-left: 20px;
+    }
+
+    fieldset {
+        height: 50px;
+    }
+</style>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Ajax.BeginForm("PeopleCount", new AjaxOptions { UpdateTargetId = "reportGrid", InsertionMode = InsertionMode.Replace })) {
+    <div>
+        <fieldset style="float: left;" class="searchType">
+            <legend>类别</legend>
+            <label>
+                <input type="radio" name="SearchType" value="1" checked="checked" />按区域</label>
+            <label>
+                <input type="radio" name="SearchType" value="2" />按部门</label>
+            <label>
+                <input type="radio" name="SearchType" value="3" />按工种</label>
+            <label>
+                <input type="radio" name="SearchType" value="4" />按职务</label>
+        </fieldset>
+        <fieldset style="float: left; margin-left: 10px;">
+            <legend>控制</legend>
+            <label>
+                <input type="radio" name="rdoReportTime" id="rdoReportTimeInput" value="0" checked="checked" />指定时间：</label>
+            <input type="text" id="ReportTime" name="ReportTime" style="width: 120px;" />
+            <input type="button" value="example" onclick="sampleTime()" />
+
+            <label>
+                <input type="radio" name="rdoReportTime" value="1" />实时汇总，更新间隔为</label>
+            <input type="text" maxlength="3" style="width: 30px;" id="txtInterval" value="60" />
+            <label>秒</label>
+
+            <input type="submit" value="Search" id="btnSearch" style="width: 80px; margin-left: 30px;" />
+        </fieldset>
+        <div style="clear: both"></div>
+    </div>
+}
+
+<div id="divRefresh"></div>
+@Html.Partial("PeopleCountList", Model)
+
+
+<script type="text/javascript">
+    var _timer;
+    $(function () {
+        $(":radio[name=rdoReportTime]").click(function () {
+            if (this.value == "0") {
+                $("#ReportTime").attr("disabled", false).focus();
+                $("#txtInterval").attr("disabled", true);
+                clearTimer();
+            }
+            else {
+                $("#ReportTime").attr("disabled", true);
+                $("#txtInterval").attr("disabled", false).focus();
+                if (isNaN(getInterval())) {
+                    setTimer();
+                }
+            }
+        });
+        $("#btnSearch").click(function () {
+            $("#divRefresh").html("数据获取时间：" + formatDate(new Date()));
+        });
+
+        $("#txtInterval").blur(setRefreshInterval);
+
+        $("#rdoReportTimeInput").click();
+    });
+
+    function setRefreshInterval() {
+        if ($("#rdoReportTimeInput")[0].checked) {
+            return;
+        }
+        if (isNaN(getInterval())) {
+            alert("无效的时间间隔");
+            $("#txtInterval").focus();
+            return;
+        }
+        setTimer();
+    }
+
+    function clearTimer() {
+        if (_timer != null) {
+            window.clearInterval(_timer);
+        }
+    }
+
+    function setTimer() {
+        clearTimer();
+        _timer = window.setInterval(refreshReport, getInterval() * 1000);
+    }
+
+    function refreshReport() {
+        $("#btnSearch").click();
+    }
+
+    function getInterval() {
+        return parseInt($("#txtInterval").val(), 10);
+    }
+
+    function sampleTime() {
+        $("#ReportTime").val("2013-08-14 10:00");
+    }
+
+    function formatDate(d) {
+        if (typeof d == "string") {
+            d = new Date(d);
+        }
+        return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + paddingNumber(d.getMinutes(), 2) + ":" + paddingNumber(d.getSeconds(), 2);
+    }
+
+    function paddingNumber(n, totalLength) {
+        var i = parseInt(n, 10);
+        if (isNaN(i)) {
+            return n;
+        }
+        var s = i.toString();
+        var padding = totalLength - s.length;
+        for (var i = 0; i < padding; i++) {
+            s = "0" + s;
+        }
+        return s;
+    }
+</script>

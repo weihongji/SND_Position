@@ -15,4 +15,12 @@ namespace DataAccess.Models
 			Ground = 2
 		}
 	}
+
+    public enum PeopleCountSearchType
+    {
+        Region = 1,
+        Department = 2,
+        WorkType = 3,
+        Rank = 4
+    }
 }

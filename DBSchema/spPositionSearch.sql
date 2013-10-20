@@ -49,7 +49,6 @@ SELECT P.People_id AS PeopleId, P.People_name AS PeopleName,
 	D.Dept_name AS DepartmentName,
 	WT.Worktype_name AS WorkType, RK.Rank_name AS [Rank], R.Sender_id AS SenderId,
 	R.Position_id AS PositionId, Position.Position_desc AS PositionName
-	, RPS.Region_id
 FROM (
 		SELECT DISTINCT R2.Position_id, R2.Sender_id
 		FROM PositionReport R2
@@ -69,4 +68,3 @@ FROM (
 	LEFT JOIN Department D ON P.Dept_id = D.Dept_id
 	LEFT JOIN WorkType WT ON P.Worktype_id = WT.Worktype_id
 	LEFT JOIN [Rank] RK ON P.Rank_id = RK.Rank_id
-	LEFT JOIN RegionPositionSet RPS ON RPS.Position_id = R.Position_id

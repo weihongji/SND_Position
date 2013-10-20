@@ -115,5 +115,18 @@ namespace Web.Controllers
             model.Receivers = ControlHelper.GetListItems(_dao.GetReceivers().Select(x=>x.Receiver_id).Distinct().ToList());
             model.Positions = ControlHelper.GetListItems(_dao.GetPositions());
         }
+
+        public ActionResult PeopleCount(int? SearchType, DateTime? ReportTime) {
+            var model = new PeopleCountModel();
+            if (SearchType == null) {
+                return View(model);
+            }
+            model.SearchType = (PeopleCountSearchType)SearchType.Value;
+            model.ReportItems = _dao.GetPeopleCountReport((PeopleCountSearchType)SearchType.Value, ReportTime);
+            if (Request.IsAjaxRequest()) {
+                return PartialView("PeopleCountList", model);
+            }
+            return View(model);
+        }
     }
 }
