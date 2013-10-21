@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spPositionSearch]') AND type in (N'P', N'PC')) BEGIN
+ï»¿IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spPositionSearch]') AND type in (N'P', N'PC')) BEGIN
 	DROP PROCEDURE [dbo].[spPositionSearch]
 END
 GO
@@ -27,7 +27,7 @@ IF @regionId IS NULL BEGIN
 		INSERT INTO @positionIDs SELECT Position_id FROM Position
 	END
 END
-ELSE IF @regionId = 1 BEGIN /*¾®ÏÂ*/
+ELSE IF @regionId = 1 BEGIN /*äº•ä¸‹*/
 	INSERT INTO @positionIDs SELECT Position_id FROM RegionPositionSet WHERE Region_id != 0
 END
 ELSE BEGIN
@@ -45,7 +45,7 @@ SET @endTime = @forTime
 
 /* Final Result */
 SELECT P.People_id AS PeopleId, P.People_name AS PeopleName,
-	CASE WHEN P.Gender = 1 THEN N'ÄÐ' ELSE N'Å®' END AS Gender,
+	CASE WHEN P.Gender = 1 THEN N'ç”·' ELSE N'å¥³' END AS Gender,
 	D.Dept_name AS DepartmentName,
 	WT.Worktype_name AS WorkType, RK.Rank_name AS [Rank], R.Sender_id AS SenderId,
 	R.Position_id AS PositionId, Position.Position_desc AS PositionName

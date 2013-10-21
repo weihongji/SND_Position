@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spPeopleCountByRegion]') AND type in (N'P', N'PC')) BEGIN
+ï»¿IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spPeopleCountByRegion]') AND type in (N'P', N'PC')) BEGIN
 	DROP PROCEDURE [dbo].[spPeopleCountByRegion]
 END
 GO
@@ -34,8 +34,8 @@ GROUP BY RPS.Region_id
 
 INSERT INTO @regionCount SELECT 1, COUNT(*) FROM @regionCount WHERE Region_id != 0
 
-/*½á¹û*/
-SELECT ISNULL(R.Region_name, '(Î´¶¨Òå)') AS Name,
+/*ç»“æžœ*/
+SELECT ISNULL(R.Region_name, '(æœªå®šä¹‰)') AS Name,
 	ISNULL(C.Region_id, -1) AS Id,
 	C.Number
 FROM @regionCount C

@@ -1,4 +1,4 @@
-IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[WorkType]') AND type in (N'U')) BEGIN
+﻿IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[WorkType]') AND type in (N'U')) BEGIN
 	CREATE TABLE [dbo].[WorkType](
 		[Worktype_id] [smallint] NOT NULL,
 		[Worktype_type] [tinyint] NOT NULL,

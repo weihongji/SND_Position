@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spPeopleCountByWorkType]') AND type in (N'P', N'PC')) BEGIN
+ï»¿IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spPeopleCountByWorkType]') AND type in (N'P', N'PC')) BEGIN
 	DROP PROCEDURE [dbo].[spPeopleCountByWorkType]
 END
 GO
@@ -19,7 +19,7 @@ DECLARE @wellPeopleCount AS TABLE (Worktype_id smallint, Number int)
 SET @startTime = DATEADD(MINUTE, -10, @forTime)
 SET @endTime = @forTime
 
-/*¾®ÉÏ*/
+/*äº•ä¸Š*/
 DELETE FROM @positionIDs
 INSERT INTO @positionIDs SELECT Position_id FROM RegionPositionSet WHERE Region_id = 0
 
@@ -41,7 +41,7 @@ FROM (
 GROUP BY P.Worktype_id
 
 
-/*¾®ÏÂ*/
+/*äº•ä¸‹*/
 DELETE FROM @positionIDs
 INSERT INTO @positionIDs SELECT Position_id FROM RegionPositionSet WHERE Region_id != 0
 
@@ -62,8 +62,8 @@ FROM (
 	LEFT JOIN People P ON PS.People_id = P.People_id
 GROUP BY P.Worktype_id
 
-/*½á¹û*/
-SELECT ISNULL(M.Worktype_name, '(Î´¶¨Òå)') AS Name,
+/*ç»“æžœ*/
+SELECT ISNULL(M.Worktype_name, '(æœªå®šä¹‰)') AS Name,
 	ISNULL(M.Worktype_id, -1) AS Id,
 	ISNULL(M.Number, 0) AS Registration,
 	ISNULL(G.Number, 0) AS Ground,

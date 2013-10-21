@@ -1,4 +1,4 @@
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spPeopleCountByRank]') AND type in (N'P', N'PC')) BEGIN
+ï»¿IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spPeopleCountByRank]') AND type in (N'P', N'PC')) BEGIN
 	DROP PROCEDURE [dbo].[spPeopleCountByRank]
 END
 GO
@@ -19,7 +19,7 @@ DECLARE @wellPeopleCount AS TABLE (Rank_id smallint, Number int)
 SET @startTime = DATEADD(MINUTE, -10, @forTime)
 SET @endTime = @forTime
 
-/*¾®ÉÏ*/
+/*äº•ä¸Š*/
 DELETE FROM @positionIDs
 INSERT INTO @positionIDs SELECT Position_id FROM RegionPositionSet WHERE Region_id = 0
 
@@ -41,7 +41,7 @@ FROM (
 GROUP BY P.Rank_id
 
 
-/*¾®ÏÂ*/
+/*äº•ä¸‹*/
 DELETE FROM @positionIDs
 INSERT INTO @positionIDs SELECT Position_id FROM RegionPositionSet WHERE Region_id != 0
 
@@ -62,8 +62,8 @@ FROM (
 	LEFT JOIN People P ON PS.People_id = P.People_id
 GROUP BY P.Rank_id
 
-/*½á¹û*/
-SELECT ISNULL(M.Rank_name, '(Î´¶¨Òå)') AS Name,
+/*ç»“æžœ*/
+SELECT ISNULL(M.Rank_name, '(æœªå®šä¹‰)') AS Name,
 	ISNULL(M.Rank_id, -1) AS Id,
 	ISNULL(M.Number, 0) AS Registration,
 	ISNULL(G.Number, 0) AS Ground,
