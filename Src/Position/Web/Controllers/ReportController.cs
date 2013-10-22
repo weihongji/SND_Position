@@ -73,7 +73,7 @@ namespace Web.Controllers
         public ActionResult PositionSearch(int? SearchType, int? TypeId, DateTime? ReportTime) {
             var model = new PositionSearchModel();
             if (Request.Form.Count == 0) {
-                PopulateListItems(model);
+                PopulatePositionSearchListItems(model);
                 return View(model);
             }
 
@@ -104,12 +104,12 @@ namespace Web.Controllers
                 return PartialView("PositionSearchList", model);
             }
             else {
-                PopulateListItems(model);
+                PopulatePositionSearchListItems(model);
             }
             return View(model);
         }
 
-        private void PopulateListItems(PositionSearchModel model) {
+        private void PopulatePositionSearchListItems(PositionSearchModel model) {
             model.Regions = ControlHelper.GetListItems(_dao.GetRegions());
             model.Branches = ControlHelper.GetListItems(_dao.GetBranches());
             model.Receivers = ControlHelper.GetListItems(_dao.GetReceivers().Select(x=>x.Receiver_id).Distinct().ToList());
@@ -127,6 +127,42 @@ namespace Web.Controllers
                 return PartialView("PeopleCountList", model);
             }
             return View(model);
+        }
+
+        public ActionResult AlarmSearch(byte? AlarmType, int? Param1, int? Param2, int? ProcessStatus, DateTime? StartAt, DateTime? EndAt) {
+            var model = new AlarmSearchModel();
+            if (Request.Form.Count == 0) {
+                PopulateAlarmSearchListItems(model);
+                return View(model);
+            }
+
+            var criteria = new AlarmReportCriteria {
+                Type = AlarmType,
+                Param1 = Param1,
+                Param2 = Param2,
+                ProcessStatus = ProcessStatus,
+                StartAt = StartAt,
+                EndAt = EndAt
+            };
+
+            var list = _dao.GetAlarmReport(criteria);
+            model.ReportItems = list;
+            if (Request.IsAjaxRequest()) {
+                return PartialView("AlarmSearchList", model);
+            }
+            else {
+                PopulateAlarmSearchListItems(model);
+            }
+            return View(model);
+        }
+
+        private void PopulateAlarmSearchListItems(AlarmSearchModel model) {
+            model.Regions = ControlHelper.GetListItems(_dao.GetRegions());
+            model.Regions.Insert(0, new SelectListItem() { Value = "-1", Text = "所有区域", Selected = true });
+            model.Branches = ControlHelper.GetListItems(_dao.GetBranches());
+            model.Branches.Insert(0, new SelectListItem() { Value = "-1", Text = "所有分站", Selected = true });
+            model.Receivers = ControlHelper.GetListItems(_dao.GetReceivers().Select(x => x.Receiver_id).Distinct().ToList());
+            model.Receivers.Insert(0, new SelectListItem() { Value = "-1", Text = "所有收发器", Selected = true });
         }
     }
 }

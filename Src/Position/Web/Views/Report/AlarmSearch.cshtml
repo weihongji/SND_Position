@@ -1,0 +1,194 @@
+﻿@model AlarmSearchModel
+
+@{
+    ViewBag.Title = "报警信息查询";
+}
+<style type="text/css">
+    table.grid {
+        border-collapse: collapse;
+    }
+
+        table.grid td, table.grid th {
+            border: 1px solid #808080;
+            padding: 3px;
+        }
+
+    fieldset.searchType > label {
+        /*margin-left: 50px;*/
+        width: 200px;
+        display: inline-block;
+    }
+
+    fieldset.searchType select {
+        min-width: 100px;
+    }
+</style>
+
+<h2>@ViewBag.Title</h2>
+
+@using (Ajax.BeginForm("AlarmSearch", new AjaxOptions { UpdateTargetId = "reportGrid", InsertionMode = InsertionMode.Replace })) {
+    <div>
+        <fieldset style="margin-top: 10px;" class="searchType">
+            <legend>类型</legend>
+            <label>
+                <input type="radio" name="AlarmType" value="0" />区域警告</label>
+            <label>
+                <input type="radio" name="AlarmType" value="10" />分站警告</label>
+            <label>
+                <input type="radio" name="AlarmType" value="20" />收发器警告</label>
+            <label>
+                <input type="radio" name="AlarmType" value="30" />发射器警告</label>
+            <label>
+                <input type="radio" name="AlarmType" value="255" checked="checked" />所有警告</label>
+        </fieldset>
+        <fieldset style="margin-top: 10px;" class="searchType">
+            <legend>参数</legend>
+            <label>区域: @Html.DropDownList("Param1", Model.Regions)</label>
+            <label>分站: @Html.DropDownList("Param1", Model.Branches)</label>
+            <label>收发器: @Html.DropDownList("Param2", Model.Receivers)</label>
+            <label>发射器: <input type="text" name="Param2" style="width: 60px;" maxlength="8" /></label>
+            <label>处理状态: @Html.DropDownList("ProcessStatus", Model.Status)</label>
+        </fieldset>
+        <fieldset style="margin-top: 10px;">
+            <legend>控制</legend>
+            <label>
+                <input type="radio" name="rdoReportTime" id="rdoReportTimeInput" value="0" checked="checked" />历史警告，时间从</label>
+            <input type="text" id="StartAt" name="StartAt" style="width: 120px;" />
+            到
+            <input type="text" id="EndAt" name="EndAt" style="width: 120px;" />
+            <input type="button" value="example" onclick="sampleTime()" />
+
+            <label>
+                <input type="radio" name="rdoReportTime" value="1" />实时警告，更新间隔为</label>
+            <input type="text" maxlength="3" style="width: 30px;" id="txtInterval" value="60" />
+            <label>秒</label>
+
+            <input type="submit" value="查询" id="btnSearch" style="width: 80px; margin-left: 30px;" />
+        </fieldset>
+        <div style="clear: both"></div>
+    </div>
+}
+
+<div id="divRefresh"></div>
+@Html.Partial("AlarmSearchList", Model)
+
+
+<script type="text/javascript">
+    var _timer;
+    $(function () {
+        $(":radio[name=AlarmType]").click(function () {
+            $("[name=Param1],[name=Param2]").attr("disabled", true);
+            switch (this.value) {
+                case "0":
+                    $("[name=Param1]:eq(0)").attr("disabled", false).focus();
+                    break;
+                case "10":
+                    $("[name=Param1]:eq(1)").attr("disabled", false).focus();
+                    break;
+                case "20":
+                    $("[name=Param2]:eq(0)").attr("disabled", false).focus();
+                    break;
+                case "30":
+                    $("[name=Param2]:eq(1)").attr("disabled", false).focus();
+                    break;
+                default:
+                    //255 means ALL types
+                    break;
+            }
+        });
+
+        $(":radio[name=rdoReportTime]").click(function () {
+            if (this.value == "0") {
+                $("#StartAt,#EndAt").attr("disabled", false).focus();
+                $("#txtInterval").attr("disabled", true);
+                clearTimer();
+            }
+            else {
+                $("#StartAt,#EndAt").attr("disabled", true);
+                $("#txtInterval").attr("disabled", false).focus();
+                if (isNaN(getInterval())) {
+                    setTimer();
+                }
+            }
+        });
+        $(":radio[name=rdoReportTime]").click(function () {
+            if (this.value == "0") {
+                $("#StartAt,#EndAt").attr("disabled", false).focus();
+                $("#txtInterval").attr("disabled", true);
+                clearTimer();
+            }
+            else {
+                $("#StartAt,#EndAt").attr("disabled", true);
+                $("#txtInterval").attr("disabled", false).focus();
+                if (isNaN(getInterval())) {
+                    setTimer();
+                }
+            }
+        });
+        $("#btnSearch").click(function () {
+            $("#divRefresh").html("数据获取时间：" + formatDate(new Date()));
+        });
+
+        $(":radio[name=AlarmType][value=255]").click();
+
+        $("#txtInterval").blur(setRefreshInterval);
+
+        $("#rdoReportTimeInput").click();
+    });
+
+    function setRefreshInterval() {
+        if ($("#rdoReportTimeInput")[0].checked) {
+            return;
+        }
+        if (isNaN(getInterval())) {
+            alert("无效的时间间隔");
+            $("#txtInterval").focus();
+            return;
+        }
+        setTimer();
+    }
+
+    function clearTimer() {
+        if (_timer != null) {
+            window.clearInterval(_timer);
+        }
+    }
+
+    function setTimer() {
+        clearTimer();
+        _timer = window.setInterval(refreshReport, getInterval() * 1000);
+    }
+
+    function refreshReport() {
+        $("#btnSearch").click();
+    }
+
+    function getInterval() {
+        return parseInt($("#txtInterval").val(), 10);
+    }
+
+    function sampleTime() {
+        $("#StartAt").val("2013-08-14");
+        $("#EndAt").val("2013-08-14 23:59:59");
+    }
+
+    function formatDate(d) {
+        if (typeof d == "string") {
+            d = new Date(d);
+        }
+        return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + " " + d.getHours() + ":" + paddingNumber(d.getMinutes(), 2) + ":" + paddingNumber(d.getSeconds(), 2);
+    }
+
+    function paddingNumber(n, totalLength) {
+        var i = parseInt(n, 10);
+        if (isNaN(i)) {
+            return n;
+        }
+        var s = i.toString();
+        var padding = totalLength - s.length;
+        for (var i = 0; i < padding; i++) {
+            s = "0" + s;
+        }
+        return s;
+    }
+</script>

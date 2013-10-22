@@ -1,0 +1,36 @@
+﻿@model AlarmSearchModel
+
+<table id="reportGrid" class="grid" style="margin-top: 20px;">
+    <tr>
+        <th>记录号</th>
+        <th>类型</th>
+        <th>类型信息</th>
+        <th>参数一</th>
+        <th>参数二</th>
+        <th>参数信息</th>
+        <th>级别</th>
+        <th>初次报告时间</th>
+        <th>末次报告时间</th>
+        <th>处理时间</th>
+        <th>状态</th>
+        <th>状态信息</th>
+        <th>操作员</th>
+    </tr>
+    @foreach (var item in Model.ReportItems) {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Id)</td>
+            <td>@Html.DisplayFor(modelItem => item.Type)</td>
+            <td>@Html.DisplayFor(modelItem => item.TypeInfo)</td>
+            <td>@Html.DisplayFor(modelItem => item.Param1)</td>
+            <td>@Html.DisplayFor(modelItem => item.Param2)</td>
+            <td>@Html.DisplayFor(modelItem => item.ParamInfo)</td>
+            <td>@Html.DisplayFor(modelItem => item.Level)</td>
+            <td>@Html.DisplayFor(modelItem => item.StartAt)</td>
+            <td>@Html.DisplayFor(modelItem => item.EndAt)</td>
+            <td>@Html.DisplayFor(modelItem => item.ProcessAt)</td>
+            <td>@Html.DisplayFor(modelItem => item.Status)</td>
+            <td>@Html.DisplayFor(modelItem => item.StatusInfo)</td>
+            <td>@Html.DisplayFor(modelItem => item.Operator)</td>
+        </tr>
+    }
+</table>

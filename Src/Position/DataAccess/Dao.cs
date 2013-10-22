@@ -168,5 +168,49 @@ namespace DataAccess
 
             return list;
         }
+
+        public List<AlarmReportItem> GetAlarmReport(AlarmReportCriteria criteria) {
+            var paramNames = new List<string>();
+            var paramObjects = new List<SqlParameter>();
+            int i = 0;
+            string p;
+
+            if (criteria.Type.HasValue) {
+                p = "@p" + i++.ToString();
+                paramNames.Add("@Alarm_type = " + p);
+                paramObjects.Add(new SqlParameter(p, criteria.Type.Value));
+            }
+            if (criteria.Param1.HasValue) {
+                p = "@p" + i++.ToString();
+                paramNames.Add("@Alarm_param1 = " + p);
+                paramObjects.Add(new SqlParameter(p, criteria.Param1.Value));
+            }
+            if (criteria.Param2.HasValue) {
+                p = "@p" + i++.ToString();
+                paramNames.Add("@Alarm_param2 = " + p);
+                paramObjects.Add(new SqlParameter(p, criteria.Param2.Value));
+            }
+            if (criteria.ProcessStatus.HasValue) {
+                p = "@p" + i++.ToString();
+                paramNames.Add("@Process_status = " + p);
+                paramObjects.Add(new SqlParameter(p, criteria.ProcessStatus.Value));
+            }
+            if (criteria.StartAt.HasValue) {
+                p = "@p" + i++.ToString();
+                paramNames.Add("@Begin_time = " + p);
+                paramObjects.Add(new SqlParameter(p, criteria.StartAt.Value));
+            }
+            if (criteria.EndAt.HasValue) {
+                p = "@p" + i++.ToString();
+                paramNames.Add("@End_time = " + p);
+                paramObjects.Add(new SqlParameter(p, criteria.EndAt.Value));
+            }
+
+            var context = new PositionContext();
+            var query = context.Database.SqlQuery<AlarmReportItem>("spQueryAlarmList " + string.Join(", ", paramNames.ToArray()), paramObjects.ToArray());
+            var list = query.ToList();
+
+            return list;
+        }
     }
 }
