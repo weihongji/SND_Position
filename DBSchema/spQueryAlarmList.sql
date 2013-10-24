@@ -89,7 +89,7 @@ AS
         FROM Region
         WHERE Region_id = @Alarm_param1
 
-      SET @People_name = dbo.F_SenderToPeopleName( @First_report_time, @Alarm_param2 )
+      SET @People_name = dbo.sfSenderToPeopleName( @First_report_time, @Alarm_param2 )
 
       SET @Worktype_name = ''
       IF ( @Alarm_type = 4 ) OR ( @Alarm_type = 6 )
