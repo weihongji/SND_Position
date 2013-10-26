@@ -302,3 +302,79 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Rec
 	ALTER TABLE [dbo].[Receiver]  WITH CHECK ADD FOREIGN KEY([Product_id])
 	REFERENCES [dbo].[Product] ([Product_id])
 END
+
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[RegionPositionSet]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[RegionPositionSet](
+		[Region_id] [smallint] NOT NULL,
+		[Position_id] [smallint] NOT NULL
+	) ON [PRIMARY]
+
+	ALTER TABLE [dbo].[RegionPositionSet]  WITH CHECK ADD FOREIGN KEY([Position_id])
+	REFERENCES [dbo].[Position] ([Position_id])
+
+	ALTER TABLE [dbo].[RegionPositionSet]  WITH CHECK ADD  CONSTRAINT [FK_RegionPositionSet] FOREIGN KEY([Region_id])
+	REFERENCES [dbo].[Region] ([Region_id])
+
+	ALTER TABLE [dbo].[RegionPositionSet] CHECK CONSTRAINT [FK_RegionPositionSet]
+END
+
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[PositionReport]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[PositionReport](
+		[Sender_id] [int] NOT NULL,
+		[Branch_id] [tinyint] NOT NULL,
+		[Receiver_id] [tinyint] NOT NULL,
+		[Position_id] [smallint] NOT NULL,
+		[Distance] [smallint] NOT NULL,
+		[Report_time] [datetime] NOT NULL
+	) ON [PRIMARY]
+
+	ALTER TABLE [dbo].[PositionReport]  WITH CHECK ADD  CONSTRAINT [FK_PositionReport] FOREIGN KEY([Position_id])
+	REFERENCES [dbo].[Position] ([Position_id])
+
+	ALTER TABLE [dbo].[PositionReport] CHECK CONSTRAINT [FK_PositionReport]
+END
+
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[CurrentPositionReport]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[CurrentPositionReport](
+		[Sender_id] [int] NOT NULL,
+		[Branch_id] [tinyint] NOT NULL,
+		[Receiver_id] [tinyint] NOT NULL,
+		[Position_id] [smallint] NOT NULL,
+		[Distance] [smallint] NOT NULL,
+		[Report_time] [datetime] NOT NULL
+	) ON [PRIMARY]
+
+	ALTER TABLE [dbo].[CurrentPositionReport]  WITH CHECK ADD  CONSTRAINT [FK_CurrentPositionReport] FOREIGN KEY([Position_id])
+	REFERENCES [dbo].[Position] ([Position_id])
+
+	ALTER TABLE [dbo].[CurrentPositionReport] CHECK CONSTRAINT [FK_CurrentPositionReport]
+END
+
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[AlarmReport]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[AlarmReport](
+		[Alarm_id] [int] IDENTITY(1,1) NOT NULL,
+		[Alarm_type] [tinyint] NOT NULL,
+		[Alarm_param1] [int] NOT NULL,
+		[Alarm_param2] [int] NOT NULL,
+		[First_report_time] [datetime] NOT NULL,
+		[Last_report_time] [datetime] NOT NULL,
+		[Process_time] [datetime] NOT NULL,
+		[Login_name] [varchar](32) NOT NULL,
+		[Process_status] [tinyint] NOT NULL
+	) ON [PRIMARY]
+END
+
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[CurrentAlarmReport]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[CurrentAlarmReport](
+		[Alarm_id] [int] IDENTITY(1,1) NOT NULL,
+		[Alarm_type] [tinyint] NOT NULL,
+		[Alarm_param1] [int] NOT NULL,
+		[Alarm_param2] [int] NOT NULL,
+		[First_report_time] [datetime] NOT NULL,
+		[Last_report_time] [datetime] NOT NULL,
+		[Process_time] [datetime] NOT NULL,
+		[Login_name] [varchar](32) NOT NULL,
+		[Process_status] [tinyint] NOT NULL
+	) ON [PRIMARY]
+END
+
