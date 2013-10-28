@@ -207,7 +207,11 @@ namespace DataAccess
             }
 
             var context = new PositionContext();
-            var query = context.Database.SqlQuery<AlarmReportItem>("spQueryAlarmList " + string.Join(", ", paramNames.ToArray()), paramObjects.ToArray());
+            var sp = "spQueryAlarmListCurrent";
+            if (criteria.StartAt.HasValue && (DateTime.Now - criteria.StartAt.Value).Days > 0) { // Request a report of prior to today
+                sp = "spQueryAlarmList";
+            }
+            var query = context.Database.SqlQuery<AlarmReportItem>(sp + " " + string.Join(", ", paramNames.ToArray()), paramObjects.ToArray());
             var list = query.ToList();
 
             return list;
