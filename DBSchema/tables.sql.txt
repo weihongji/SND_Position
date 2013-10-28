@@ -1,0 +1,3 @@
+﻿1. Standarlize foreign key names.
+2. Remove the identity property for extenal tables since we will not use identity feature.
+   Note: Don't remove that of internal tables.
