@@ -6,3 +6,7 @@ Src/Position/Web/bin/DataAccess.*
 obj/
 packages/
 Src/Position/Position.v11.suo
+Src/PositionSyncService/BusinessLogic/bin/
+Src/PositionSyncService/DataAccess/bin/
+Src/PositionSyncService/ServiceHost/bin/
+Src/PositionSyncService/SharedEntity/bin/
