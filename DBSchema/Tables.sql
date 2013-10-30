@@ -372,6 +372,23 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Ala
 	)
 END
 
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[AlarmType]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[AlarmType](
+		[Alarm_type] [tinyint] NOT NULL,
+		[Alarm_name] [varchar](32) NOT NULL,
+		[Param1_name] [varchar](32) NOT NULL,
+		[Param2_name] [varchar](32) NOT NULL,
+		[Alarm_level] [tinyint] NOT NULL,
+		[Alarm_attrib] [tinyint] NOT NULL,
+		[Valid_seconds] [int] NOT NULL,
+		[Auto_recovery_seconds] [int] NOT NULL,
+	 CONSTRAINT [PK_AlarmType] PRIMARY KEY CLUSTERED 
+	(
+		[Alarm_type] ASC
+	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+	) ON [PRIMARY]
+END
+
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[CurrentAlarmReport]') AND type in (N'U')) BEGIN
 	CREATE TABLE [dbo].[CurrentAlarmReport](
 		[Alarm_id] [int] NOT NULL,

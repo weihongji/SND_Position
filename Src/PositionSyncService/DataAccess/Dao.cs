@@ -22,6 +22,22 @@ namespace DataAccess
             return 0;
         }
 
+        public int SyncAlarmTypes(List<AlarmType> externalEntries) {
+            var context = new PositionContext(DBSource.Internal);
+            //Sync added/updated records
+            foreach (var item in externalEntries) {
+                context.AddOrUpdate<AlarmType>(item);
+            }
+            //Sync deleted records
+            var IDs = externalEntries.Select(x => x.Alarm_type).ToList();
+            var removedEntries = context.AlarmTypes.Where(x => !IDs.Contains(x.Alarm_type)).ToList();
+            foreach (var item in removedEntries) {
+                context.AlarmTypes.Remove(item);
+            }
+
+            return context.SaveChanges();
+        }
+
         public int SyncBranches(List<Branch> externalEntries) {
             var context = new PositionContext(DBSource.Internal);
             //Sync added/updated records
@@ -275,6 +291,11 @@ namespace DataAccess
         public List<AlarmReport> GetAlarmReports(DBSource source) {
             var context = new PositionContext(source);
             return context.AlarmReports.ToList();
+        }
+
+        public List<AlarmType> GetAlarmTypes(DBSource source) {
+            var context = new PositionContext(source);
+            return context.AlarmTypes.ToList();
         }
 
         public List<Branch> GetBranches(DBSource source) {

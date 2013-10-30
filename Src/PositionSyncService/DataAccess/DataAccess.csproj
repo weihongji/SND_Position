@@ -49,6 +49,7 @@
     <Compile Include="Models\Extensions.cs" />
     <Compile Include="Models\Mapping\AlarmReportMap.cs" />
     <Compile Include="Models\Mapping\BranchMap.cs" />
+    <Compile Include="Models\Mapping\AlarmTypeMap.cs" />
     <Compile Include="Models\Mapping\RegionPositionSetMap.cs" />
     <Compile Include="Models\Mapping\CurrentAlarmReportMap.cs" />
     <Compile Include="Models\Mapping\CurrentPositionReportMap.cs" />

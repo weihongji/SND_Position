@@ -21,6 +21,7 @@ namespace DataAccess.Models
         }
 
         public DbSet<AlarmReport> AlarmReports { get; set; }
+        public DbSet<AlarmType> AlarmTypes { get; set; }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<CurrentAlarmReport> CurrentAlarmReports { get; set; }
         public DbSet<CurrentPositionReport> CurrentPositionReports { get; set; }
@@ -41,6 +42,7 @@ namespace DataAccess.Models
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new AlarmReportMap());
+            modelBuilder.Configurations.Add(new AlarmTypeMap());
             modelBuilder.Configurations.Add(new BranchMap());
             modelBuilder.Configurations.Add(new CurrentAlarmReportMap());
             modelBuilder.Configurations.Add(new CurrentPositionReportMap());

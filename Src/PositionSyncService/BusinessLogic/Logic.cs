@@ -31,6 +31,19 @@ namespace BusinessLogic
             return count;
         }
 
+        public int SyncAlarmTypes() {
+            var externals = dao.GetAlarmTypes(DBSource.External);
+            log.DebugFormat("{0} records in the external table.", externals.Count);
+            var count = dao.SyncAlarmTypes(externals);
+            if (count > 0) {
+                log.InfoFormat("{0} records synchronized.", count);
+            }
+            else {
+                log.DebugFormat("{0} records synchronized.", count);
+            }
+            return count;
+        }
+
         public int SyncBranches() {
             var externals = dao.GetBranches(DBSource.External);
             log.DebugFormat("{0} records in the external table.", externals.Count);

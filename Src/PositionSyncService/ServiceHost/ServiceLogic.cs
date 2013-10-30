@@ -33,6 +33,7 @@ namespace ServiceHost
         public static void SyncDataAtMinute() {
             log.DebugFormat("Start sync minute-refresh data{0}{1}", Environment.NewLine, new string('=', 50));
             logic.SyncAlarmReports(maxRowsEachSync);
+            logic.SyncAlarmTypes();
             logic.SyncBranches();
             logic.SyncDepartments();
             logic.SyncLamps();

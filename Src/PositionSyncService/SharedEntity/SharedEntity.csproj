@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="AlarmReport.cs" />
     <Compile Include="Branch.cs" />
+    <Compile Include="AlarmType.cs" />
     <Compile Include="CurrentAlarmReport.cs" />
     <Compile Include="CurrentPositionReport.cs" />
     <Compile Include="Department.cs" />
