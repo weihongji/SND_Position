@@ -156,57 +156,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Peo
 	)
 END
 
-
-IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[ShiftGroup]') AND type in (N'U')) BEGIN
-	CREATE TABLE [dbo].[ShiftGroup](
-		[ShiftGroupId] [smallint] NOT NULL,
-		[ShiftGroupName] [varchar](32) NULL,
-	 CONSTRAINT [PK_ShiftGroup] PRIMARY KEY CLUSTERED 
-	(
-		[ShiftGroupId] ASC
-	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-	) ON [PRIMARY]
-END
-
-IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Shift]') AND type in (N'U')) BEGIN
-	CREATE TABLE [dbo].[Shift](
-		[ShiftId] [smallint] NOT NULL,
-		[ShiftName] [varchar](32) NOT NULL,
-		[ShiftBeginTime] [datetime] NOT NULL,
-		[ShiftEndTime] [datetime] NOT NULL,
-		[ShiftGroupId] [smallint] NULL,
-	 CONSTRAINT [PK_Shift] PRIMARY KEY CLUSTERED 
-	(
-		[ShiftId] ASC
-	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-	) ON [PRIMARY]
-
-	ALTER TABLE [dbo].[Shift]  WITH CHECK ADD CONSTRAINT FK_Shift_ShiftGroup FOREIGN KEY([ShiftGroupId]) REFERENCES [dbo].[ShiftGroup] ([ShiftGroupId])
-
-	CREATE NONCLUSTERED INDEX [ShiftIndex] ON [dbo].[Shift] 
-	(
-		[ShiftGroupId] ASC,
-		[ShiftBeginTime] ASC
-	)
-END
-
-IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[PeopleShift]') AND type in (N'U')) BEGIN
-	CREATE TABLE [dbo].[PeopleShift](
-		[PeopleId] [int] NOT NULL,
-		[ShiftId] [smallint] NOT NULL,
-		[FirstShiftTime] [datetime] NOT NULL,
-		[LastShiftTime] [datetime] NOT NULL,
-	 CONSTRAINT [PK_PeopleShift] PRIMARY KEY CLUSTERED 
-	(
-		[PeopleId] ASC,
-		[FirstShiftTime] ASC
-	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-	) ON [PRIMARY]
-
-	ALTER TABLE [dbo].[PeopleShift]  WITH CHECK ADD CONSTRAINT FK_PeopleShift_People FOREIGN KEY([PeopleId]) REFERENCES [dbo].[People] ([People_id])
-	ALTER TABLE [dbo].[PeopleShift]  WITH CHECK ADD CONSTRAINT FK_PeopleShift_Shift FOREIGN KEY([ShiftId]) REFERENCES [dbo].[Shift] ([ShiftId])
-END
-
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Position]') AND type in (N'U')) BEGIN
 	CREATE TABLE [dbo].[Position](
 		[Position_id] [smallint] NOT NULL,
@@ -222,27 +171,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Pos
 		[Position_id] ASC
 	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY]
-END
-
-IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[PeopleWorkPath]') AND type in (N'U')) BEGIN
-	CREATE TABLE [dbo].[PeopleWorkPath](
-		[Path_id] [int] NOT NULL,
-		[Step_id] [int] NOT NULL,
-		[People_id] [int] NOT NULL,
-		[Position_id] [smallint] NOT NULL,
-		[Begin_time] [datetime] NOT NULL,
-		[End_time] [datetime] NOT NULL,
-		[Check_status] [tinyint] NOT NULL,
-	 CONSTRAINT [PK_PeopleWorkPath] PRIMARY KEY CLUSTERED 
-	(
-		[Path_id] ASC,
-		[Step_id] ASC
-	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-	) ON [PRIMARY]
-
-
-	ALTER TABLE [dbo].[PeopleWorkPath]  WITH CHECK ADD CONSTRAINT FK_PeopleWorkPath_People FOREIGN KEY([People_id]) REFERENCES [dbo].[People] ([People_id])
-	ALTER TABLE [dbo].[PeopleWorkPath]  WITH CHECK ADD CONSTRAINT FK_PeopleWorkPath_Position FOREIGN KEY([Position_id]) REFERENCES [dbo].[Position] ([Position_id])
 END
 
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Lamp]') AND type in (N'U')) BEGIN
