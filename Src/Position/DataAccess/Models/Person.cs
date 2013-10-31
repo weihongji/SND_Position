@@ -5,13 +5,6 @@ namespace DataAccess.Models
 {
     public partial class Person
     {
-        public Person()
-        {
-            this.PeopleShifts = new List<PeopleShift>();
-            this.PeopleWorkPaths = new List<PeopleWorkPath>();
-            this.PeopleSenders = new List<PeopleSender>();
-        }
-
         public int People_id { get; set; }
         public string People_name { get; set; }
         public byte Gender { get; set; }
@@ -30,11 +23,5 @@ namespace DataAccess.Models
         public string Linkman_dept { get; set; }
         public string Linkman_phone { get; set; }
         public string People_info { get; set; }
-        public virtual Department Department { get; set; }
-        public virtual Rank Rank { get; set; }
-        public virtual WorkType WorkType { get; set; }
-        public virtual ICollection<PeopleShift> PeopleShifts { get; set; }
-        public virtual ICollection<PeopleWorkPath> PeopleWorkPaths { get; set; }
-        public virtual ICollection<PeopleSender> PeopleSenders { get; set; }
     }
 }

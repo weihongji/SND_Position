@@ -46,28 +46,42 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dao.cs" />
+    <Compile Include="Models\AlarmReport.cs" />
+    <Compile Include="Models\AlarmType.cs" />
     <Compile Include="Models\Branch.cs" />
+    <Compile Include="Models\CurrentAlarmReport.cs" />
+    <Compile Include="Models\CurrentPositionReport.cs" />
     <Compile Include="Models\Department.cs" />
-    <Compile Include="Models\Enum\XEnum.cs" />
+    <Compile Include="Models\Enum.cs" />
     <Compile Include="Models\Lamp.cs" />
+    <Compile Include="Models\Mapping\AlarmReportMap.cs" />
+    <Compile Include="Models\Mapping\AlarmTypeMap.cs" />
     <Compile Include="Models\Mapping\BranchMap.cs" />
+    <Compile Include="Models\Mapping\CurrentAlarmReportMap.cs" />
+    <Compile Include="Models\Mapping\CurrentPositionReportMap.cs" />
     <Compile Include="Models\Mapping\DepartmentMap.cs" />
     <Compile Include="Models\Mapping\LampMap.cs" />
     <Compile Include="Models\Mapping\PeopleSenderMap.cs" />
-    <Compile Include="Models\Mapping\PeopleShiftMap.cs" />
-    <Compile Include="Models\Mapping\PeopleWorkPathMap.cs" />
     <Compile Include="Models\Mapping\PersonMap.cs" />
     <Compile Include="Models\Mapping\PositionMap.cs" />
+    <Compile Include="Models\Mapping\PositionReportMap.cs" />
     <Compile Include="Models\Mapping\ProductMap.cs" />
     <Compile Include="Models\Mapping\RankMap.cs" />
     <Compile Include="Models\Mapping\ReceiverMap.cs" />
     <Compile Include="Models\Mapping\RegionMap.cs" />
+    <Compile Include="Models\Mapping\RegionPositionSetMap.cs" />
     <Compile Include="Models\Mapping\SenderMap.cs" />
-    <Compile Include="Models\Mapping\ShiftGroupMap.cs" />
-    <Compile Include="Models\Mapping\ShiftMap.cs" />
     <Compile Include="Models\Mapping\WorkTypeMap.cs" />
+    <Compile Include="Models\PeopleSender.cs" />
+    <Compile Include="Models\Person.cs" />
+    <Compile Include="Models\Position.cs" />
+    <Compile Include="Models\PositionContext.cs" />
+    <Compile Include="Models\PositionReport.cs" />
+    <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\Rank.cs" />
     <Compile Include="Models\Receiver.cs" />
     <Compile Include="Models\Region.cs" />
+    <Compile Include="Models\RegionPositionSet.cs" />
     <Compile Include="Models\Report\AlarmReportItem.cs" />
     <Compile Include="Models\Report\AlarmReportCriteria.cs" />
     <Compile Include="Models\Report\PeopleCountReportItem.cs" />
@@ -75,17 +89,7 @@
     <Compile Include="Models\Report\PositionSearchReportItem.cs" />
     <Compile Include="Models\Report\PeopleOverviewReportItem.cs" />
     <Compile Include="Models\Report\PeopleSearchReportItem.cs" />
-    <Compile Include="Models\PeopleSender.cs" />
-    <Compile Include="Models\PeopleShift.cs" />
-    <Compile Include="Models\PeopleWorkPath.cs" />
-    <Compile Include="Models\Person.cs" />
-    <Compile Include="Models\Position.cs" />
-    <Compile Include="Models\PositionContext.cs" />
-    <Compile Include="Models\Product.cs" />
-    <Compile Include="Models\Rank.cs" />
     <Compile Include="Models\Sender.cs" />
-    <Compile Include="Models\Shift.cs" />
-    <Compile Include="Models\ShiftGroup.cs" />
     <Compile Include="Models\WorkType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -95,6 +99,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

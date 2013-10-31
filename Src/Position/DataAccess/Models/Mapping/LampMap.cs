@@ -24,12 +24,6 @@ namespace DataAccess.Models.Mapping
             this.Property(t => t.Lamp_id).HasColumnName("Lamp_id");
             this.Property(t => t.Sender_id).HasColumnName("Sender_id");
             this.Property(t => t.Lamp_info).HasColumnName("Lamp_info");
-
-            // Relationships
-            this.HasRequired(t => t.Sender)
-                .WithMany(t => t.Lamps)
-                .HasForeignKey(d => d.Sender_id);
-
         }
     }
 }

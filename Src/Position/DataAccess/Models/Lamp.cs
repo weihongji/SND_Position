@@ -8,6 +8,5 @@ namespace DataAccess.Models
         public string Lamp_id { get; set; }
         public int Sender_id { get; set; }
         public string Lamp_info { get; set; }
-        public virtual Sender Sender { get; set; }
     }
 }

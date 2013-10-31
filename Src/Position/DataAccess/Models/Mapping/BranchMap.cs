@@ -31,15 +31,6 @@ namespace DataAccess.Models.Mapping
             this.Property(t => t.Ip_port).HasColumnName("Ip_port");
             this.Property(t => t.Parameters).HasColumnName("Parameters");
             this.Property(t => t.Branch_info).HasColumnName("Branch_info");
-
-            // Relationships
-            this.HasRequired(t => t.Position)
-                .WithMany(t => t.Branches)
-                .HasForeignKey(d => d.Position_id);
-            this.HasRequired(t => t.Product)
-                .WithMany(t => t.Branches)
-                .HasForeignKey(d => d.Product_id);
-
         }
     }
 }

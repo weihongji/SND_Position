@@ -70,18 +70,6 @@ namespace DataAccess.Models.Mapping
             this.Property(t => t.Linkman_dept).HasColumnName("Linkman_dept");
             this.Property(t => t.Linkman_phone).HasColumnName("Linkman_phone");
             this.Property(t => t.People_info).HasColumnName("People_info");
-
-            // Relationships
-            this.HasRequired(t => t.Department)
-                .WithMany(t => t.People)
-                .HasForeignKey(d => d.Dept_id);
-            this.HasRequired(t => t.Rank)
-                .WithMany(t => t.People)
-                .HasForeignKey(d => d.Rank_id);
-            this.HasRequired(t => t.WorkType)
-                .WithMany(t => t.People)
-                .HasForeignKey(d => d.Worktype_id);
-
         }
     }
 }

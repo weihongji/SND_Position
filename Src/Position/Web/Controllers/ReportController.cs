@@ -42,7 +42,7 @@ namespace Web.Controllers
             int? deptId = null;
             int? rankId = null;
             DateTime? reportForTime = null;
-            XEnum.WorkPlace workPlace = XEnum.WorkPlace.Any;
+            WorkPlace workPlace = DataAccess.Models.WorkPlace.Any;
 
             if (int.TryParse(SenderId, out tmpInt)) {
                 senderId = tmpInt;
@@ -61,8 +61,8 @@ namespace Web.Controllers
                     reportForTime = tmpTime;
                 }
             }
-            if (!Enum.TryParse<XEnum.WorkPlace>(WorkPlace, out workPlace)) {
-                workPlace = XEnum.WorkPlace.Any;
+            if (!Enum.TryParse<WorkPlace>(WorkPlace, out workPlace)) {
+                workPlace = DataAccess.Models.WorkPlace.Any;
             }
 
             var dao = new Dao();

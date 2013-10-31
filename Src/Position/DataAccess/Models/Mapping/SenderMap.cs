@@ -31,12 +31,6 @@ namespace DataAccess.Models.Mapping
             this.Property(t => t.First_use_time).HasColumnName("First_use_time");
             this.Property(t => t.Last_use_time).HasColumnName("Last_use_time");
             this.Property(t => t.Sender_info).HasColumnName("Sender_info");
-
-            // Relationships
-            this.HasRequired(t => t.Product)
-                .WithMany(t => t.Senders)
-                .HasForeignKey(d => d.Product_id);
-
         }
     }
 }

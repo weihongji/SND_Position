@@ -37,7 +37,7 @@ namespace DataAccess
             return query.ToList();
         }
 
-        public List<PeopleSearchReportItem> GetPeopleSearchReport(int? senderId, string lampId, string peopleName, int? peopleId, int? deptId, int? rankId, DateTime? reportForTime, XEnum.WorkPlace workPlace) {
+        public List<PeopleSearchReportItem> GetPeopleSearchReport(int? senderId, string lampId, string peopleName, int? peopleId, int? deptId, int? rankId, DateTime? reportForTime, WorkPlace workPlace) {
             var paramNames = new List<string>();
             var paramObjects = new List<SqlParameter>();
             int i = 0;
@@ -78,10 +78,10 @@ namespace DataAccess
                 paramNames.Add("@forTime = " + p);
                 paramObjects.Add(new SqlParameter(p, reportForTime.Value));
             }
-            if (workPlace != XEnum.WorkPlace.Any) {
+            if (workPlace != WorkPlace.Any) {
                 p = "@p" + i++.ToString();
                 paramNames.Add("@isInWell = " + p);
-                paramObjects.Add(new SqlParameter(p, workPlace == XEnum.WorkPlace.Well));
+                paramObjects.Add(new SqlParameter(p, workPlace == WorkPlace.Well));
             }
 
             var context = new PositionContext();
