@@ -1,2 +1,0 @@
-/* List foreign keys refering to the specified table */
-select * from sys.foreign_keys where referenced_object_id = OBJECT_ID('ShiftGroup')

@@ -63,9 +63,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Peo
 	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
-	ALTER TABLE [dbo].[People]  WITH CHECK ADD CONSTRAINT FK_People_Department FOREIGN KEY([Dept_id]) REFERENCES [dbo].[Department] ([Dept_id])
-	ALTER TABLE [dbo].[People]  WITH CHECK ADD CONSTRAINT FK_People_Rank FOREIGN KEY([Rank_id]) REFERENCES [dbo].[Rank] ([Rank_id])
-	ALTER TABLE [dbo].[People]  WITH CHECK ADD CONSTRAINT FK_People_WorkType FOREIGN KEY([Worktype_id]) REFERENCES [dbo].[WorkType] ([Worktype_id])
 
 	CREATE NONCLUSTERED INDEX [PeopleIndex] ON [dbo].[People] 
 	(
@@ -115,8 +112,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Sen
 		[Sender_id] ASC
 	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY]
-
-	ALTER TABLE [dbo].[Sender]  WITH CHECK ADD CONSTRAINT FK_Sender_Product FOREIGN KEY([Product_id]) REFERENCES [dbo].[Product] ([Product_id])
 END
 
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[PeopleSender]') AND type in (N'U')) BEGIN
@@ -126,10 +121,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Peo
 		[First_use_time] [datetime] NOT NULL,
 		[Last_use_time] [datetime] NOT NULL
 	) ON [PRIMARY]
-
-
-	ALTER TABLE [dbo].[PeopleSender]  WITH CHECK ADD CONSTRAINT FK_PeopleSender_Sender FOREIGN KEY([Sender_id]) REFERENCES [dbo].[Sender] ([Sender_id])
-	ALTER TABLE [dbo].[PeopleSender]  WITH CHECK ADD CONSTRAINT FK_PeopleSender_People FOREIGN KEY([People_id]) REFERENCES [dbo].[People] ([People_id])
 
 	CREATE CLUSTERED INDEX [PeopleSenderIndex] ON [dbo].[PeopleSender] 
 	(
@@ -183,8 +174,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Lam
 		[Lamp_id] ASC
 	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY]
-
-	ALTER TABLE [dbo].[Lamp]  WITH CHECK ADD CONSTRAINT FK_Lamp_Sender FOREIGN KEY([Sender_id]) REFERENCES [dbo].[Sender] ([Sender_id])
 END
 
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Region]') AND type in (N'U')) BEGIN
@@ -225,10 +214,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Bra
 	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY]
 
-
-	ALTER TABLE [dbo].[Branch]  WITH CHECK ADD CONSTRAINT FK_Branch_Position FOREIGN KEY([Position_id]) REFERENCES [dbo].[Position] ([Position_id])
-	ALTER TABLE [dbo].[Branch]  WITH CHECK ADD CONSTRAINT FK_Branch_Product FOREIGN KEY([Product_id]) REFERENCES [dbo].[Product] ([Product_id])
-
 	CREATE NONCLUSTERED INDEX [BranchIndex] ON [dbo].[Branch] 
 	(
 		[Comm_mode] ASC
@@ -250,11 +235,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Rec
 		[Receiver_id] ASC
 	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY]
-
-
-	ALTER TABLE [dbo].[Receiver]  WITH CHECK ADD CONSTRAINT FK_Receiver_Branch FOREIGN KEY([Branch_id]) REFERENCES [dbo].[Branch] ([Branch_id])
-	ALTER TABLE [dbo].[Receiver]  WITH CHECK ADD CONSTRAINT FK_Receiver_Position FOREIGN KEY([Position_id]) REFERENCES [dbo].[Position] ([Position_id])
-	ALTER TABLE [dbo].[Receiver]  WITH CHECK ADD CONSTRAINT FK_Receiver_Product FOREIGN KEY([Product_id]) REFERENCES [dbo].[Product] ([Product_id])
 END
 
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[RegionPositionSet]') AND type in (N'U')) BEGIN
@@ -262,9 +242,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Reg
 		[Region_id] [smallint] NOT NULL,
 		[Position_id] [smallint] NOT NULL
 	) ON [PRIMARY]
-
-	ALTER TABLE [dbo].[RegionPositionSet]  WITH CHECK ADD CONSTRAINT FK_RegionPositionSet_Position FOREIGN KEY([Position_id]) REFERENCES [dbo].[Position] ([Position_id])
-	ALTER TABLE [dbo].[RegionPositionSet]  WITH CHECK ADD CONSTRAINT FK_RegionPositionSet_Region FOREIGN KEY([Region_id]) REFERENCES [dbo].[Region] ([Region_id])
 
 	CREATE CLUSTERED INDEX [RegionPositionSetIndex] ON [dbo].[RegionPositionSet] 
 	(
@@ -281,8 +258,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Pos
 		[Distance] [smallint] NOT NULL,
 		[Report_time] [datetime] NOT NULL
 	) ON [PRIMARY]
-
-	ALTER TABLE [dbo].[PositionReport]  WITH CHECK ADD CONSTRAINT FK_PositionReport_Position FOREIGN KEY([Position_id]) REFERENCES [dbo].[Position] ([Position_id])
 
 	CREATE CLUSTERED INDEX [PositionReportIndex] ON [dbo].[PositionReport] 
 	(
@@ -318,8 +293,6 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Cur
 		[Distance] [smallint] NOT NULL,
 		[Report_time] [datetime] NOT NULL
 	) ON [PRIMARY]
-
-	ALTER TABLE [dbo].[CurrentPositionReport]  WITH CHECK ADD CONSTRAINT FK_CurrentPositionReport_Position FOREIGN KEY([Position_id]) REFERENCES [dbo].[Position] ([Position_id])
 
 	CREATE CLUSTERED INDEX [CurrentPositionReportIndex] ON [dbo].[CurrentPositionReport] 
 	(
@@ -424,15 +397,5 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Cur
 		[Alarm_param1] ASC,
 		[Alarm_param2] ASC,
 		[Process_time] ASC
-	)
-END
-
-IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[PositionSyncLog]') AND type in (N'U')) BEGIN
-	CREATE TABLE [dbo].[PositionSyncLog](
-		[Id] [int] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_PositionSyncLog] PRIMARY KEY CLUSTERED,
-		[Level] [varchar](20) NOT NULL CONSTRAINT [DF_PositionSyncLog_Level] DEFAULT ('INFO'),
-		[Message] [varchar](255) NOT NULL,
-		[Logger] [varchar](50) NULL,
-		[DTStamp] [datetime] NOT NULL CONSTRAINT [DF_PositionSyncLog_DTStamp] DEFAULT (getdate())
 	)
 END

@@ -1,3 +1,2 @@
-﻿1. Standarlize foreign key names.
+﻿1. Remove foreign keys since they are not necessary in reporting system.
 2. Remove the identity property for extenal tables since we will not use identity feature.
-   Note: Don't remove that of internal tables.
