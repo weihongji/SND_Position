@@ -25,7 +25,7 @@ namespace ServiceHost
         }
 
         public void DebugStart(string[] args) {
-            log.Debug("Start service in debug model");
+            log.Debug("Start service in debug mode");
             OnStart(args);
         }
 
