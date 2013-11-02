@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<style type="text/css">
+    .selected {
+        background-color: gray;
+    }
+
+    .highlight {
+        background-color: lightgray;
+    }
+</style>
+
+<h2>Index</h2>
+<div>
+    <button>Zoom Out</button>
+    <button>Fit</button>
+    <button>Zoom In</button>
+    <button id="btnClearConsole">Clear Console</button>
+</div>
+<div>
+    <div id="divMine" style="border: 1px solid red; float: left; position: relative;">
+        <img id="imgMine" style="border: 1px dotted black;" src="~/Images/Mine.gif" />
+        <img id="imgPinBlue" style="position: absolute; left: 1028px; top: -1px;" src="~/Images/Pins/pin-blue.png" />
+        <img id="imgPinRed" style="position: absolute; left: 1027px; top: 63px;" src="~/Images/Pins/pin-red.png" />
+        <img id="imgPinGreen" style="position: absolute; left: 1028px; top: 126px;" src="~/Images/Pins/pin-green.png" />
+        <ul id="menu">
+            <li><a href="#">Edit</a></li>
+            <li><a href="#">Delete</a></li>
+        </ul>
+    </div>
+    <div id="divIcons" style="border: 1px solid black; float: left; cursor: pointer; width: 35px;">
+        <div style="background-image: url(Images/Pins/pin-black.png); background-repeat: no-repeat; height: 63px;"></div>
+        <div style="background-image: url(Images/Pins/pin-black.png); background-repeat: no-repeat; height: 63px;"></div>
+        <div style="background-image: url(Images/Pins/pin-black.png); background-repeat: no-repeat; height: 63px;"></div>
+    </div>
+    <div id="divConsole" style="float: left; padding-left: 10px;"></div>
+    <div style="clear: both;"></div>
+</div>
+<style>
+    .ui-menu {
+        width: 80px;
+        z-index: 1000;
+    }
+
+        .ui-menu > li > a {
+            font-size: 12px;
+        }
+</style>
+<link href="~/Content/themes/smoothness/jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-1.9.1.js"></script>
+<script src="~/Scripts/jquery-ui-1.10.3.custom.js"></script>
+
+<script type="text/javascript">
+    var _pinOnSeat;
+    var _currentPin;
+    var _maxPinIndex = 0;
+
+    $(function () {
+        $("#menu").menu().css("position", "absolute").hide();
+        $("#menu>li:eq(0)").click(function () {
+            $("#menu").hide();
+            alert("EDIT");
+            return false;
+        });
+        $("#menu>li:eq(1)").click(function () {
+            $("#menu").hide();
+            if (confirm("Delete " + $(_currentPin).attr("pin_name") + "?")) {
+                $(_currentPin).remove();
+            }
+            return false;
+        });
+        $("#divMine")
+            .contextmenu(null, function (e) {
+                if ($(e.target).attr("pinned")) {
+                    _currentPin = $(e.target);
+                    var left = parseInt(_currentPin.css("left")) + _currentPin.width() / 3;
+                    var top = parseInt(_currentPin.css("top")) + _currentPin.height() / 3;
+                    $("#menu").css({ left: left + "px", top: top + "px" }).show();
+                }
+                return false;
+            })
+            .click(function () {
+                $("#menu").hide(50);
+            });
+
+        $("#divIcons>div")
+            .mouseover(function () {
+                if (!$(this).hasClass("selected")) {
+                    $(this).addClass("highlight");
+                }
+            })
+            .mouseout(function () {
+                $(this).removeClass("highlight");
+            })
+            .click(function () {
+                $("#divIcons>div").removeClass("selected highlight");
+                $(this).addClass("selected");
+            });
+
+        makeItDraggable("#imgPinBlue");
+        makeItDraggable("#imgPinRed");
+        makeItDraggable("#imgPinGreen");
+
+        $("#imgMine").draggable({ drag: function () { return false; } });
+
+        $("#btnClearConsole").click(function () {
+            $("#divMine>img").not("[id]").remove();
+            $("#divConsole").html("");
+        });
+    });
+
+    function makeItDraggable(o) {
+        $(o).draggable({
+            cursor: "move",
+            start: function () {
+                if (!$(this).attr("pinned")) {
+                    _pinOnSeat = $(this).clone();
+                }
+            },
+            stop: function () {
+                if (!$(this).attr("pinned")) {
+                    $(this).removeAttr("id").attr("pinned", 1).attr("pin_name", "Pin" + (_maxPinIndex++).toString());
+                    $(_pinOnSeat).appendTo($("#divMine"));
+                    makeItDraggable($(_pinOnSeat));
+                }
+                logPosition(this);
+            }
+        });
+    }
+
+    function logPosition(pinImage) {
+        var o = $(pinImage);
+        var left = parseInt(o.css("left"));
+        var top = parseInt(o.css("top"));
+        var p = left + "," + (top + o.height());
+        $("#divConsole").append("<div>" + p + "</div>");
+    }
+</script>
