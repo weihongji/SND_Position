@@ -54,10 +54,17 @@
 
 <script type="text/javascript">
     var _pinOnSeat;
-    var _currentPin;
+    var _clickedPin;
     var _maxPinIndex = 0;
 
+    //Image attributes
+    var _map_width, _map_height;
+    var _pin_width, _pin_height;
+
     $(function () {
+        _map_width = $("#imgMine").width();
+        _map_height = $("#imgMine").height();
+
         $("#menu").menu().css("position", "absolute").hide();
         $("#menu>li:eq(0)").click(function () {
             $("#menu").hide();
@@ -66,17 +73,17 @@
         });
         $("#menu>li:eq(1)").click(function () {
             $("#menu").hide();
-            if (confirm("Delete " + $(_currentPin).attr("pin_name") + "?")) {
-                $(_currentPin).remove();
+            if (confirm("Delete " + $(_clickedPin).attr("pin_name") + "?")) {
+                $(_clickedPin).remove();
             }
             return false;
         });
         $("#divMine")
             .contextmenu(null, function (e) {
                 if ($(e.target).attr("pinned")) {
-                    _currentPin = $(e.target);
-                    var left = parseInt(_currentPin.css("left")) + _currentPin.width() / 3;
-                    var top = parseInt(_currentPin.css("top")) + _currentPin.height() / 3;
+                    _clickedPin = $(e.target);
+                    var left = parseInt(_clickedPin.css("left")) + _clickedPin.width() / 3;
+                    var top = parseInt(_clickedPin.css("top")) + _clickedPin.height() / 3;
                     $("#menu").css({ left: left + "px", top: top + "px" }).show();
                 }
                 return false;
@@ -119,22 +126,67 @@
                     _pinOnSeat = $(this).clone();
                 }
             },
+            drag: function () {
+                $(this).draggable("option", "revert", !isInBoundary(this));
+            },
             stop: function () {
-                if (!$(this).attr("pinned")) {
-                    $(this).removeAttr("id").attr("pinned", 1).attr("pin_name", "Pin" + (_maxPinIndex++).toString());
-                    $(_pinOnSeat).appendTo($("#divMine"));
-                    makeItDraggable($(_pinOnSeat));
+                if (!$(this).draggable("option", "revert")) {
+                    if (!$(this).attr("pinned")) {
+                        $(this).removeAttr("id").attr("pinned", 1).attr("pin_name", "Pin" + (_maxPinIndex++).toString());
+                        $(_pinOnSeat).appendTo($("#divMine"));
+                        makeItDraggable($(_pinOnSeat));
+                    }
+                    logPosition(this);
                 }
-                logPosition(this);
             }
         });
     }
 
+    function isInBoundary(pinImage) {
+        //For efficience reson, we are calculating the pin's position ourself in this function.
+        var o = $(pinImage);
+        var x = parseInt(o.css("left"));
+        var padding = 10;
+        if (!isNaN(x) && padding < x && x < _map_width - padding) {
+            var y = parseInt(o.css("top"));
+            if (!isNaN(y)) {
+                y += o.height();
+                if (padding < y && y < _map_height - padding) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     function logPosition(pinImage) {
+        var p = GetPinPosition(pinImage);
+        logIt(p);
+    }
+
+    function logIt(s) {
+        if (s != null) {
+            $("#divConsole").append("<div>" + s.toString() + "</div>");
+        }
+    }
+
+    function GetPinPosition(pinImage) {
         var o = $(pinImage);
         var left = parseInt(o.css("left"));
         var top = parseInt(o.css("top"));
-        var p = left + "," + (top + o.height());
-        $("#divConsole").append("<div>" + p + "</div>");
+        if (isNaN(left) || isNaN(top)) {
+            return null;
+        }
+        else {
+            return new Point(left, top + o.height());
+        }
+    }
+
+    function Point(x, y) {
+        this.X = x;
+        this.Y = y;
+        this.toString = function () {
+            return "(" + this.X + "," + this.Y + ")";
+        }
     }
 </script>
