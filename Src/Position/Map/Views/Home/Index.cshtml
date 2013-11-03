@@ -1,14 +1,47 @@
-﻿@{
+﻿@model MapMgmtModel
+@{
     ViewBag.Title = "Index";
 }
 
 <style type="text/css">
+    body { font-size: 62.5%; }
+
     .selected {
         background-color: gray;
     }
 
     .highlight {
         background-color: lightgray;
+    }
+
+    .ui-menu {
+        width: 80px;
+        z-index: 1000;
+    }
+
+        .ui-menu > li > a {
+            font-size: 12px;
+        }
+
+    /*dialog form*/
+    #dialog-form label, #dialog-form input {
+        display: block;
+    }
+
+        #dialog-form input.text {
+            margin-bottom: 12px;
+            width: 95%;
+            padding: .4em;
+        }
+
+    #dialog-form fieldset {
+        padding: 0;
+        border: 0;
+        margin-top: 25px;
+    }
+
+    #dialog-form .ui-dialog .ui-state-error {
+        padding: .3em;
     }
 </style>
 
@@ -22,13 +55,39 @@
 <div>
     <div id="divMine" style="border: 1px solid red; float: left; position: relative;">
         <img id="imgMine" style="border: 1px dotted black;" src="~/Images/Mine.gif" />
-        <img id="imgPinBlue" style="position: absolute; left: 1028px; top: -1px;" src="~/Images/Pins/pin-blue.png" />
-        <img id="imgPinRed" style="position: absolute; left: 1027px; top: 63px;" src="~/Images/Pins/pin-red.png" />
-        <img id="imgPinGreen" style="position: absolute; left: 1028px; top: 126px;" src="~/Images/Pins/pin-green.png" />
+        <div id="divPinPanel">
+            <img id="imgPinBlue" style="position: absolute; left: 1028px; top: -1px;" src="~/Images/Pins/pin-blue.png" />
+            <img id="imgPinRed" style="position: absolute; left: 1027px; top: 63px;" src="~/Images/Pins/pin-red.png" />
+            <img id="imgPinGreen" style="position: absolute; left: 1028px; top: 126px;" src="~/Images/Pins/pin-green.png" />
+        </div>
+        <div id="divPinLoad">
+            @foreach (var pin in Model.FengYaList) {
+                <img id="pin_@(pin.Id)" pinned="1" title="@pin.ToString()"
+                    pin_id="@pin.Id"
+                    pin_name="@pin.Name"
+                    pin_power="@pin.Power"
+                    style="position: absolute; left: @(pin.Left)px; top: @(pin.Top)px;" src="~/Images/Pins/pin-blue.png" />
+            }
+        </div>
+        <!--Context Menu-->
         <ul id="menu">
             <li><a href="#">Edit</a></li>
             <li><a href="#">Delete</a></li>
         </ul>
+        <!--Edit Dialog-->
+        <div id="dialog-form" title="编辑风压检测站">
+            <form>
+                <fieldset>
+                    <label for="yf_name">名称</label>
+                    <input type="text" name="yf_name" id="yf_name" class="text ui-widget-content ui-corner-all" />
+                    <label for="yf_power">功率</label>
+                    <div>
+                        <input type="text" name="yf_power" id="yf_power" value="" class="text ui-widget-content ui-corner-all" style="width: 80px; display:inline-block;" />
+                        <span>千瓦</span>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
     </div>
     <div id="divIcons" style="border: 1px solid black; float: left; cursor: pointer; width: 35px;">
         <div style="background-image: url(Images/Pins/pin-black.png); background-repeat: no-repeat; height: 63px;"></div>
@@ -38,16 +97,6 @@
     <div id="divConsole" style="float: left; padding-left: 10px;"></div>
     <div style="clear: both;"></div>
 </div>
-<style>
-    .ui-menu {
-        width: 80px;
-        z-index: 1000;
-    }
-
-        .ui-menu > li > a {
-            font-size: 12px;
-        }
-</style>
 <link href="~/Content/themes/smoothness/jquery-ui-1.10.3.custom.css" rel="stylesheet" />
 <script src="~/Scripts/jquery-1.9.1.js"></script>
 <script src="~/Scripts/jquery-ui-1.10.3.custom.js"></script>
@@ -65,10 +114,13 @@
         _map_width = $("#imgMine").width();
         _map_height = $("#imgMine").height();
 
+        //Context Menu
         $("#menu").menu().css("position", "absolute").hide();
         $("#menu>li:eq(0)").click(function () {
             $("#menu").hide();
-            alert("EDIT");
+            $("#yf_name").val(_clickedPin.attr("pin_name"));
+            $("#yf_power").val(_clickedPin.attr("pin_power"));
+            $("#dialog-form" ).dialog("open" );
             return false;
         });
         $("#menu>li:eq(1)").click(function () {
@@ -92,6 +144,7 @@
                 $("#menu").hide(50);
             });
 
+        //Pin Panel
         $("#divIcons>div")
             .mouseover(function () {
                 if (!$(this).hasClass("selected")) {
@@ -106,15 +159,41 @@
                 $(this).addClass("selected");
             });
 
-        makeItDraggable("#imgPinBlue");
-        makeItDraggable("#imgPinRed");
-        makeItDraggable("#imgPinGreen");
+        //Pin Draggable
+        $("#divPinPanel>img").add("#divPinLoad>img").each(function () {
+            makeItDraggable(this);
+        });
 
+        //The Map
         $("#imgMine").draggable({ drag: function () { return false; } });
 
+        //Debug Console
         $("#btnClearConsole").click(function () {
-            $("#divMine>img").not("[id]").remove();
+            $("#divMine img[pinned]").remove();
             $("#divConsole").html("");
+        });
+
+        //Edit Dialog
+        $("#dialog-form").dialog({
+            autoOpen: false,
+            height: 240,
+            width: 300,
+            modal: true,
+            buttons: {
+                Save: function () {
+                    var bValid = true;
+                    if (bValid) {
+                        alert("Name: " + $("#yf_name").val());
+                        $(this).dialog("close");
+                    }
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                }
+            },
+            close: function () {
+                $("#dialog-form :text").val("").removeClass("ui-state-error");
+            }
         });
     });
 
