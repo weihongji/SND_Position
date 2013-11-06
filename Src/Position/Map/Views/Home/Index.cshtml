@@ -277,6 +277,7 @@
                 o.attr("pin_x", data.entity.X);
                 o.attr("pin_y", data.entity.Y);
                 o.attr("pin_type", data.entity.MonitorTypeId);
+                o.attr("title", data.title);
             }
             else {
                 alert("保存检测点时报错。内容：\n" + data.message);
@@ -312,6 +313,7 @@
                 o.attr("pin_x", data.entity.X);
                 o.attr("pin_y", data.entity.Y);
                 o.attr("pin_type", data.entity.MonitorTypeId);
+                o.attr("title", data.title);
                 $("#dialog-form").dialog("close");
             }
             else {

@@ -30,7 +30,13 @@ namespace Map.Controllers
             catch (Exception ex) {
                 error = ex.Message;
             }
-            return Json(new { success = string.IsNullOrEmpty(error), entity = point, message = error }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                success = string.IsNullOrEmpty(error),
+                entity = point,
+                title = point == null ? "" : point.ToString(),
+                message = error
+            }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult SaveMonitorPointPosition(int id, int left, int top, int typeId) {
@@ -45,7 +51,13 @@ namespace Map.Controllers
             catch (Exception ex) {
                 error = ex.Message;
             }
-            return Json(new { success = string.IsNullOrEmpty(error), entity = point, message = error }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                success = string.IsNullOrEmpty(error),
+                entity = point,
+                title = point == null ? "" : point.ToString(),
+                message = error
+            }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult DeleteMonitorPoint(int id) {
