@@ -5,42 +5,59 @@ using System.Web;
 using System.Web.Mvc;
 
 using Map.Models;
+using DataAccess.Models;
 
 namespace Map.Controllers
 {
     public class HomeController : Controller
     {
+        private DataAccess.Dao dao = new DataAccess.Dao();
         //
         // GET: /Home/
 
         public ActionResult Index() {
             var model = new MapMgmtModel();
-            model.FengYaList.Add(new FengYa {
-                Id = 101,
-                Name = "风压机01",
-                Power = (decimal)5.5,
-                X = 146,
-                Y = 333
-            });
-            model.FengYaList.Add(new FengYa {
-                Id = 102,
-                Name = "风压机02",
-                Power = (decimal)6.5,
-                X = 494,
-                Y = 237
-            });
-            model.FengYaList.Add(new FengYa {
-                Id = 103,
-                Name = "风压机03",
-                Power = (decimal)5.5,
-                X = 630,
-                Y = 199
-            });
+            model.MonitorList = dao.GetMonitorPoints(null);
             return View(model);
         }
 
-        public ActionResult GetPins() {
-            return Json(new FengYa(), JsonRequestBehavior.AllowGet);
+        public ActionResult SaveMonitorPoint(MonitorPoint point) {
+            int result = 0;
+            string error = string.Empty;
+            try {
+                result = dao.SaveMonitorPoint(point);
+            }
+            catch (Exception ex) {
+                error = ex.Message;
+            }
+            return Json(new { success = string.IsNullOrEmpty(error), entity = point, message = error }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SaveMonitorPointPosition(int id, int left, int top, int typeId) {
+            int result = 0;
+            string error = string.Empty;
+            MonitorPoint point = null;
+            try {
+                var monitorType = dao.GetMonitorType(typeId);
+                point = new MonitorPoint(id, left, top, typeId, monitorType);
+                result = dao.SaveMonitorPointPosition(point);
+            }
+            catch (Exception ex) {
+                error = ex.Message;
+            }
+            return Json(new { success = string.IsNullOrEmpty(error), entity = point, message = error }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult DeleteMonitorPoint(int id) {
+            int result = 0;
+            string error = string.Empty;
+            try {
+                result = dao.DeleteMonitorPoint(id);
+            }
+            catch (Exception ex) {
+                error = ex.Message;
+            }
+            return Json(new { success = result > 0, message = error }, JsonRequestBehavior.AllowGet);
         }
     }
 }

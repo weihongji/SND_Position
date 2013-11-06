@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -11,28 +12,25 @@ namespace DataAccess
 {
     public class Dao
     {
+        private static PositionContext context = new PositionContext();
+
         public List<Region> GetRegions() {
-            var context = new PositionContext();
             return context.Regions.ToList();
         }
 
         public List<Branch> GetBranches() {
-            var context = new PositionContext();
             return context.Branches.ToList();
         }
 
         public List<Receiver> GetReceivers() {
-            var context = new PositionContext();
             return context.Receivers.ToList();
         }
 
         public List<Position> GetPositions() {
-            var context = new PositionContext();
             return context.Positions.ToList();
         }
 
         public List<PeopleOverviewReportItem> GetPeopleOverviewReport() {
-            var context = new PositionContext();
             var query = context.Database.SqlQuery<PeopleOverviewReportItem>("spPeopleOverview");
             return query.ToList();
         }
@@ -84,7 +82,6 @@ namespace DataAccess
                 paramObjects.Add(new SqlParameter(p, workPlace == WorkPlace.Well));
             }
 
-            var context = new PositionContext();
             var query = context.Database.SqlQuery<PeopleSearchReportItem>("spPeopleSearch " + string.Join(", ", paramNames.ToArray()), paramObjects.ToArray());
             var list = query.ToList();
 
@@ -127,7 +124,6 @@ namespace DataAccess
                 paramObjects.Add(new SqlParameter(p, criteria.ReportForTime.Value));
             }
 
-            var context = new PositionContext();
             var query = context.Database.SqlQuery<PositionSearchReportItem>("spPositionSearch " + string.Join(", ", paramNames.ToArray()), paramObjects.ToArray());
             var list = query.ToList();
 
@@ -157,7 +153,6 @@ namespace DataAccess
                     throw new ArgumentException("Invalid search type for PeopleCountReport.");
             }
 
-            var context = new PositionContext();
             var sqlText = string.Format("{0} @forTime = {1}", sp, reportForTime == null ? "null" : "'" + reportForTime.Value.ToString("yyyyMMdd HH:mm:ss") + "'");
             var query = context.Database.SqlQuery<PeopleCountReportItem>(sqlText);
             var list = query.ToList();
@@ -206,7 +201,6 @@ namespace DataAccess
                 paramObjects.Add(new SqlParameter(p, criteria.EndAt.Value));
             }
 
-            var context = new PositionContext();
             var sp = "spQueryAlarmListCurrent";
             if (criteria.StartAt.HasValue && (DateTime.Now - criteria.StartAt.Value).Days > 0) { // Request a report of prior to today
                 sp = "spQueryAlarmList";
@@ -215,6 +209,71 @@ namespace DataAccess
             var list = query.ToList();
 
             return list;
+        }
+
+        public MonitorType GetMonitorType(int id) {
+            var type = context.MonitorTypes.Find(id);
+            if (type == null) {
+                throw new ArgumentException(string.Format("Cannot find monitor type with id {0}.", id));
+            }
+            return type;
+        }
+
+        public List<MonitorType> GetMonitorTypes() {
+            return context.MonitorTypes.ToList();
+        }
+
+        public List<MonitorPoint> GetMonitorPoints(MonitorType type) {
+            var query = context.MonitorPoints.Include(x => x.MonitorType);
+            if (type != null && type.Id > 0) {
+                query = query.Where(x => x.MonitorTypeId == type.Id);
+            }
+            return query.ToList();
+        }
+
+        public int SaveMonitorPoint(MonitorPoint entity) {
+            if (entity == null) {
+                return 0;
+            }
+            if (entity.Id > 0) {
+                var tracked = context.MonitorPoints.Find(entity.Id);
+                if (tracked == null) {
+                    return 0;
+                }
+                else {
+                    context.Entry(tracked).CurrentValues.SetValues(entity);
+                    entity = tracked;
+                }
+            }
+            else {
+                entity = context.MonitorPoints.Add(entity);
+            }
+            return context.SaveChanges();
+        }
+
+        public int DeleteMonitorPoint(int id) {
+            var tracked = context.MonitorPoints.Find(id);
+            if (tracked == null) {
+                throw new ArgumentException(string.Format("Cannot find monitor point with id {0}.", id));
+            }
+            context.MonitorPoints.Remove(tracked);
+            return context.SaveChanges();
+        }
+
+        public int SaveMonitorPointPosition(MonitorPoint point) {
+            if (point.Id == 0) {
+                var entity = new MonitorPoint {
+                    X = point.X,
+                    Y = point.Y
+                };
+                context.MonitorPoints.Add(point);
+            }
+            else {
+                var tracked = context.MonitorPoints.Find(point.Id);
+                tracked.X = point.X;
+                tracked.Y = point.Y;
+            }
+            return context.SaveChanges();
         }
     }
 }

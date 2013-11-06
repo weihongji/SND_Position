@@ -49,6 +49,10 @@
     <Compile Include="Models\AlarmReport.cs" />
     <Compile Include="Models\AlarmType.cs" />
     <Compile Include="Models\Branch.cs" />
+    <Compile Include="Models\MonitorType.cs" />
+    <Compile Include="Models\Mapping\MonitorTypeMap.cs" />
+    <Compile Include="Models\Mapping\MonitorPointMap.cs" />
+    <Compile Include="Models\MonitorPoint.cs" />
     <Compile Include="Models\CurrentAlarmReport.cs" />
     <Compile Include="Models\CurrentPositionReport.cs" />
     <Compile Include="Models\Department.cs" />

@@ -6,14 +6,12 @@ namespace DataAccess.Models
 {
     public partial class PositionContext : DbContext
     {
-        static PositionContext()
-        {
+        static PositionContext() {
             Database.SetInitializer<PositionContext>(null);
         }
 
         public PositionContext()
-            : base("Name=PositionContext")
-        {
+            : base("Name=PositionContext") {
         }
 
         public DbSet<AlarmReport> AlarmReports { get; set; }
@@ -23,6 +21,8 @@ namespace DataAccess.Models
         public DbSet<CurrentPositionReport> CurrentPositionReports { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Lamp> Lamps { get; set; }
+        public DbSet<MonitorPoint> MonitorPoints { get; set; }
+        public DbSet<MonitorType> MonitorTypes { get; set; }
         public DbSet<Person> People { get; set; }
         public DbSet<PeopleSender> PeopleSenders { get; set; }
         public DbSet<Position> Positions { get; set; }
@@ -35,8 +35,7 @@ namespace DataAccess.Models
         public DbSet<Sender> Senders { get; set; }
         public DbSet<WorkType> WorkTypes { get; set; }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
+        protected override void OnModelCreating(DbModelBuilder modelBuilder) {
             modelBuilder.Configurations.Add(new AlarmReportMap());
             modelBuilder.Configurations.Add(new AlarmTypeMap());
             modelBuilder.Configurations.Add(new BranchMap());
@@ -44,6 +43,8 @@ namespace DataAccess.Models
             modelBuilder.Configurations.Add(new CurrentPositionReportMap());
             modelBuilder.Configurations.Add(new DepartmentMap());
             modelBuilder.Configurations.Add(new LampMap());
+            modelBuilder.Configurations.Add(new MonitorPointMap());
+            modelBuilder.Configurations.Add(new MonitorTypeMap());
             modelBuilder.Configurations.Add(new PersonMap());
             modelBuilder.Configurations.Add(new PeopleSenderMap());
             modelBuilder.Configurations.Add(new PositionMap());

@@ -398,4 +398,36 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Cur
 		[Alarm_param2] ASC,
 		[Process_time] ASC
 	)
+
+END
+
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[MonitorType]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[MonitorType](
+		[Id] [int] NOT NULL CONSTRAINT [PK_MonitorType] PRIMARY KEY CLUSTERED,
+		[Name] [nvarchar](50) NOT NULL,
+		[Image] [varchar](50) NULL, /*Name of the image file*/
+		[OffsetX] [int] NOT NULL CONSTRAINT [DF_MonitorType_OffsetX] DEFAULT (0), /*Offset in pixel of the pointer to the Image position-left.*/
+		[OffsetY] [int] NOT NULL CONSTRAINT [DF_MonitorType_OffsetY] DEFAULT (0), /*Offset in pixel of the pointer to the Image position-top.*/
+	) ON [PRIMARY]
+END
+
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[MonitorPoint]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[MonitorPoint](
+		[Id] [int] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_MonitorPosition] PRIMARY KEY CLUSTERED,
+		[Name] [nvarchar](50) NOT NULL,
+		[Information] [nvarchar](100) NULL,
+		[X] [int] NOT NULL,
+		[Y] [int] NOT NULL,
+		[MonitorTypeId] [int] NOT NULL,
+		[AlarmUp] [decimal](10, 2) NULL,
+		[AlarmDown] [decimal](10, 2) NULL,
+		[RangeUp] [decimal](10, 2) NULL,
+		[RangeDown] [decimal](10, 2) NULL,
+		[Remark] [nvarchar](100) NULL,
+		[OriginalId] [int] NULL,
+		[DTStamp] [datetime] NOT NULL CONSTRAINT [DF_MonitorPosition_DTStamp]  DEFAULT (getdate()),
+	) ON [PRIMARY]
+
+	ALTER TABLE [dbo].[MonitorPoint]  WITH CHECK ADD  CONSTRAINT [FK_MonitorPoint_MonitorType] FOREIGN KEY([MonitorTypeId])
+	REFERENCES [dbo].[MonitorType] ([Id])
 END
