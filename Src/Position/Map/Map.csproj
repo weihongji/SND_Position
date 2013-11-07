@@ -169,6 +169,7 @@
     <Content Include="Images\Pins\pin-blue.png" />
     <Content Include="Images\Pins\pin-green.png" />
     <Content Include="Images\Pins\pin-red.png" />
+    <Content Include="Images\sunset.jpg" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.min.js" />
@@ -203,6 +204,9 @@
       <Project>{98763b5d-87fe-439a-ae7b-8d28069ebd6c}</Project>
       <Name>DataAccess</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\SunSet.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -71,5 +71,9 @@ namespace Map.Controllers
             }
             return Json(new { success = result > 0, message = error }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult SunSet() {
+            return View();
+        }
     }
 }
