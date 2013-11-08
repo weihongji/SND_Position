@@ -15,9 +15,9 @@
 <h2>SunSet</h2>
 <div id="divMine" style="position: relative; display: inline-block; border: 1px solid blue; width: 720px; height: 450px; margin: 40px; overflow: hidden;">
     <img id="imgMine" src="~/Images/sunset.jpg" style="display: inline;" />
-    <div id="divOverview" style="position: absolute; left: 0px; width: 216px; border: 1px solid black; display: inline-block;" class="extend">
+    <div id="divOverview" style="position: absolute; left: 0px; border: 1px solid black; display: inline-block;" class="extend">
         <div style="width: inherit; height: inherit; position: relative;">
-            <div id="divClose" style="display: inline-block; position: absolute; left: 202px; width: 10px; border: 1px solid white; padding-left: 2px; color: white; font-size: 20px; line-height: 5px; cursor: pointer;">-</div>
+            <div id="divCollapse" style="display: inline-block; position: absolute; left: 202px; width: 10px; border: 1px solid white; padding-left: 2px; color: white; font-size: 20px; line-height: 5px; cursor: pointer;">-</div>
             <div id="divZoom" style="display: inline-block; position: absolute; border: 1px solid white; cursor: move;"></div>
             <img id="imgOverview" src="~/Images/sunset.jpg" style="display: inline; width: inherit; height: inherit;" />
         </div>
@@ -38,8 +38,9 @@
         _map_height = $("#imgMine").height();
         _frame_width = $("#divMine").width();
         _frame_height = $("#divMine").height();
-        _overview_width = $("#divOverview").width();
         _overview_height = $("#divOverview").height();
+        _overview_width = _overview_height * _map_width / _map_height;
+        $("#divOverview").width(_overview_width);
         $("#divZoom").width(_overview_width * _frame_width / _map_width);
         $("#divZoom").height(_overview_height * _frame_height / _map_height);
 
@@ -60,7 +61,7 @@
             drag: setMap
         });
 
-        $("#divClose").click(function () {
+        $("#divCollapse").click(function () {
             $("#divOverview").toggleClass("collapse extend");
             if ($("#divOverview").hasClass("extend")) {
                 setZoom();
