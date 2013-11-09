@@ -41,7 +41,7 @@
             <legend>控制</legend>
             <label>
                 <input type="radio" name="rdoReportTime" id="rdoReportTimeInput" value="0" checked="checked" />指定时间：</label>
-            <input type="text" id="ReportTime" name="ReportTime" style="width: 120px;" />
+            <input type="text" id="ReportForTime" name="ReportForTime" style="width: 120px;" />
             <input type="button" value="example" onclick="sampleTime()" />
 
             <label>
@@ -64,12 +64,12 @@
     $(function () {
         $(":radio[name=rdoReportTime]").click(function () {
             if (this.value == "0") {
-                $("#ReportTime").attr("disabled", false).focus();
+                $("#ReportForTime").attr("disabled", false).focus();
                 $("#txtInterval").attr("disabled", true);
                 clearTimer();
             }
             else {
-                $("#ReportTime").attr("disabled", true);
+                $("#ReportForTime").attr("disabled", true);
                 $("#txtInterval").attr("disabled", false).focus();
                 if (isNaN(getInterval())) {
                     setTimer();
@@ -117,7 +117,7 @@
     }
 
     function sampleTime() {
-        $("#ReportTime").val("2013-08-14 10:00");
+        $("#ReportForTime").val("2013-08-14 10:00");
     }
 
     function formatDate(d) {

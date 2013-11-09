@@ -1,235 +1,124 @@
-﻿@model IEnumerable<PeopleSearchReportItem>
+﻿@model PeopleSearchModel
 
 @{
-	ViewBag.Title = "人员查询";
+    ViewBag.Title = "人员查询";
 }
 <style type="text/css">
-	table.grid {
-		border-collapse: collapse;
-	}
+    table.grid {
+        border-collapse: collapse;
+    }
 
-	table.grid td, table.grid th {
-		border: 1px solid #808080;
-		padding: 3px;
-	}
+        table.grid td, table.grid th {
+            border: 1px solid #808080;
+            padding: 3px;
+        }
 </style>
 
 <h2>@ViewBag.Title</h2>
-<fieldset style="padding:5px;">
-	<legend>查询条件</legend>
-	<div style="float:left;">
-		<fieldset>
-			<legend>主要属性</legend>
-			<table>
-				<tr>
-					<td><input type="checkbox" id="chkSenderId" /></td>
-					<td><label for="chkSenderId">发射器号</label></td>
-					<td><input type="text" id="txtSenderId" /></td>
-				</tr>
-				<tr>
-					<td><input type="checkbox" id="chkLampId" /></td>
-					<td><label for="chkLampId">矿灯号</label></td>
-					<td><input type="text" id="txtLampId" /></td>
-				</tr>
-				<tr>
-					<td><input type="checkbox" id="chkPeopleName" /></td>
-					<td><label for="chkPeopleName">姓名</label></td>
-					<td><input type="text" id="txtPeopleName" /></td>
-				</tr>
-				<tr>
-					<td><input type="checkbox" id="chkPeopleId" /></td>
-					<td><label for="chkPeopleId">工号</label></td>
-					<td><input type="text" id="txtPeopleId" /></td>
-				</tr>
-			</table>
-		</fieldset>
-		<fieldset style="margin-top:20px;">
-			<legend>时间</legend>
-			<table>
-				<tr>
-					<td>
-						<input type="radio" name="rdoTime" id="rdoTimeInput" checked="checked" />
-					</td>
-					<td>
-						<label for="rdoTimeInput">指定：</label>
-						<input type="text" id="txtReportTime" />
-						<input type="button" value="example" onclick="sampleTime()" />
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<input type="radio" name="rdoTime" id="rdoTimeServer" />
-					</td>
-					<td>
-						<label for="rdoTimeServer">当前时间</label>
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-	</div>
-	<fieldset style="float:left; margin-left:20px;">
-		<legend>部门</legend>
-		<select size="10" style="min-width:150px;" id="selDept">
-			<option value="">所有部门</option>
-			<option value="30">综采二队</option>
-		</select>
-	</fieldset>
-	<fieldset style="float:left; margin-left:20px;">
-		<legend>职务</legend>
-		<select size="10" style="min-width:150px;" id="selRank">
-			<option value="">所有职务</option>
-			<option value="46">三机检修工</option>
-		</select>
-	</fieldset>
-	<div style="clear:both"></div>
-	<fieldset style="margin-top:20px;">
-		<legend></legend>
-		<label><input type="radio" name="rdoWorkPlace" value="0" checked="checked" />在全部人员中查询</label>
-		<label><input type="radio" name="rdoWorkPlace" value="1" />在井下人员中查询</label>
-		<label><input type="radio" name="rdoWorkPlace" value="2" />在井上人员中查询</label>
-	</fieldset>
-	<div style="margin-top:20px; padding-left:100px;">
-		<input type="button" id="btnSearch" value="查询" style="width:80px;" />
-	</div>
-</fieldset>
+@using (Ajax.BeginForm("PeopleSearch", new AjaxOptions { UpdateTargetId = "reportGrid", InsertionMode = InsertionMode.Replace })) {
+    <fieldset style="padding: 5px;">
+        <legend>查询条件</legend>
+        <div style="float: left;">
+            <fieldset>
+                <legend>主要属性</legend>
+                <table>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="chkSenderId" /></td>
+                        <td>
+                            <label for="chkSenderId">发射器号</label></td>
+                        <td>
+                            <input type="text" name="SenderId" id="SenderId" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="chkLampId" /></td>
+                        <td>
+                            <label for="chkLampId">矿灯号</label></td>
+                        <td>
+                            <input type="text" name="LampId" id="LampId" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="chkPersonName" /></td>
+                        <td>
+                            <label for="chkPersonName">姓名</label></td>
+                        <td>
+                            <input type="text" name="PersonName" id="PersonName" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" id="chkPersonId" /></td>
+                        <td>
+                            <label for="chkPersonId">工号</label></td>
+                        <td>
+                            <input type="text" name="PersonId" id="PersonId" /></td>
+                    </tr>
+                </table>
+            </fieldset>
+            <fieldset style="margin-top: 20px;">
+                <legend>时间</legend>
+                <div>
+                    <label>
+                        <input type="radio" name="rdoReportTime" value="0" checked="checked" />指定：</label>
+                    <input type="text" name="ReportForTime" id="ReportForTime" />
+                    <input type="button" value="example" onclick="sampleTime()" />
+                </div>
+                <div>
+                    <label>
+                        <input type="radio" name="rdoReportTime" value="1" />当前时间</label>
+                </div>
+            </fieldset>
+        </div>
+        <fieldset style="float: left; margin-left: 20px;">
+            <legend>部门</legend>
+            @Html.ListBox("DeptId", Model.Departments)
+        </fieldset>
+        <fieldset style="float: left; margin-left: 20px;">
+            <legend>职务</legend>
+            @Html.ListBox("RankId", Model.Ranks)
+        </fieldset>
+        <div style="clear: both"></div>
+        <fieldset style="margin-top: 20px;">
+            <legend></legend>
+            <label>
+                <input type="radio" name="WorkPlace" value="0" checked="checked" />在全部人员中查询</label>
+            <label>
+                <input type="radio" name="WorkPlace" value="1" />在井下人员中查询</label>
+            <label>
+                <input type="radio" name="WorkPlace" value="2" />在井上人员中查询</label>
+        </fieldset>
+        <div style="margin-top: 20px; padding-left: 100px;">
+            <input type="submit" value="查询" style="width: 80px;" />
+        </div>
+    </fieldset>
+}
 
-<table class="grid" style="margin-top:20px;">
-	<tr>
-		<th>序号</th>
-		<th>发射器号</th>
-		<th>工号</th>
-		<th>姓名</th>
-		<th>性别</th>
-		<th>部门</th>
-		<th>工种</th>
-		<th>职务</th>
-		<th>当前位置编号</th>
-		<th>当前位置信息</th>
-	</tr>
-
-	@foreach (var item in Model) {
-	<tr>
-		<td>@Html.DisplayFor(modelItem => item.Index)</td>
-		<td>@Html.DisplayFor(modelItem => item.SenderId)</td>
-		<td>@Html.DisplayFor(modelItem => item.PeopleId)</td>
-		<td>@Html.DisplayFor(modelItem => item.PeopleName)</td>
-		<td>@Html.DisplayFor(modelItem => item.Gender)</td>
-		<td>@Html.DisplayFor(modelItem => item.DepartmentName)</td>
-		<td>@Html.DisplayFor(modelItem => item.WorkType)</td>
-		<td>@Html.DisplayFor(modelItem => item.Rank)</td>
-		<td>@Html.DisplayFor(modelItem => item.PositionId)</td>
-		<td>@Html.DisplayFor(modelItem => item.PositionName)</td>
-	</tr>
-	}
-</table>
+@Html.Partial("PeopleSearchList", Model)
 
 <script type="text/javascript">
-	$(function()
-	{
-		$("#txtReportTime").click(function () {
-			$("#rdoTimeInput").attr("checked", true);
-		});
-		$("#txtReportTime").datepicker($.datepicker.regional['zh-CN']);
-		$("#btnSearch").click(search);
-		InitSearchCriteria();
-	});
+    $(function () {
+        var fields = ["SenderId", "LampId", "PersonName", "PersonId"];
+        $.each(fields, function () {
+            var field = this;
+            $("#" + field).attr("disabled", true);
+            $("#chk" + field).click(function () {
+                $("#" + field).attr("disabled", !this.checked);
+                if (this.checked) {
+                    $("#" + field).focus();
+                }
+            });
+        });
 
-	function sampleTime() {
-		$("#txtReportTime").val("2013-08-14 10:00");
-		$("#rdoTimeInput").attr("checked", true);
-	}
+        $("#DeptId,#RankId").css("min-width", "150px").attr("size", 10);
 
-	function InitSearchCriteria() {
-		var names = [];
-		var values = [];
-		@{
-			var qsItems = new string[] {"SenderId", "LampId", "PeopleName", "PeopleId"};
-			foreach (var item in qsItems) {
-				WriteLiteral(string.Format("names.push(\"{0}\");", item));
-				var value = Request.QueryString[item];
-				if (value == null) {
-					value = "null";
-				}
-				WriteLiteral(string.Format("values.push(\"{0}\");", value));
-			}
-		}
-		for (var i = 0; i < names.length; i++) {
-			var name = names[i];
-			var item = values[i];
-			if (item == "null") {
-				$("#chk" + name).attr("checked", false);
-				$("#txt" + name).attr("disabled", true);
-			}
-			else {
-				$("#chk" + name).attr("checked", true);
-				$("#txt" + name).attr("disabled", false).val(item);
-			}
-		}
+        $(":radio[name=rdoReportTime]").click(function () {
+            $("#ReportForTime").attr("disabled", this.value == "1");
+        });
+        $(":radio[name=rdoReportTime]").first().click();
+    });
 
-		var item = "@Request.QueryString["ReportTime"]";
-		$("#txtReportTime").val(item);
-		$("#rdoTimeServer").attr("checked", "@Request.QueryString["UserServerTime"]" == "1");
-
-		item = "@Request.QueryString["DeptId"]";
-		$("#selDept").val(item);
-
-		item = "@Request.QueryString["RankId"]";
-		$("#selRank").val(item);
-
-		item = "@Request.QueryString["WorkPlace"]";
-		$("input[name=rdoWorkPlace][value=" + item + "]").attr("checked", true);
-	}
-
-	$("#chkSenderId").click(function () {
-		$("#txtSenderId").attr("disabled", !this.checked);
-		if (this.checked) {
-			$("#txtSenderId").focus();
-		}
-	});
-
-	$("#chkLampId").click(function () {
-		$("#txtLampId").attr("disabled", !this.checked);
-		if (this.checked) {
-			$("#txtLampId").focus();
-		}
-	});
-
-	$("#chkPeopleName").click(function () {
-		$("#txtPeopleName").attr("disabled", !this.checked);
-		if (this.checked) {
-			$("#txtPeopleName").focus();
-		}
-	});
-
-	$("#chkPeopleId").click(function () {
-		$("#txtPeopleId").attr("disabled", !this.checked);
-		if (this.checked) {
-			$("#txtPeopleId").focus();
-		}
-	});
-
-	function search() {
-		var qs = "";
-		if ($("#chkSenderId")[0].checked) {
-			qs += "&SenderId=" + $("#txtSenderId").val();
-		}
-		if ($("#chkLampId")[0].checked) {
-			qs += "&LampId=" + $("#txtLampId").val();
-		}
-		if ($("#chkPeopleName")[0].checked) {
-			qs += "&PeopleName=" + $("#txtPeopleName").val();
-		}
-		if ($("#chkPeopleId")[0].checked) {
-			qs += "&PeopleId=" + $("#txtPeopleId").val();
-		}
-		qs += "&DeptId=" + $("#selDept").val();
-		qs += "&RankId=" + $("#selRank").val();
-		qs += "&UserServerTime=" + ($("#rdoTimeServer")[0].checked ? "1" : "0");
-		qs += "&ReportTime=" + $("#txtReportTime").val();
-		qs += "&WorkPlace=" + $("input[name=rdoWorkPlace]:checked").val();
-		if (qs.length > 0) {
-			qs = "?" + qs.substring(1);
-		}
-		location.href = "@Url.RouteUrl(ViewContext.RouteData.Values)" + qs;
-	}
+    function sampleTime() {
+        $("#ReportForTime").val("2013-08-14 10:00");
+    }
 </script>

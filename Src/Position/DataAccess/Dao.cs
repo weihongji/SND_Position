@@ -22,6 +22,14 @@ namespace DataAccess
             return context.Regions.ToList();
         }
 
+        public List<Department> GetDepartments() {
+            return context.Departments.ToList();
+        }
+
+        public List<Rank> GetRanks() {
+            return context.Ranks.ToList();
+        }
+
         public List<Branch> GetBranches() {
             return context.Branches.ToList();
         }
@@ -39,51 +47,51 @@ namespace DataAccess
             return query.ToList();
         }
 
-        public List<PeopleSearchReportItem> GetPeopleSearchReport(int? senderId, string lampId, string peopleName, int? peopleId, int? deptId, int? rankId, DateTime? reportForTime, WorkPlace workPlace) {
+        public List<PeopleSearchReportItem> GetPeopleSearchReport(PeopleSearchCriteria criteria) {
             var paramNames = new List<string>();
             var paramObjects = new List<SqlParameter>();
             int i = 0;
             string p;
 
-            if (senderId.HasValue) {
+            if (criteria.SenderId.HasValue) {
                 p = "@p" + i++.ToString();
                 paramNames.Add("@senderId = " + p);
-                paramObjects.Add(new SqlParameter(p, senderId.Value));
+                paramObjects.Add(new SqlParameter(p, criteria.SenderId.Value));
             }
-            if (!string.IsNullOrEmpty(lampId)) {
+            if (!string.IsNullOrEmpty(criteria.LampId)) {
                 p = "@p" + i++.ToString();
                 paramNames.Add("@lampId = " + p);
-                paramObjects.Add(new SqlParameter(p, lampId));
+                paramObjects.Add(new SqlParameter(p, criteria.LampId));
             }
-            if (!string.IsNullOrEmpty(peopleName)) {
+            if (!string.IsNullOrEmpty(criteria.PersonName)) {
                 p = "@p" + i++.ToString();
                 paramNames.Add("@peopleName = " + p);
-                paramObjects.Add(new SqlParameter(p, peopleName));
+                paramObjects.Add(new SqlParameter(p, criteria.PersonName));
             }
-            if (peopleId.HasValue) {
+            if (criteria.PersonId.HasValue) {
                 p = "@p" + i++.ToString();
                 paramNames.Add("@peopleId = " + p);
-                paramObjects.Add(new SqlParameter(p, peopleId.Value));
+                paramObjects.Add(new SqlParameter(p, criteria.PersonId));
             }
-            if (deptId.HasValue) {
+            if (criteria.DeptId.HasValue) {
                 p = "@p" + i++.ToString();
                 paramNames.Add("@deptId = " + p);
-                paramObjects.Add(new SqlParameter(p, deptId.Value));
+                paramObjects.Add(new SqlParameter(p, criteria.DeptId.Value));
             }
-            if (rankId.HasValue) {
+            if (criteria.RankId.HasValue) {
                 p = "@p" + i++.ToString();
                 paramNames.Add("@rankId = " + p);
-                paramObjects.Add(new SqlParameter(p, rankId.Value));
+                paramObjects.Add(new SqlParameter(p, criteria.RankId.Value));
             }
-            if (reportForTime.HasValue) {
+            if (criteria.ReportForTime.HasValue) {
                 p = "@p" + i++.ToString();
                 paramNames.Add("@forTime = " + p);
-                paramObjects.Add(new SqlParameter(p, reportForTime.Value));
+                paramObjects.Add(new SqlParameter(p, criteria.ReportForTime.Value));
             }
-            if (workPlace != WorkPlace.Any) {
+            if (criteria.WorkPlace != WorkPlace.Any) {
                 p = "@p" + i++.ToString();
                 paramNames.Add("@isInWell = " + p);
-                paramObjects.Add(new SqlParameter(p, workPlace == WorkPlace.Well));
+                paramObjects.Add(new SqlParameter(p, criteria.WorkPlace == WorkPlace.Well));
             }
 
             var query = context.Database.SqlQuery<PeopleSearchReportItem>("spPeopleSearch " + string.Join(", ", paramNames.ToArray()), paramObjects.ToArray());

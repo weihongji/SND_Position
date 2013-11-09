@@ -29,55 +29,49 @@ namespace Web.Controllers
 
         }
 
-        public ActionResult PeopleSearch(string SenderId, string LampId, string PeopleName, string PeopleId, string DeptId, string RankId, string UserServerTime, string ReportTime, string WorkPlace) {
-            if (Request.QueryString.Count == 0) {
-                return View(new List<PeopleSearchReportItem>());
+        public ActionResult PeopleSearch(int? SenderId, string LampId, string PersonName, int? PersonId, int? DeptId, int? RankId, DateTime? ReportForTime, WorkPlace? WorkPlace) {
+            var model = new PeopleSearchModel();
+            if (Request.Form.Count == 0) {
+                PopulatePeopleSearchListItems(model);
+                return View(model);
             }
 
-            int tmpInt;
-            DateTime tmpTime;
-
-            int? senderId = null;
-            int? peopleId = null;
-            int? deptId = null;
-            int? rankId = null;
-            DateTime? reportForTime = null;
-            WorkPlace workPlace = DataAccess.Models.WorkPlace.Any;
-
-            if (int.TryParse(SenderId, out tmpInt)) {
-                senderId = tmpInt;
+            var criteria = new PeopleSearchCriteria {
+                SenderId = SenderId,
+                LampId = LampId,
+                PersonName = PersonName,
+                PersonId = PersonId,
+                DeptId = DeptId,
+                RankId = RankId,
+                ReportForTime = ReportForTime,
+                WorkPlace = WorkPlace.Value
+            };
+            var list = _dao.GetPeopleSearchReport(criteria);
+            model.ReportItems = list;
+            if (Request.IsAjaxRequest()) {
+                return PartialView("PeopleSearchList", model);
             }
-            if (int.TryParse(PeopleId, out tmpInt)) {
-                peopleId = tmpInt;
+            else {
+                PopulatePeopleSearchListItems(model);
             }
-            if (int.TryParse(DeptId, out tmpInt)) {
-                deptId = tmpInt;
-            }
-            if (int.TryParse(RankId, out tmpInt)) {
-                rankId = tmpInt;
-            }
-            if (UserServerTime != "1") {
-                if (DateTime.TryParse(ReportTime, out tmpTime)) {
-                    reportForTime = tmpTime;
-                }
-            }
-            if (!Enum.TryParse<WorkPlace>(WorkPlace, out workPlace)) {
-                workPlace = DataAccess.Models.WorkPlace.Any;
-            }
-
-            var dao = new Dao();
-            var list = dao.GetPeopleSearchReport(senderId, LampId, PeopleName, peopleId, deptId, rankId, reportForTime, workPlace);
-            return View(list);
+            return View(model);
         }
 
-        public ActionResult PositionSearch(int? SearchType, int? TypeId, DateTime? ReportTime) {
+        private void PopulatePeopleSearchListItems(PeopleSearchModel model) {
+            model.Departments = ControlHelper.GetListItems(_dao.GetDepartments());
+            model.Departments.Insert(0, new SelectListItem() { Value = "", Text = "所有部门", Selected = true });
+            model.Ranks = ControlHelper.GetListItems(_dao.GetRanks());
+            model.Ranks.Insert(0, new SelectListItem() { Value = "", Text = "所有职务", Selected = true });
+        }
+
+        public ActionResult PositionSearch(int? SearchType, int? TypeId, DateTime? ReportForTime) {
             var model = new PositionSearchModel();
             if (Request.Form.Count == 0) {
                 PopulatePositionSearchListItems(model);
                 return View(model);
             }
 
-            var criteria = new PositionSearchCriteria() { ReportForTime = ReportTime };
+            var criteria = new PositionSearchCriteria() { ReportForTime = ReportForTime };
             if (TypeId.HasValue) {
                 var searchType = (PositionSearchType)SearchType.Value;
                 switch (searchType) {
@@ -116,13 +110,13 @@ namespace Web.Controllers
             model.Positions = ControlHelper.GetListItems(_dao.GetPositions());
         }
 
-        public ActionResult PeopleCount(int? SearchType, DateTime? ReportTime) {
+        public ActionResult PeopleCount(int? SearchType, DateTime? ReportForTime) {
             var model = new PeopleCountModel();
             if (SearchType == null) {
                 return View(model);
             }
             model.SearchType = (PeopleCountSearchType)SearchType.Value;
-            model.ReportItems = _dao.GetPeopleCountReport((PeopleCountSearchType)SearchType.Value, ReportTime);
+            model.ReportItems = _dao.GetPeopleCountReport((PeopleCountSearchType)SearchType.Value, ReportForTime);
             if (Request.IsAjaxRequest()) {
                 return PartialView("PeopleCountList", model);
             }

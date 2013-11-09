@@ -88,6 +88,7 @@
     <Compile Include="Models\RegionPositionSet.cs" />
     <Compile Include="Models\Report\AlarmReportItem.cs" />
     <Compile Include="Models\Report\AlarmReportCriteria.cs" />
+    <Compile Include="Models\Report\PeopleSearchCriteria.cs" />
     <Compile Include="Models\Report\PeopleCountReportItem.cs" />
     <Compile Include="Models\Report\PositionSearchCriteria.cs" />
     <Compile Include="Models\Report\PositionSearchReportItem.cs" />

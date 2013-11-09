@@ -124,6 +124,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AlarmSearchModel.cs" />
+    <Compile Include="Models\PeopleSearchModel.cs" />
     <Compile Include="Models\PeopleCountModel.cs" />
     <Compile Include="Models\PositionSearchModel.cs" />
     <Compile Include="Models\Enum.cs" />
@@ -229,6 +230,7 @@
     <Content Include="Views\Report\PeopleCountList.cshtml" />
     <Content Include="Views\Report\AlarmSearchList.cshtml" />
     <Content Include="Views\Report\AlarmSearch.cshtml" />
+    <Content Include="Views\Report\PeopleSearchList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

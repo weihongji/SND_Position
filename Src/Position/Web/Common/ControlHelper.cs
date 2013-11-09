@@ -24,7 +24,13 @@ namespace Web
                 return string.Empty;
             }
 
-            if (o is Region) {
+            if (o is Department) {
+                return (o as Department).Dept_name;
+            }
+            else if (o is Rank) {
+                return (o as Rank).Rank_name;
+            }
+            else if (o is Region) {
                 return (o as Region).Region_name;
             }
             else if (o is Branch) {
@@ -46,7 +52,13 @@ namespace Web
                 return string.Empty;
             }
 
-            if (o is Region) {
+            if (o is Department) {
+                return (o as Department).Dept_id.ToString();
+            }
+            else if (o is Rank) {
+                return (o as Rank).Rank_id.ToString();
+            }
+            else if (o is Region) {
                 return (o as Region).Region_id.ToString();
             }
             else if (o is Branch) {
