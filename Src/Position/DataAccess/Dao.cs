@@ -12,7 +12,11 @@ namespace DataAccess
 {
     public class Dao
     {
-        private static PositionContext context = new PositionContext();
+        private PositionContext context;
+
+        public Dao() {
+            context = new PositionContext();
+        }
 
         public List<Region> GetRegions() {
             return context.Regions.ToList();
