@@ -13,9 +13,19 @@ namespace DataAccess
     public class Dao
     {
         private PositionContext context;
+        private DataAccess.Models.Map _settingMap_hard_to_remember;
 
         public Dao() {
             context = new PositionContext();
+        }
+
+        private DataAccess.Models.Map SettingMap {
+            get {
+                if (_settingMap_hard_to_remember == null) {
+                    _settingMap_hard_to_remember = context.Maps.Where(x => x.Scale == (int)MapScale.Small).First();
+                }
+                return _settingMap_hard_to_remember;
+            }
         }
 
         public List<Region> GetRegions() {
@@ -252,13 +262,17 @@ namespace DataAccess
             if (type != null && type.Id > 0) {
                 query = query.Where(x => x.MonitorTypeId == type.Id);
             }
-            return query.ToList();
+            var list = query.ToList();
+            list.ForEach(x => ConvertMonitorPointPosition(x, true));
+            return list;
         }
 
         public int SaveMonitorPoint(MonitorPoint entity) {
             if (entity == null) {
                 return 0;
             }
+            ConvertMonitorPointPosition(entity, false);
+
             if (entity.Id > 0) {
                 var tracked = context.MonitorPoints.Find(entity.Id);
                 if (tracked == null) {
@@ -285,19 +299,34 @@ namespace DataAccess
         }
 
         public int SaveMonitorPointPosition(MonitorPoint point) {
+            ConvertMonitorPointPosition(point, false);
             if (point.Id == 0) {
                 var entity = new MonitorPoint {
-                    X = point.X,
-                    Y = point.Y
+                    OffsetX = point.OffsetX,
+                    OffsetY = point.OffsetY
                 };
                 context.MonitorPoints.Add(point);
             }
             else {
                 var tracked = context.MonitorPoints.Find(point.Id);
-                tracked.X = point.X;
-                tracked.Y = point.Y;
+                tracked.OffsetX = point.OffsetX;
+                tracked.OffsetY = point.OffsetY;
             }
             return context.SaveChanges();
+        }
+
+        private void ConvertMonitorPointPosition(MonitorPoint point, bool OffsetToPosition) {
+            if (point == null) {
+                return;
+            }
+            if (OffsetToPosition) {
+                point.X = point.OffsetX + SettingMap.StartX;
+                point.Y = point.OffsetY + SettingMap.StartY;
+            }
+            else {
+                point.OffsetX = point.X - SettingMap.StartX;
+                point.OffsetY = point.Y - SettingMap.StartY;
+            }
         }
     }
 }

@@ -161,6 +161,7 @@
     <Content Include="Content\themes\ui-lightness\jquery-ui-1.10.3.custom.min.css" />
     <Content Include="Global.asax" />
     <Content Include="Images\Mine.gif" />
+    <Content Include="Images\Transparent.png" />
     <Content Include="Images\Pins\ball-blue.png" />
     <Content Include="Images\Pins\ball-green.png" />
     <Content Include="Images\Pins\ball-red.png" />

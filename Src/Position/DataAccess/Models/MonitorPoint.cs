@@ -8,6 +8,8 @@ namespace DataAccess.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Information { get; set; }
+        public int OffsetX { get; set; }
+        public int OffsetY { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public int MonitorTypeId { get; set; }

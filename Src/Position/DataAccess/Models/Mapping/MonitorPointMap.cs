@@ -6,6 +6,10 @@ namespace DataAccess.Models.Mapping
     public class MonitorPointMap : EntityTypeConfiguration<MonitorPoint>
     {
         public MonitorPointMap() {
+            // Ignores
+            this.Ignore(t => t.X);
+            this.Ignore(t => t.Y);
+
             // Primary Key
             this.HasKey(t => t.Id);
 
@@ -22,8 +26,8 @@ namespace DataAccess.Models.Mapping
             this.Property(t => t.Id).HasColumnName("Id");
             this.Property(t => t.Name).HasColumnName("Name");
             this.Property(t => t.Information).HasColumnName("Information").HasMaxLength(100);
-            this.Property(t => t.X).HasColumnName("X");
-            this.Property(t => t.Y).HasColumnName("Y");
+            this.Property(t => t.OffsetX).HasColumnName("OffsetX");
+            this.Property(t => t.OffsetY).HasColumnName("OffsetY");
             this.Property(t => t.MonitorTypeId).HasColumnName("MonitorTypeId");
             this.Property(t => t.AlarmUp).HasColumnName("AlarmUp");
             this.Property(t => t.AlarmDown).HasColumnName("AlarmDown");

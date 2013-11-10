@@ -3,22 +3,30 @@
 }
 <style type="text/css">
     #divOverview.collapse {
-        top: 440px;
         height: 10px;
     }
 
+        #divOverview.collapse #divZoom {
+            visibility: hidden;
+        }
+
     #divOverview.extend {
-        top: 315px;
         height: 135px;
     }
+
+        #divOverview.extend #divZoom {
+            visibility: visible;
+        }
 </style>
 <h2>SunSet</h2>
 <div id="divMine" style="position: relative; display: inline-block; border: 1px solid blue; width: 720px; height: 450px; margin: 40px; overflow: hidden;">
-    <img id="imgMine" src="~/Images/sunset.jpg" style="display: inline;" />
-    <div id="divOverview" style="position: absolute; left: 0px; border: 1px solid black; display: inline-block; z-index: 1000;" class="extend">
+    <img id="imgMine" src="~/Images/sunset.jpg" />
+    <div id="divOverview" style="position: absolute; left: 0px; bottom: 0px; border: 1px solid black; display: inline-block; z-index: 1000;" class="extend">
         <div style="width: inherit; height: inherit; position: relative;">
             <div id="divCollapse" style="display: inline-block; position: absolute; width: 10px; border: 1px solid white; padding-left: 2px; color: white; font-size: 20px; line-height: 5px; cursor: pointer; z-index: 1001;">-</div>
-            <div id="divZoom" style="display: inline-block; position: absolute; border: 1px solid white; cursor: move;"></div>
+            <div id="divZoom" style="display: inline-block; position: absolute; border: 1px solid white; cursor: move;">
+                <img draggable="false" src="~/Images/Transparent.png" style="display: inline; width: inherit; height: inherit;" />
+            </div>
             <img id="imgOverview" draggable="false" src="~/Images/sunset.jpg" style="display: inline; width: inherit; height: inherit;" />
         </div>
     </div>

@@ -63,7 +63,7 @@
             <img pin_type="2" id="imgPinRed" style="position: absolute; left: 1027px; top: 63px;" src="~/Images/Pins/pin-red.png" />
             <img pin_type="3" id="imgPinGreen" style="position: absolute; left: 1028px; top: 126px;" src="~/Images/Pins/pin-green.png" />
         </div>
-        <div id="divPinLoad">
+        <div id="divPinLocated">
             @foreach (var pin in Model.MonitorList) {
                 <img id="pin_@(pin.Id)" pinned="1" title="@pin.ToString()"
                     pin_id="@pin.Id"
@@ -185,14 +185,13 @@
             });
 
         //Pin Draggable
-        $("#divPinPanel>img").add("#divPinLoad>img").each(function () {
+        $("#divPinPanel>img").add("#divPinLocated>img").each(function () {
             makeItDraggable(this);
         });
 
         //Debug Console
         $("#btnClearConsole").click(function () {
-            $("#divMine img[pinned]").remove();
-            $("#divConsole").html("");
+            location.reload(true);
         });
 
         //Edit Dialog
@@ -232,7 +231,7 @@
             stop: function () {
                 if (!$(this).draggable("option", "revert")) {
                     if (!$(this).attr("pinned")) {
-                        $(this).removeAttr("id").attr("pinned", 1);
+                        $(this).removeAttr("id").attr("pinned", 1).appendTo($("#divPinLocated"));
                         $(_pinOnSeat).appendTo($("#divPinPanel"));
                         makeItDraggable($(_pinOnSeat));
                     }
