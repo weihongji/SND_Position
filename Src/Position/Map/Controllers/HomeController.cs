@@ -17,6 +17,7 @@ namespace Map.Controllers
 
         public ActionResult Index() {
             var model = new MapMgmtModel();
+            model.Map = dao.GetMap(MapScale.Small);
             model.MonitorList = dao.GetMonitorPoints(null);
             return View(model);
         }

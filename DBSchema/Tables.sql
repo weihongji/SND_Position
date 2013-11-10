@@ -431,3 +431,18 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Mon
 	ALTER TABLE [dbo].[MonitorPoint]  WITH CHECK ADD  CONSTRAINT [FK_MonitorPoint_MonitorType] FOREIGN KEY([MonitorTypeId])
 	REFERENCES [dbo].[MonitorType] ([Id])
 END
+
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Map]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[Map](
+		[Id] [int] IDENTITY(1, 1) NOT NULL,
+		[Name] [nvarchar](50) NOT NULL,
+		[StartX] [int] NOT NULL,
+		[StartY] [int] NOT NULL,
+		[Scale] [int] NOT NULL CONSTRAINT [DF_Map_Scale] DEFAULT (0),
+		[DTStamp] [smalldatetime] NOT NULL CONSTRAINT [DF_Map_DTStamp] DEFAULT (getdate()),
+		CONSTRAINT [PK_Map] PRIMARY KEY CLUSTERED 
+		(
+			[Id] ASC
+		)
+	) ON [PRIMARY]
+END

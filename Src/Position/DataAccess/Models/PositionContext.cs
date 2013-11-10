@@ -21,6 +21,7 @@ namespace DataAccess.Models
         public DbSet<CurrentPositionReport> CurrentPositionReports { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Lamp> Lamps { get; set; }
+        public DbSet<Map> Maps { get; set; }
         public DbSet<MonitorPoint> MonitorPoints { get; set; }
         public DbSet<MonitorType> MonitorTypes { get; set; }
         public DbSet<Person> People { get; set; }
@@ -43,6 +44,7 @@ namespace DataAccess.Models
             modelBuilder.Configurations.Add(new CurrentPositionReportMap());
             modelBuilder.Configurations.Add(new DepartmentMap());
             modelBuilder.Configurations.Add(new LampMap());
+            modelBuilder.Configurations.Add(new MapMap());
             modelBuilder.Configurations.Add(new MonitorPointMap());
             modelBuilder.Configurations.Add(new MonitorTypeMap());
             modelBuilder.Configurations.Add(new PersonMap());

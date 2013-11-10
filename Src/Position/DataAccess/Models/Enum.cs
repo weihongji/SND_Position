@@ -20,4 +20,11 @@ namespace DataAccess.Models
         WorkType = 3,
         Rank = 4
     }
+
+    public enum MapScale
+    {
+        Small = 1,
+        Medim = 2,
+        Large = 3
+    }
 }

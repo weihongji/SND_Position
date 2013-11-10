@@ -42,6 +42,18 @@ namespace DataAccess
             return context.Positions.ToList();
         }
 
+        public List<Map> GetMaps() {
+            return context.Maps.ToList();
+        }
+
+        public Map GetMap(MapScale scale) {
+            var map = context.Maps.Where(x => x.Scale == (int)scale).FirstOrDefault();
+            if (map == null) {
+                throw new ArgumentException(string.Format("Cannot find map of scale {0}.", scale));
+            }
+            return map;
+        }
+
         public List<PeopleOverviewReportItem> GetPeopleOverviewReport() {
             var query = context.Database.SqlQuery<PeopleOverviewReportItem>("spPeopleOverview");
             return query.ToList();

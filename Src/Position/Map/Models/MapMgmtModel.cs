@@ -8,6 +8,7 @@ namespace Map.Models
 {
     public class MapMgmtModel
     {
+        public DataAccess.Models.Map Map { get; set; }
         public List<MonitorPoint> MonitorList { get; set; }
 
         public MapMgmtModel() {
