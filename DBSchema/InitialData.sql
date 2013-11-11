@@ -10,11 +10,11 @@ END
 
 IF NOT EXISTS(SELECT * FROM MonitorType) BEGIN
 	INSERT INTO MonitorType ([Id], [Name], [Image], [OffsetX], [OffsetY])
-	VALUES (1, '风压检测', 'pin-blue.png', 0, 60)
+	VALUES (1, N'风压检测', 'pin-blue.png', 0, 60)
 
 	INSERT INTO MonitorType ([Id], [Name], [Image], [OffsetX], [OffsetY])
-	VALUES (2, '瓦斯检测', 'pin-red.png', 0, 60)
+	VALUES (2, N'瓦斯检测', 'pin-red.png', 0, 60)
 
 	INSERT INTO MonitorType ([Id], [Name], [Image], [OffsetX], [OffsetY])
-	VALUES (3, '水压检测', 'pin-green.png', 0, 60)
+	VALUES (3, N'水压检测', 'pin-green.png', 0, 60)
 END
