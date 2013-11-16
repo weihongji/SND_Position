@@ -380,19 +380,17 @@ namespace DataAccess
 
         public List<CurrentPositionReport> GetExternalCurrentPositionReportsFrom(DateTime lastTime) {
             var context = new PositionContext(DBSource.External);
-            var query = context.Database.SqlQuery<CurrentPositionReport>("SELECT * FROM CurrentPositionReport WHERE Report_time>'" + lastTime.ToString("yyyyMMdd HH:mm:ss") + "'");
+            var query = context.Database.SqlQuery<CurrentPositionReport>(string.Format("SELECT * FROM CurrentPositionReport WHERE Report_time>'{0}'", lastTime.ToString("yyyyMMdd HH:mm:ss")));
             var list = query.ToList();
             return list;
         }
 
         public List<PositionReport> GetExternalPositionReportsFrom(DateTime lastTime, int maxRows = 0) {
             var context = new PositionContext(DBSource.External);
-            if (maxRows > 0) {
-                return context.PositionReports.Where(x => x.Report_time > lastTime).OrderBy(x => x.Report_time).Take(maxRows).ToList();
-            }
-            else {
-                return context.PositionReports.Where(x => x.Report_time > lastTime).ToList();
-            }
+            var top = maxRows > 0 ? string.Format("TOP {0}", maxRows) : "";
+            var query = string.Format("SELECT {0} * FROM PositionReport WHERE Report_time>'{1}'", top, lastTime.ToString("yyyyMMdd HH:mm:ss"));
+            var list = context.Database.SqlQuery<PositionReport>(query).ToList();
+            return list;
         }
         #endregion
 
