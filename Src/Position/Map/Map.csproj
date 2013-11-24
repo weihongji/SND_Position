@@ -160,6 +160,9 @@
     <Content Include="Content\themes\ui-lightness\jquery-ui-1.10.3.custom.css" />
     <Content Include="Content\themes\ui-lightness\jquery-ui-1.10.3.custom.min.css" />
     <Content Include="Global.asax" />
+    <Content Include="Images\dot-blue.png" />
+    <Content Include="Images\dot-green.png" />
+    <Content Include="Images\dot-red.png" />
     <Content Include="Images\Mine.gif" />
     <Content Include="Images\Transparent.png" />
     <Content Include="Images\Pins\ball-blue.png" />

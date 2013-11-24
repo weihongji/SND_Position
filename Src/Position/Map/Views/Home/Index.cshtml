@@ -129,6 +129,7 @@
                 </div>
                 <img id="imgOverview" draggable="false" src="~/Images/@(Model.Map.Name)" style="display: inline; width: inherit; height: inherit;" />
             </div>
+            <div id="divOverviewPins"></div>
         </div>
     </div>
 </div>
@@ -140,17 +141,22 @@
     var _pinOnSeat;
     var _clickedPin;
     var _maxPinIndex = 0;
+    var _pin_count = 3;
 
     // sizes
     var _pin_width, _pin_height;
     var _map_width, _map_height;
     var _frame_width, _frame_height;
     var _overview_width, _overview_height;
+    var _overview_border_width = 1;
 
     // flags
+    var _isMapDraggable;
     var _hidePinPanelForDrag = false;
 
-    $(function () {
+    $(window).bind("load", function () {
+        _pin_width = $("#imgPinBlue").width();
+        _pin_height = $("#imgPinBlue").height();
         _map_width = $("#divMap").width();
         _map_height = $("#divMap").height();
         _frame_width = $("#divFrame").width();
@@ -164,7 +170,8 @@
         $("#divMagnifier").width(_overview_width * _frame_width / _map_width);
         $("#divMagnifier").height(_overview_height * _frame_height / _map_height).css("display", "inline-block");
 
-        if (isDraggable()) {
+        _isMapDraggable = isDraggable();
+        if (_isMapDraggable) {
             $("#divMap").css("cursor", (navigator.userAgent.toString().indexOf("WebKit") > 0 ? "-webkit-grab" : "move"));
 
             var offset = $("#divMap").offset();
@@ -276,6 +283,8 @@
                 $("#btnPinPanel").html("隐藏面板");
             }
         });
+
+        updatePinsInOverview();
     });
 
     function makeItDraggable(o) {
@@ -298,6 +307,7 @@
                         makeItDraggable($(_pinOnSeat));
                     }
                     savePosition(this);
+                    updatePinsInOverview();
                 }
                 logPosition(this);
             }
@@ -305,17 +315,37 @@
     }
 
     function isInBoundary(pinImage) {
-        //For efficience reson, we are calculating the pin's position ourself in this function.
+        // frame boundary
+        var padding = 10;
+        var edgeX1 = padding;
+        var edgeX2 = (_isMapDraggable ? _frame_width : _map_width) - padding;
+        var edgeY1 = padding;
+        var edgeY2 = (_isMapDraggable ? _frame_height : _map_height) - padding;
+        var panelX2 = _pin_width;
+        var panelY2 = _pin_height * _pin_count;
+
+        // pin's position
         var o = $(pinImage);
         var x = parseInt(o.css("left"));
-        var padding = 10;
-        if (!isNaN(x) && padding < x && x < _map_width - padding) {
+        if (isNaN(x)) {
+            return false;
+        }
+        if (_isMapDraggable) {
+            x += safeParseInt($("#divMap").css("left"));
+        }
+        if (edgeX1 < x && x < edgeX2) {
             var y = parseInt(o.css("top"));
-            if (!isNaN(y)) {
-                y += o.height();
-                if (padding < y && y < _map_height - padding) {
-                    return true;
+            if (isNaN(y)) {
+                return false;
+            }
+            if (_isMapDraggable) {
+                y += o.height() + safeParseInt($("#divMap").css("top"));
+            }
+            if (edgeY1 < y && y < edgeY2) {
+                if (x < panelX2 && y < panelY2) { // In the pin panel area
+                    return false;
                 }
+                return true;
             }
         }
         return false;
@@ -436,6 +466,20 @@
         $("#divMap").css("left", left + "px");
         var top = _map_height * parseInt($("#divMagnifier").css("top")) / _overview_height * (-1);
         $("#divMap").css("top", top + "px");
+    }
+
+    function updatePinsInOverview() {
+        var wr = (_overview_width - _overview_border_width * 2) / _map_width;
+        var hr = (_overview_height - _overview_border_width * 2) / _map_height;
+        var dots = ["", "dot-blue.png", "dot-red.png", "dot-green.png"];
+        $("#divOverviewPins").html("");
+        $("#divPinLocated>img").each(function () {
+            var pin = $(this);
+            var type = parseInt(pin.attr("pin_type"));
+            var left = parseInt(pin.css("left")) * wr;
+            var top = (parseInt(pin.css("top")) + _pin_height) * hr;
+            $("#divOverviewPins").append("<img src='/Images/" + dots[type] + "' style='position: absolute; left: " + left + "px; top: " + top + "px;' />\n");
+        });
     }
 
     function logPosition(pinImage) {
