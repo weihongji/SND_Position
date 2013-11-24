@@ -93,13 +93,13 @@
                 <img pin_type="3" id="imgPinGreen" style="position: absolute; left: 1px; top: 121px; cursor: pointer;" src="~/Images/Pins/pin-green.png" />
             </div>
             <!--Context Menu-->
-            <ul id="menu" style="display:none;">
+            <ul id="menu" style="display: none;">
                 <li><a href="#">Edit</a></li>
                 <li><a href="#">Delete</a></li>
             </ul>
         </div>
         <!--Edit Dialog-->
-        <div id="dialog-form" style="display:none;" title="编辑风压检测站">
+        <div id="dialog-form" style="display: none;" title="编辑风压检测站">
             <form>
                 <fieldset>
                     <label for="field_name">名称</label>
@@ -175,7 +175,7 @@
             $("#divMap").draggable({
                 containment: [x1, y1, x2, y2],
                 start: onMapDragStart,
-                drag: function() {
+                drag: function () {
                     updateMagnifierPosition();
                 },
                 stop: onMapDragStop
@@ -183,11 +183,11 @@
 
             $("#divMagnifier").draggable({
                 containment: "parent",
-                start: function() {
+                start: function () {
                     onMapDragStart();
                 },
                 drag: updateMapPosition,
-                stop: function() {
+                stop: function () {
                     onMapDragStop();
                 }
             });
@@ -413,10 +413,10 @@
     function showPinPanel() {
         var leftToMove = 0 - safeParseInt($("#divMap").css("left"));
         var topToMove = 0 - safeParseInt($("#divMap").css("top"));
-        $("#divPinPanel>div").css({left: leftToMove, top: topToMove});
-        $("#divPinPanel>img[pin_type=1]").css({left: leftToMove+1, top: topToMove});
-        $("#divPinPanel>img[pin_type=2]").css({left: leftToMove+0, top: topToMove+61});
-        $("#divPinPanel>img[pin_type=3]").css({left: leftToMove+1, top: topToMove+121});
+        $("#divPinPanel>div").css({ left: leftToMove, top: topToMove });
+        $("#divPinPanel>img[pin_type=1]").css({ left: leftToMove + 1, top: topToMove });
+        $("#divPinPanel>img[pin_type=2]").css({ left: leftToMove + 0, top: topToMove + 61 });
+        $("#divPinPanel>img[pin_type=3]").css({ left: leftToMove + 1, top: topToMove + 121 });
 
         $("#divPinPanel").show();
     }
@@ -444,7 +444,8 @@
     }
 
     function logIt(s) {
-        if (@(string.IsNullOrEmpty(Request.QueryString["debug"]).ToString().ToLower())) {
+        var is = "@Request.QueryString["debug"]";
+        if (is.length == 0) {
             return;
         }
         if (s != null) {
