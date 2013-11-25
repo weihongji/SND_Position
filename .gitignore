@@ -13,3 +13,4 @@ Src/PositionSyncService/ServiceHost/bin/
 Src/PositionSyncService/SharedEntity/bin/
 Src/PositionSyncService/PositionSyncService.v11.suo
 Src/PositionSyncService/Bin/Logs/
+Src/Position/DataAccess/bin/DataAccess.*
