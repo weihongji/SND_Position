@@ -1,6 +1,11 @@
 ﻿@model MapMgmtModel
 @{
     ViewBag.Title = "Index";
+
+    var rootPath = Request.ApplicationPath;
+    if (rootPath.EndsWith("/")) {
+        rootPath = rootPath.Substring(0, rootPath.Length - 1);
+    }
 }
 
 <style type="text/css">
@@ -63,7 +68,7 @@
 </div>
 <div>
     <div id="divFrame" style="position: relative; border: 1px solid blue; width: 512px; height: 384px; overflow: hidden;">
-        <div id="divMap" style="display: inline-block; background: url(/Images/@(Model.Map.Name));">
+        <div id="divMap" style="display: inline-block; background: url(@(rootPath)/Images/@(Model.Map.Name));">
             <img src="~/Images/@(Model.Map.Name)" style="visibility: hidden;" />
             <div id="divPinLocated">
                 @foreach (var pin in Model.MonitorList) {
@@ -84,9 +89,9 @@
             <!--Pin Panel-->
             <div id="divPinPanel">
                 <div style="position: absolute; left: 0px; top: 0px; width: 35px; height: 180px; border: 1px solid black;">
-                    <div style="height: 60px; background-image: url(Images/Pins/pin-black.png); background-repeat: no-repeat;"></div>
-                    <div style="height: 60px; background-image: url(Images/Pins/pin-black.png); background-repeat: no-repeat;"></div>
-                    <div style="height: 60px; background-image: url(Images/Pins/pin-black.png); background-repeat: no-repeat;"></div>
+                    <div style="height: 60px; background-image: url(@(rootPath)/Images/Pins/pin-black.png); background-repeat: no-repeat;"></div>
+                    <div style="height: 60px; background-image: url(@(rootPath)/Images/Pins/pin-black.png); background-repeat: no-repeat;"></div>
+                    <div style="height: 60px; background-image: url(@(rootPath)/Images/Pins/pin-black.png); background-repeat: no-repeat;"></div>
                 </div>
                 <img pin_type="1" id="imgPinBlue" style="position: absolute; left: 1px; top: 0px; cursor: pointer;" src="~/Images/Pins/pin-blue.png" />
                 <img pin_type="2" id="imgPinRed" style="position: absolute; left: 0px; top: 61px; cursor: pointer;" src="~/Images/Pins/pin-red.png" />
@@ -478,7 +483,7 @@
             var type = parseInt(pin.attr("pin_type"));
             var left = parseInt(pin.css("left")) * wr;
             var top = (parseInt(pin.css("top")) + _pin_height) * hr;
-            $("#divOverviewPins").append("<img src='/Images/" + dots[type] + "' style='position: absolute; left: " + left + "px; top: " + top + "px;' />\n");
+            $("#divOverviewPins").append("<img src='@(rootPath)/Images/" + dots[type] + "' style='position: absolute; left: " + left + "px; top: " + top + "px;' />\n");
         });
     }
 
