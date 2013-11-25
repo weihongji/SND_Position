@@ -1,5 +1,10 @@
 ﻿@{
     ViewBag.Title = "SunSet";
+
+    var rootPath = Request.ApplicationPath;
+    if (rootPath.EndsWith("/")) {
+        rootPath = rootPath.Substring(0, rootPath.Length - 1);
+    }
 }
 <style type="text/css">
     #divOverview.collapse {
@@ -19,8 +24,8 @@
         }
 </style>
 <div id="divMapFrame" style="position: relative; display: inline-block; border: 1px solid blue; width: 720px; height: 450px; margin: 40px; overflow: hidden;">
-    <div id="divMap" style="display: inline-block; background: url(/Images/sunset.jpg);">
-        <img style="position: absolute; left: 300px; top: 200px; cursor: pointer;" src="~/Images/Pins/pin-red.png" />
+    <div id="divMap" style="display: inline-block; background: url(@(rootPath)/Images/sunset.jpg);">
+        <img style="position: absolute; left: 300px; top: 200px; cursor: pointer;" src="~/Images/pin-red.png" />
         <img src="~/Images/sunset.jpg" style="visibility: hidden;" />
     </div>
     <div id="divOverview" style="position: absolute; left: 0px; bottom: 0px; border: 1px solid black; display: inline-block; z-index: 1000;" class="extend">
