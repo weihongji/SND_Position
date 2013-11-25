@@ -83,19 +83,19 @@
                         pin_x="@pin.X"
                         pin_y="@pin.Y"
                         pin_type="@pin.MonitorTypeId"
-                        style="position: absolute; left: @(pin.Left)px; top: @(pin.Top)px; cursor: pointer;" src="~/Images/Pins/@(pin.Image)" />
+                        style="position: absolute; left: @(pin.Left)px; top: @(pin.Top)px; cursor: pointer;" src="~/Images/@(pin.Image)" />
                 }
             </div>
             <!--Pin Panel-->
             <div id="divPinPanel">
                 <div style="position: absolute; left: 0px; top: 0px; width: 35px; height: 180px; border: 1px solid black;">
-                    <div style="height: 60px; background-image: url(@(rootPath)/Images/Pins/pin-black.png); background-repeat: no-repeat;"></div>
-                    <div style="height: 60px; background-image: url(@(rootPath)/Images/Pins/pin-black.png); background-repeat: no-repeat;"></div>
-                    <div style="height: 60px; background-image: url(@(rootPath)/Images/Pins/pin-black.png); background-repeat: no-repeat;"></div>
+                    <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
+                    <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
+                    <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
                 </div>
-                <img pin_type="1" id="imgPinBlue" style="position: absolute; left: 1px; top: 0px; cursor: pointer;" src="~/Images/Pins/pin-blue.png" />
-                <img pin_type="2" id="imgPinRed" style="position: absolute; left: 0px; top: 61px; cursor: pointer;" src="~/Images/Pins/pin-red.png" />
-                <img pin_type="3" id="imgPinGreen" style="position: absolute; left: 1px; top: 121px; cursor: pointer;" src="~/Images/Pins/pin-green.png" />
+                <img pin_type="1" id="imgPinBlue" style="position: absolute; left: 1px; top: 0px; cursor: pointer;" src="~/Images/pin-blue.png" />
+                <img pin_type="2" id="imgPinRed" style="position: absolute; left: 0px; top: 61px; cursor: pointer;" src="~/Images/pin-red.png" />
+                <img pin_type="3" id="imgPinGreen" style="position: absolute; left: 1px; top: 121px; cursor: pointer;" src="~/Images/pin-green.png" />
             </div>
             <!--Context Menu-->
             <ul id="menu" style="display: none;">
