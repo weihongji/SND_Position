@@ -11,7 +11,7 @@ namespace Web
                         "~/Scripts/jquery-{version}.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
-                        "~/Scripts/jquery-ui-{version}.js",
+                        "~/Scripts/jquery-ui-{version}.custom.js",
                         "~/Scripts/jquery-ui.datepicker-zh-CN.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
@@ -41,6 +41,10 @@ namespace Web
                         "~/Content/themes/base/jquery.ui.datepicker.css",
                         "~/Content/themes/base/jquery.ui.progressbar.css",
                         "~/Content/themes/base/jquery.ui.theme.css"));
+
+            bundles.Add(new StyleBundle("~/Content/themes/smoothness/css").Include(
+                        "~/Content/themes/smoothness/jquery-ui-1.10.3.custom.css",
+                        "~/Content/themes/smoothness/jquery-ui-1.10.3.custom.min.css"));
         }
     }
 }

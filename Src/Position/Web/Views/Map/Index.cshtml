@@ -1,0 +1,533 @@
+﻿@model MapMgmtModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutMap.cshtml";
+
+    var rootPath = Request.ApplicationPath;
+    if (rootPath.EndsWith("/")) {
+        rootPath = rootPath.Substring(0, rootPath.Length - 1);
+    }
+}
+
+<style type="text/css">
+    body {
+        font-size: 62.5%;
+    }
+
+    .ui-menu {
+        width: 80px;
+        z-index: 1000;
+    }
+
+        .ui-menu > li > a {
+            font-size: 12px;
+        }
+
+    /*Overview box*/
+    #divOverview.collapse {
+        height: 10px;
+    }
+
+        #divOverview.collapse #divMagnifier {
+            visibility: hidden;
+        }
+
+    #divOverview.extend {
+        height: 135px;
+    }
+
+        #divOverview.extend #divMagnifier {
+            visibility: visible;
+        }
+
+    /*dialog form*/
+    #dialog-form label, #dialog-form input {
+        display: block;
+    }
+
+        #dialog-form input.text {
+            margin-bottom: 12px;
+            width: 95%;
+            padding: .4em;
+        }
+
+    #dialog-form fieldset {
+        padding: 0;
+        border: 0;
+        margin-top: 25px;
+    }
+
+    #dialog-form .ui-dialog .ui-state-error {
+        padding: .3em;
+    }
+</style>
+
+<h2>Map Management</h2>
+<div>
+    <button id="btnPinPanel">隐藏面板</button>
+</div>
+<div>
+    <div id="divFrame" style="position: relative; border: 1px solid blue; width: 512px; height: 384px; overflow: hidden;">
+        <div id="divMap" style="display: inline-block; background: url(@(rootPath)/Images/@(Model.Map.Name));">
+            <img src="~/Images/@(Model.Map.Name)" style="visibility: hidden;" />
+            <div id="divPinLocated">
+                @foreach (var pin in Model.MonitorList) {
+                    <img id="pin_@(pin.Id)" pinned="1" title="@pin.ToString()"
+                        pin_id="@pin.Id"
+                        pin_name="@pin.Name"
+                        pin_info="@pin.Information"
+                        pin_alarmup="@pin.AlarmUp"
+                        pin_alarmdown="@pin.AlarmDown"
+                        pin_rangeup="@pin.RangeUp"
+                        pin_rangedown="@pin.RangeDown"
+                        pin_x="@pin.X"
+                        pin_y="@pin.Y"
+                        pin_type="@pin.MonitorTypeId"
+                        style="position: absolute; left: @(pin.Left)px; top: @(pin.Top)px; cursor: pointer;" src="~/Images/@(pin.Image)" />
+                }
+            </div>
+            <!--Pin Panel-->
+            <div id="divPinPanel">
+                <div style="position: absolute; left: 0px; top: 0px; width: 35px; height: 180px; border: 1px solid black;">
+                    <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
+                    <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
+                    <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
+                </div>
+                <img pin_type="1" id="imgPinBlue" style="position: absolute; left: 1px; top: 0px; cursor: pointer;" src="~/Images/pin-blue.png" />
+                <img pin_type="2" id="imgPinRed" style="position: absolute; left: 0px; top: 61px; cursor: pointer;" src="~/Images/pin-red.png" />
+                <img pin_type="3" id="imgPinGreen" style="position: absolute; left: 1px; top: 121px; cursor: pointer;" src="~/Images/pin-green.png" />
+            </div>
+            <!--Context Menu-->
+            <ul id="menu" style="display: none;">
+                <li><a href="#">Edit</a></li>
+                <li><a href="#">Delete</a></li>
+            </ul>
+        </div>
+        <!--Edit Dialog-->
+        <div id="dialog-form" style="display: none;" title="编辑风压检测站">
+            <form>
+                <fieldset>
+                    <label for="field_name">名称</label>
+                    <input type="text" name="field_name" id="field_name" class="text ui-widget-content ui-corner-all" />
+                    <label for="field_info">信息</label>
+                    <input type="text" name="field_info" id="field_info" class="text ui-widget-content ui-corner-all" />
+                    <label for="field_alarmup">报警上限</label>
+                    <input type="text" name="field_alarmup" id="field_alarmup" class="text ui-widget-content ui-corner-all" />
+                    <label for="field_alarmdown">报警下限</label>
+                    <input type="text" name="field_alarmdown" id="field_alarmdown" class="text ui-widget-content ui-corner-all" />
+                    <label for="field_rangeup">量程上限</label>
+                    <input type="text" name="field_rangeup" id="field_rangeup" class="text ui-widget-content ui-corner-all" />
+                    <label for="field_rangedown">量程下限</label>
+                    <input type="text" name="field_rangedown" id="field_rangedown" class="text ui-widget-content ui-corner-all" />
+                    <input type="hidden" name="field_id" id="field_id" />
+                    <input type="hidden" name="field_x" id="field_x" />
+                    <input type="hidden" name="field_y" id="field_y" />
+                    <input type="hidden" name="field_type" id="field_type" />
+                </fieldset>
+            </form>
+        </div>
+        <div id="divOverview" style="position: absolute; left: 0px; bottom: 0px; border: 1px solid black; display: inline-block; z-index: 1000;" class="extend">
+            <div style="width: inherit; height: inherit; position: relative;">
+                <div id="divCollapse" style="display: inline-block; position: absolute; width: 10px; border: 1px solid black; padding-left: 2px; color: black; font-size: 20px; line-height: 5px; cursor: pointer; z-index: 1001;">-</div>
+                <div id="divMagnifier" style="display: none; position: absolute; border: 1px solid black; cursor: move;">
+                    <img draggable="false" src="~/Images/Transparent.png" style="display: inline; width: inherit; height: inherit;" />
+                </div>
+                <img id="imgOverview" draggable="false" src="~/Images/@(Model.Map.Name)" style="display: inline; width: inherit; height: inherit;" />
+            </div>
+            <div id="divOverviewPins"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var _pinOnSeat;
+    var _clickedPin;
+    var _maxPinIndex = 0;
+    var _pin_count = 3;
+
+    // sizes
+    var _pin_width, _pin_height;
+    var _map_width, _map_height;
+    var _frame_width, _frame_height;
+    var _overview_width, _overview_height;
+    var _overview_border_width = 1;
+
+    // flags
+    var _isMapDraggable;
+    var _hidePinPanelForDrag = false;
+
+    $(window).bind("load", function () {
+        _pin_width = $("#imgPinBlue").width();
+        _pin_height = $("#imgPinBlue").height();
+        _map_width = $("#divMap").width();
+        _map_height = $("#divMap").height();
+        _frame_width = $("#divFrame").width();
+        _frame_height = $("#divFrame").height();
+        _frame_offset = $("#divFrame").offset();
+
+        _overview_height = $("#divOverview").height();
+        _overview_width = _overview_height * _map_width / _map_height;
+        $("#divOverview").width(_overview_width);
+        $("#divCollapse").css("left", (_overview_width - 14).toString() + "px");
+        $("#divMagnifier").width(_overview_width * _frame_width / _map_width);
+        $("#divMagnifier").height(_overview_height * _frame_height / _map_height).css("display", "inline-block");
+
+        _isMapDraggable = isDraggable();
+        if (_isMapDraggable) {
+            $("#divMap").css("cursor", (navigator.userAgent.toString().indexOf("WebKit") > 0 ? "-webkit-grab" : "move"));
+
+            var offset = $("#divMap").offset();
+            var x1 = (-1) * (_map_width - _frame_width) + offset.left; //-670;
+            var x2 = offset.left; //50;
+            var y1 = (-1) * (_map_height - _frame_height) + offset.top; //-370;
+            var y2 = offset.top; //80;
+            $("#divMap").draggable({
+                containment: [x1, y1, x2, y2],
+                start: onMapDragStart,
+                drag: function () {
+                    updateMagnifierPosition();
+                },
+                stop: onMapDragStop
+            });
+
+            $("#divMagnifier").draggable({
+                containment: "parent",
+                start: function () {
+                    onMapDragStart();
+                },
+                drag: updateMapPosition,
+                stop: function () {
+                    onMapDragStop();
+                }
+            });
+        }
+        else {
+            $("#divOverview").hide();
+        }
+
+        $("#divCollapse").click(function () {
+            $("#divOverview").toggleClass("collapse extend");
+            if ($("#divOverview").hasClass("extend")) {
+                updateMagnifierPosition();
+            }
+        });
+
+        //Context Menu
+        $("#menu").menu().css("position", "absolute").hide();
+        $("#menu>li:eq(0)").click(function () {
+            $("#menu").hide();
+            $("#field_id").val(_clickedPin.attr("pin_id"));
+            $("#field_name").val(_clickedPin.attr("pin_name"));
+            $("#field_info").val(_clickedPin.attr("pin_info"));
+            $("#field_alarmup").val(_clickedPin.attr("pin_alarmup"));
+            $("#field_alarmdown").val(_clickedPin.attr("pin_alarmdown"));
+            $("#field_rangeup").val(_clickedPin.attr("pin_rangeup"));
+            $("#field_rangedown").val(_clickedPin.attr("pin_rangedown"));
+            $("#field_x").val(_clickedPin.attr("pin_x"));
+            $("#field_y").val(_clickedPin.attr("pin_y"));
+            $("#field_type").val(_clickedPin.attr("pin_type"));
+            $("#dialog-form").dialog("open");
+            return false;
+        });
+        $("#menu>li:eq(1)").click(function () {
+            $("#menu").hide();
+            deleteMonitor(_clickedPin);
+            return false;
+        });
+        $("#divFrame")
+            .contextmenu(null, function (e) {
+                if ($(e.target).attr("pinned")) {
+                    _clickedPin = $(e.target);
+                    var left = parseInt(_clickedPin.css("left")) + _clickedPin.width() / 3;
+                    var top = parseInt(_clickedPin.css("top")) + _clickedPin.height() / 3;
+                    $("#menu").css({ left: left + "px", top: top + "px" }).show();
+                }
+                return false;
+            })
+            .click(function () {
+                $("#menu").hide(50);
+            });
+
+        //Pin Draggable
+        $("#divPinPanel>img").add("#divPinLocated>img").each(function () {
+            makeItDraggable(this);
+        });
+
+        //Edit Dialog
+        $("#dialog-form").dialog({
+            autoOpen: false,
+            height: 450,
+            width: 400,
+            modal: true,
+            buttons: {
+                Save: function () {
+                    var bValid = true;
+                    if (bValid) {
+                        saveMonitor();
+                    }
+                },
+                Cancel: function () {
+                    $(this).dialog("close");
+                }
+            },
+            close: function () {
+                $("#dialog-form :text").val("").removeClass("ui-state-error");
+            }
+        });
+
+        $("#btnPinPanel").click(function () {
+            if ($("#divPinPanel:visible").length > 0) {
+                $("#divPinPanel").hide();
+                $("#btnPinPanel").html("显示面板");
+            }
+            else {
+                showPinPanel();
+                $("#btnPinPanel").html("隐藏面板");
+            }
+        });
+
+        updatePinsInOverview();
+    });
+
+    function makeItDraggable(o) {
+        $(o).draggable({
+            cursor: "move",
+            start: function () {
+                if (!$(this).attr("pinned")) {
+                    _pinOnSeat = $(this).clone();
+                }
+            },
+            drag: function () {
+                $(this).draggable("option", "revert", !isInBoundary(this));
+                logPosition(this);
+            },
+            stop: function () {
+                if (!$(this).draggable("option", "revert")) {
+                    if (!$(this).attr("pinned")) {
+                        $(this).removeAttr("id").attr("pinned", 1).appendTo($("#divPinLocated"));
+                        $(_pinOnSeat).appendTo($("#divPinPanel"));
+                        makeItDraggable($(_pinOnSeat));
+                    }
+                    savePosition(this);
+                    updatePinsInOverview();
+                }
+                logPosition(this);
+            }
+        });
+    }
+
+    function isInBoundary(pinImage) {
+        // frame boundary
+        var padding = 10;
+        var edgeX1 = padding;
+        var edgeX2 = (_isMapDraggable ? _frame_width : _map_width) - padding;
+        var edgeY1 = padding;
+        var edgeY2 = (_isMapDraggable ? _frame_height : _map_height) - padding;
+        var panelX2 = _pin_width;
+        var panelY2 = _pin_height * _pin_count;
+
+        // pin's position
+        var o = $(pinImage);
+        var x = parseInt(o.css("left"));
+        if (isNaN(x)) {
+            return false;
+        }
+        if (_isMapDraggable) {
+            x += safeParseInt($("#divMap").css("left"));
+        }
+        if (edgeX1 < x && x < edgeX2) {
+            var y = parseInt(o.css("top"));
+            if (isNaN(y)) {
+                return false;
+            }
+            if (_isMapDraggable) {
+                y += o.height() + safeParseInt($("#divMap").css("top"));
+            }
+            if (edgeY1 < y && y < edgeY2) {
+                if (x < panelX2 && y < panelY2) { // In the pin panel area
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function savePosition(o) {
+        o = $(o);
+        var url = "@Url.Action("SaveMonitorPointPosition")";
+        var monitor = {
+            id: safeParseInt(o.attr("pin_id")),
+            left: safeParseInt(o.css("left")),
+            top: safeParseInt(o.css("top")),
+            typeId: safeParseInt(o.attr("pin_type"))
+        };
+        $.getJSON(url, monitor, function (data) {
+            if (data.success) {
+                o.attr("pin_id", data.entity.Id);
+                o.attr("pin_x", data.entity.X);
+                o.attr("pin_y", data.entity.Y);
+                o.attr("pin_type", data.entity.MonitorTypeId);
+                o.attr("title", data.title);
+            }
+            else {
+                alert("保存检测点时报错。内容：\n" + data.message);
+            }
+        });
+    }
+
+    function saveMonitor() {
+        o = $(_clickedPin);
+        var url = "@Url.Action("SaveMonitorPoint")";
+        var monitor = {
+            Id: safeParseInt(o.attr("pin_id")),
+            Name: $("#field_name").val(),
+            Information: $("#field_info").val(),
+            AlarmUp: $("#field_alarmup").val(),
+            AlarmDown: $("#field_alarmdown").val(),
+            RangeUp: $("#field_rangeup").val(),
+            RangeDown: $("#field_rangedown").val(),
+            X: $("#field_x").val(),
+            Y: $("#field_y").val(),
+            MonitorTypeId: $("#field_type").val()
+        };
+
+        $.getJSON(url, monitor, function (data) {
+            if (data.success) {
+                o.attr("pin_id", data.entity.Id);
+                o.attr("pin_name", data.entity.Name);
+                o.attr("pin_info", data.entity.Information);
+                o.attr("pin_alarmup", data.entity.AlarmUp);
+                o.attr("pin_alarmdown", data.entity.AlarmDown);
+                o.attr("pin_rangeup", data.entity.RangeUp);
+                o.attr("pin_rangedown", data.entity.RangeDown);
+                o.attr("pin_x", data.entity.X);
+                o.attr("pin_y", data.entity.Y);
+                o.attr("pin_type", data.entity.MonitorTypeId);
+                o.attr("title", data.title);
+                $("#dialog-form").dialog("close");
+            }
+            else {
+                alert("保存检测点资料时报错。内容：\n" + data.message);
+            }
+        });
+    }
+
+    function deleteMonitor(o) {
+        o = $(o);
+        var url = "@Url.Action("DeleteMonitorPoint")";
+        if (confirm("确认要删除" + $(o).attr("pin_name") + "吗？")) {
+            $.getJSON(url, { id: safeParseInt(o.attr("pin_id")) }, function (data) {
+                if (data.success) {
+                    $(o).remove();
+                }
+                else {
+                    alert("删除检测点时报错。内容：\n" + data.message);
+                }
+            });
+        }
+    }
+
+    function onMapDragStart() {
+        if ($("#divPinPanel:visible").length > 0) {
+            _hidePinPanelForDrag = true;
+            $("#divPinPanel").hide();
+        }
+    }
+
+    function onMapDragStop() {
+        if (_hidePinPanelForDrag) {
+            _hidePinPanelForDrag = false;
+            showPinPanel();
+        }
+    }
+
+    function showPinPanel() {
+        var leftToMove = 0 - safeParseInt($("#divMap").css("left"));
+        var topToMove = 0 - safeParseInt($("#divMap").css("top"));
+        $("#divPinPanel>div").css({ left: leftToMove, top: topToMove });
+        $("#divPinPanel>img[pin_type=1]").css({ left: leftToMove + 1, top: topToMove });
+        $("#divPinPanel>img[pin_type=2]").css({ left: leftToMove + 0, top: topToMove + 61 });
+        $("#divPinPanel>img[pin_type=3]").css({ left: leftToMove + 1, top: topToMove + 121 });
+
+        $("#divPinPanel").show();
+    }
+
+    function updateMagnifierPosition() {
+        if ($("#divOverview").hasClass("collapse")) {
+            return;
+        }
+        var left = _overview_width * (-1) * parseInt($("#divMap").css("left")) / _map_width;
+        $("#divMagnifier").css("left", left + "px");
+        var top = _overview_height * (-1) * parseInt($("#divMap").css("top")) / _map_height;
+        $("#divMagnifier").css("top", top + "px");
+    }
+
+    function updateMapPosition() {
+        var left = _map_width * parseInt($("#divMagnifier").css("left")) / _overview_width * (-1);
+        $("#divMap").css("left", left + "px");
+        var top = _map_height * parseInt($("#divMagnifier").css("top")) / _overview_height * (-1);
+        $("#divMap").css("top", top + "px");
+    }
+
+    function updatePinsInOverview() {
+        var wr = (_overview_width - _overview_border_width * 2) / _map_width;
+        var hr = (_overview_height - _overview_border_width * 2) / _map_height;
+        var dots = ["", "dot-blue.png", "dot-red.png", "dot-green.png"];
+        $("#divOverviewPins").html("");
+        $("#divPinLocated>img").each(function () {
+            var pin = $(this);
+            var type = parseInt(pin.attr("pin_type"));
+            var left = parseInt(pin.css("left")) * wr;
+            var top = (parseInt(pin.css("top")) + _pin_height) * hr;
+            $("#divOverviewPins").append("<img src='@(rootPath)/Images/" + dots[type] + "' style='position: absolute; left: " + left + "px; top: " + top + "px;' />\n");
+        });
+    }
+
+    function logPosition(pinImage) {
+        var p = getPinPosition(pinImage);
+        logIt(p);
+    }
+
+    function logIt(s) {
+        var is = "@Request.QueryString["debug"]";
+        if (is.length == 0) {
+            return;
+        }
+        if (s != null) {
+            console.log(s.toString());
+        }
+    }
+
+    function getPinPosition(pinImage) {
+        var o = $(pinImage);
+        var left = parseInt(o.css("left"));
+        var top = parseInt(o.css("top"));
+        if (isNaN(left) || isNaN(top)) {
+            return null;
+        }
+        else {
+            return new Point(left, top + o.height());
+        }
+    }
+
+    function safeParseInt(value) {
+        var result = parseInt(value);
+        if (isNaN(result)) {
+            result = 0;
+        }
+        return result;
+    }
+
+    function Point(x, y) {
+        this.X = x;
+        this.Y = y;
+        this.toString = function () {
+            return "(" + this.X + "," + this.Y + ")";
+        }
+    }
+
+    function isDraggable() {
+        return _map_width > _frame_width + 10 || _map_height > _frame_height + 10;
+    }
+</script>

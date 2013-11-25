@@ -4,6 +4,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Styles.Render("~/Content/themes/smoothness/css")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryui")
@@ -13,8 +14,7 @@
 <body>
     <div>
         <div>
-            @Html.ActionLink("Back to Report", "Index", "Report")
-            @Html.ActionLink("Map", "Index", "Map")
+            @Html.ActionLink("Report", "Index", "Report")
         </div>
         @RenderBody()
     </div>
