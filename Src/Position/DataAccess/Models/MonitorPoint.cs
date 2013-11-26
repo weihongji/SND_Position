@@ -12,31 +12,30 @@ namespace DataAccess.Models
         public int OffsetY { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
-        public int MonitorTypeId { get; set; }
+        public int MonitorContentId { get; set; }
         public decimal? AlarmUp { get; set; }
         public decimal? AlarmDown { get; set; }
         public decimal? RangeUp { get; set; }
         public decimal? RangeDown { get; set; }
         public string Remark { get; set; }
-        public int? OriginalId { get; set; }
 
-        public MonitorType MonitorType { get; set; }
+        public MonitorContent MonitorContent { get; set; }
 
         public int Left {
             get {
-                return this.X - (MonitorType == null ? 0 : MonitorType.OffsetX);
+                return this.X - (MonitorContent == null ? 0 : MonitorContent.OffsetX);
             }
         }
 
         public int Top {
             get {
-                return this.Y - (MonitorType == null ? 0 : MonitorType.OffsetY);
+                return this.Y - (MonitorContent == null ? 0 : MonitorContent.OffsetY);
             }
         }
 
         public string Image {
             get {
-                return MonitorType == null ? "" : MonitorType.Image;
+                return MonitorContent == null ? "" : MonitorContent.Image;
             }
         }
 
@@ -48,12 +47,12 @@ namespace DataAccess.Models
             this.Name = string.Empty;
         }
 
-        public MonitorPoint(int id, int left, int top, int typeId, MonitorType monitorType)
+        public MonitorPoint(int id, int left, int top, int contentId, MonitorContent monitorContent)
             : this() {
             this.Id = id;
-            this.MonitorTypeId = typeId;
-            this.X = left + (monitorType == null ? 0 : monitorType.OffsetX);
-            this.Y = top + (monitorType == null ? 0 : monitorType.OffsetY);
+            this.MonitorContentId = contentId;
+            this.X = left + (monitorContent == null ? 0 : monitorContent.OffsetX);
+            this.Y = top + (monitorContent == null ? 0 : monitorContent.OffsetY);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace DataAccess.Models
         public DbSet<Lamp> Lamps { get; set; }
         public DbSet<Map> Maps { get; set; }
         public DbSet<MonitorPoint> MonitorPoints { get; set; }
-        public DbSet<MonitorType> MonitorTypes { get; set; }
+        public DbSet<MonitorContent> MonitorContents { get; set; }
         public DbSet<Person> People { get; set; }
         public DbSet<PeopleSender> PeopleSenders { get; set; }
         public DbSet<Position> Positions { get; set; }
@@ -46,7 +46,7 @@ namespace DataAccess.Models
             modelBuilder.Configurations.Add(new LampMap());
             modelBuilder.Configurations.Add(new MapMap());
             modelBuilder.Configurations.Add(new MonitorPointMap());
-            modelBuilder.Configurations.Add(new MonitorTypeMap());
+            modelBuilder.Configurations.Add(new MonitorContentMap());
             modelBuilder.Configurations.Add(new PersonMap());
             modelBuilder.Configurations.Add(new PeopleSenderMap());
             modelBuilder.Configurations.Add(new PositionMap());

@@ -245,22 +245,22 @@ namespace DataAccess
             return list;
         }
 
-        public MonitorType GetMonitorType(int id) {
-            var type = context.MonitorTypes.Find(id);
+        public MonitorContent GetMonitorContent(int id) {
+            var type = context.MonitorContents.Find(id);
             if (type == null) {
-                throw new ArgumentException(string.Format("Cannot find monitor type with id {0}.", id));
+                throw new ArgumentException(string.Format("Cannot find monitor content with id {0}.", id));
             }
             return type;
         }
 
-        public List<MonitorType> GetMonitorTypes() {
-            return context.MonitorTypes.ToList();
+        public List<MonitorContent> GetMonitorContents() {
+            return context.MonitorContents.ToList();
         }
 
-        public List<MonitorPoint> GetMonitorPoints(MonitorType type) {
-            var query = context.MonitorPoints.Include(x => x.MonitorType);
+        public List<MonitorPoint> GetMonitorPoints(MonitorContent type) {
+            var query = context.MonitorPoints.Include(x => x.MonitorContent);
             if (type != null && type.Id > 0) {
-                query = query.Where(x => x.MonitorTypeId == type.Id);
+                query = query.Where(x => x.MonitorContentId == type.Id);
             }
             var list = query.ToList();
             list.ForEach(x => ConvertMonitorPointPosition(x, true));

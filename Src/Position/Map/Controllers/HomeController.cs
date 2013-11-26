@@ -45,8 +45,8 @@ namespace Map.Controllers
             string error = string.Empty;
             MonitorPoint point = null;
             try {
-                var monitorType = dao.GetMonitorType(typeId);
-                point = new MonitorPoint(id, left, top, typeId, monitorType);
+                var monitorContent = dao.GetMonitorContent(typeId);
+                point = new MonitorPoint(id, left, top, typeId, monitorContent);
                 result = dao.SaveMonitorPointPosition(point);
             }
             catch (Exception ex) {

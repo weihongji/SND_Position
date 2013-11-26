@@ -8,7 +8,7 @@ namespace DataAccess.Models.Mapping
         public DepartmentMap()
         {
             // Primary Key
-            this.HasKey(t => t.Dept_id);
+            this.HasKey(t => new {t.Company_id, t.Dept_id});
 
             // Properties
             this.Property(t => t.Dept_id)

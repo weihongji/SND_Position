@@ -24,6 +24,7 @@ END
 
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Department]') AND type in (N'U')) BEGIN
 	CREATE TABLE [dbo].[Department](
+		[Company_id] [smallint] NOT NULL,
 		[Dept_id] [smallint] NOT NULL,
 		[Dept_name] [varchar](32) NOT NULL,
 		[Dept_fullname] [varchar](64) NOT NULL,
@@ -32,6 +33,7 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Dep
 		[Dept_info] [varchar](64) NOT NULL,
 	 CONSTRAINT [PK_Department] PRIMARY KEY CLUSTERED 
 	(
+		[Company_id] ASC,
 		[Dept_id] ASC
 	)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
 	) ON [PRIMARY]
@@ -401,13 +403,13 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Cur
 
 END
 
-IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[MonitorType]') AND type in (N'U')) BEGIN
-	CREATE TABLE [dbo].[MonitorType](
-		[Id] [int] NOT NULL CONSTRAINT [PK_MonitorType] PRIMARY KEY CLUSTERED,
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[MonitorContent]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[MonitorContent](
+		[Id] [int] NOT NULL CONSTRAINT [PK_MonitorContent] PRIMARY KEY CLUSTERED,
 		[Name] [nvarchar](50) NOT NULL,
 		[Image] [varchar](50) NULL, /*Name of the image file*/
-		[OffsetX] [int] NOT NULL CONSTRAINT [DF_MonitorType_OffsetX] DEFAULT (0), /*Offset in pixel of the pointer to the Image position-left.*/
-		[OffsetY] [int] NOT NULL CONSTRAINT [DF_MonitorType_OffsetY] DEFAULT (0), /*Offset in pixel of the pointer to the Image position-top.*/
+		[OffsetX] [int] NOT NULL CONSTRAINT [DF_MonitorContent_OffsetX] DEFAULT (0), /*Offset in pixel of the pointer to the Image position-left.*/
+		[OffsetY] [int] NOT NULL CONSTRAINT [DF_MonitorContent_OffsetY] DEFAULT (0), /*Offset in pixel of the pointer to the Image position-top.*/
 	) ON [PRIMARY]
 END
 
@@ -418,18 +420,17 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Mon
 		[Information] [nvarchar](100) NULL,
 		[OffsetX] [int] NOT NULL,
 		[OffsetY] [int] NOT NULL,
-		[MonitorTypeId] [int] NOT NULL,
+		[MonitorContentId] [int] NOT NULL,
 		[AlarmUp] [decimal](10, 2) NULL,
 		[AlarmDown] [decimal](10, 2) NULL,
 		[RangeUp] [decimal](10, 2) NULL,
 		[RangeDown] [decimal](10, 2) NULL,
 		[Remark] [nvarchar](100) NULL,
-		[OriginalId] [int] NULL,
 		[DTStamp] [datetime] NOT NULL CONSTRAINT [DF_MonitorPosition_DTStamp]  DEFAULT (getdate()),
 	) ON [PRIMARY]
 
-	ALTER TABLE [dbo].[MonitorPoint]  WITH CHECK ADD  CONSTRAINT [FK_MonitorPoint_MonitorType] FOREIGN KEY([MonitorTypeId])
-	REFERENCES [dbo].[MonitorType] ([Id])
+	ALTER TABLE [dbo].[MonitorPoint]  WITH CHECK ADD  CONSTRAINT [FK_MonitorPoint_MonitorContent] FOREIGN KEY([MonitorContentId])
+	REFERENCES [dbo].[MonitorContent] ([Id])
 END
 
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Map]') AND type in (N'U')) BEGIN

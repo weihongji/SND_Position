@@ -82,7 +82,7 @@
                         pin_rangedown="@pin.RangeDown"
                         pin_x="@pin.X"
                         pin_y="@pin.Y"
-                        pin_type="@pin.MonitorTypeId"
+                        pin_type="@pin.MonitorContentId"
                         style="position: absolute; left: @(pin.Left)px; top: @(pin.Top)px; cursor: pointer;" src="~/Images/@(pin.Image)" />
                 }
             </div>
@@ -367,7 +367,7 @@
                 o.attr("pin_id", data.entity.Id);
                 o.attr("pin_x", data.entity.X);
                 o.attr("pin_y", data.entity.Y);
-                o.attr("pin_type", data.entity.MonitorTypeId);
+                o.attr("pin_type", data.entity.MonitorContentId);
                 o.attr("title", data.title);
             }
             else {
@@ -389,7 +389,7 @@
             RangeDown: $("#field_rangedown").val(),
             X: $("#field_x").val(),
             Y: $("#field_y").val(),
-            MonitorTypeId: $("#field_type").val()
+            MonitorContentId: $("#field_type").val()
         };
 
         $.getJSON(url, monitor, function (data) {
@@ -403,7 +403,7 @@
                 o.attr("pin_rangedown", data.entity.RangeDown);
                 o.attr("pin_x", data.entity.X);
                 o.attr("pin_y", data.entity.Y);
-                o.attr("pin_type", data.entity.MonitorTypeId);
+                o.attr("pin_type", data.entity.MonitorContentId);
                 o.attr("title", data.title);
                 $("#dialog-form").dialog("close");
             }

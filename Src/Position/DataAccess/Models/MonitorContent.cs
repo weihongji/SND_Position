@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DataAccess.Models
 {
-    public partial class MonitorType
+    public partial class MonitorContent
     {
         public int Id { get; set; }
         public string Name { get; set; }

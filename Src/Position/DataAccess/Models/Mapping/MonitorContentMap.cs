@@ -3,9 +3,9 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace DataAccess.Models.Mapping
 {
-    public class MonitorTypeMap : EntityTypeConfiguration<MonitorType>
+    public class MonitorContentMap : EntityTypeConfiguration<MonitorContent>
     {
-        public MonitorTypeMap() {
+        public MonitorContentMap() {
             // Primary Key
             this.HasKey(t => t.Id);
 
@@ -18,7 +18,7 @@ namespace DataAccess.Models.Mapping
                 .HasMaxLength(50);
 
             // Table & Column Mappings
-            this.ToTable("MonitorType");
+            this.ToTable("MonitorContent");
             this.Property(t => t.Id).HasColumnName("Id");
             this.Property(t => t.Name).HasColumnName("Name");
             this.Property(t => t.Image).HasColumnName("Image");

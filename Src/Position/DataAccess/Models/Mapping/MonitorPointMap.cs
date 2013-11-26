@@ -28,14 +28,14 @@ namespace DataAccess.Models.Mapping
             this.Property(t => t.Information).HasColumnName("Information").HasMaxLength(100);
             this.Property(t => t.OffsetX).HasColumnName("OffsetX");
             this.Property(t => t.OffsetY).HasColumnName("OffsetY");
-            this.Property(t => t.MonitorTypeId).HasColumnName("MonitorTypeId");
+            this.Property(t => t.MonitorContentId).HasColumnName("MonitorContentId");
             this.Property(t => t.AlarmUp).HasColumnName("AlarmUp");
             this.Property(t => t.AlarmDown).HasColumnName("AlarmDown");
             this.Property(t => t.RangeUp).HasColumnName("RangeUp");
             this.Property(t => t.RangeDown).HasColumnName("RangeDown");
             this.Property(t => t.Remark).HasColumnName("Remark").HasMaxLength(100);
 
-            this.HasRequired(t => t.MonitorType).WithMany();
+            this.HasRequired(t => t.MonitorContent).WithMany();
         }
     }
 }
