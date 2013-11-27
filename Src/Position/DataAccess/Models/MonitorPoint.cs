@@ -5,14 +5,14 @@ namespace DataAccess.Models
 {
     public partial class MonitorPoint
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Information { get; set; }
-        public int OffsetX { get; set; }
-        public int OffsetY { get; set; }
+        public int? OffsetX { get; set; }
+        public int? OffsetY { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
-        public int MonitorContentId { get; set; }
+        public long? MonitorContentId { get; set; }
         public decimal? AlarmUp { get; set; }
         public decimal? AlarmDown { get; set; }
         public decimal? RangeUp { get; set; }

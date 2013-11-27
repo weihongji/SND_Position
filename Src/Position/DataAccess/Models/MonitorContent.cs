@@ -5,7 +5,7 @@ namespace DataAccess.Models
 {
     public partial class MonitorContent
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Image { get; set; }
         public int OffsetX { get; set; }

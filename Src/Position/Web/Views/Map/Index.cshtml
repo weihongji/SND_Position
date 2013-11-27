@@ -420,6 +420,7 @@
             $.getJSON(url, { id: safeParseInt(o.attr("pin_id")) }, function (data) {
                 if (data.success) {
                     $(o).remove();
+                    updatePinsInOverview();
                 }
                 else {
                     alert("删除检测点时报错。内容：\n" + data.message);

@@ -35,7 +35,7 @@ namespace DataAccess.Models.Mapping
             this.Property(t => t.RangeDown).HasColumnName("RangeDown");
             this.Property(t => t.Remark).HasColumnName("Remark").HasMaxLength(100);
 
-            this.HasRequired(t => t.MonitorContent).WithMany();
+            this.HasOptional(t => t.MonitorContent).WithMany().HasForeignKey(x=>x.MonitorContentId);
         }
     }
 }

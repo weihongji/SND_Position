@@ -320,8 +320,8 @@ namespace DataAccess
                 return;
             }
             if (OffsetToPosition) {
-                point.X = point.OffsetX + SettingMap.StartX;
-                point.Y = point.OffsetY + SettingMap.StartY;
+                point.X = point.OffsetX.Value + SettingMap.StartX;
+                point.Y = point.OffsetY.Value + SettingMap.StartY;
             }
             else {
                 point.OffsetX = point.X - SettingMap.StartX;
