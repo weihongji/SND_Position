@@ -1,7 +1,8 @@
 Src/Position/DataAccess/bin/Debug/DataAccess.*
 DB/
 bin/DataAccess.*
-Src/Position/Map/bin/
+Src/Position/Map/bin/DataAccess.*
+Src/Position/Map/bin/Map.*
 Src/Position/Web/bin/Web.*
 Src/Position/Web/bin/DataAccess.*
 obj/
