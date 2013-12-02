@@ -49,8 +49,10 @@
     <Compile Include="Models\AlarmReport.cs" />
     <Compile Include="Models\AlarmType.cs" />
     <Compile Include="Models\Branch.cs" />
-    <Compile Include="Models\Map.cs" />
-    <Compile Include="Models\Mapping\MapMap.cs" />
+    <Compile Include="Models\MonitorSystem.cs" />
+    <Compile Include="Models\Mapping\MonitorSystemMap.cs" />
+    <Compile Include="Models\MonitorMap.cs" />
+    <Compile Include="Models\Mapping\MonitorMapMap.cs" />
     <Compile Include="Models\MonitorContent.cs" />
     <Compile Include="Models\Mapping\MonitorContentMap.cs" />
     <Compile Include="Models\Mapping\MonitorPointMap.cs" />
@@ -99,11 +101,6 @@
     <Compile Include="Models\Sender.cs" />
     <Compile Include="Models\WorkType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

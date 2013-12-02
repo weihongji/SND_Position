@@ -1,0 +1,12 @@
+﻿@model MonitorPointIndexModel
+@{
+    ViewBag.Title = "检测点";
+    Layout = "~/Views/Shared/_LayoutMonitorPoint.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+<ul>
+    @foreach (var item in Model.MonitorSystems) {
+        <li>@Html.ActionLink(item.Name, "Edit", new {id = item.Id})</li>
+    }
+</ul>

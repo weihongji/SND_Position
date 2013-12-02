@@ -123,13 +123,17 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="Common\ControlHelper.cs" />
-    <Compile Include="Controllers\MapController.cs" />
+    <Compile Include="Controllers\MonitorMapController.cs" />
+    <Compile Include="Controllers\MornitorPointController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AlarmSearchModel.cs" />
-    <Compile Include="Models\MapMgmtModel.cs" />
+    <Compile Include="Models\MonitorMapModel.cs" />
+    <Compile Include="Models\MonitorPointModel.cs" />
+    <Compile Include="Models\MonitorMapIndexModel.cs" />
+    <Compile Include="Models\MonitorPointIndexModel.cs" />
     <Compile Include="Models\PeopleSearchModel.cs" />
     <Compile Include="Models\PeopleCountModel.cs" />
     <Compile Include="Models\PositionSearchModel.cs" />
@@ -216,9 +220,12 @@
     <Content Include="Images\dot-blue.png" />
     <Content Include="Images\dot-green.png" />
     <Content Include="Images\dot-red.png" />
-    <Content Include="Images\map1024.gif" />
-    <Content Include="Images\map2048.gif" />
-    <Content Include="Images\map3072.gif" />
+    <Content Include="Images\Map_1_1.gif" />
+    <Content Include="Images\Map_1_2.gif" />
+    <Content Include="Images\Map_1_3.gif" />
+    <Content Include="Images\Map_2_1.gif" />
+    <Content Include="Images\Map_2_2.gif" />
+    <Content Include="Images\Map_2_3.gif" />
     <Content Include="Images\pin-black.png" />
     <Content Include="Images\pin-blue.png" />
     <Content Include="Images\pin-green.png" />
@@ -263,7 +270,11 @@
     <Content Include="Views\Report\AlarmSearch.cshtml" />
     <Content Include="Views\Report\PeopleSearchList.cshtml" />
     <Content Include="Views\Shared\_LayoutMap.cshtml" />
-    <Content Include="Views\Map\Index.cshtml" />
+    <Content Include="Views\MonitorPoint\Edit.cshtml" />
+    <Content Include="Views\Shared\_LayoutMonitorPoint.cshtml" />
+    <Content Include="Views\MonitorPoint\Index.cshtml" />
+    <Content Include="Views\MonitorMap\Index.cshtml" />
+    <Content Include="Views\MonitorMap\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

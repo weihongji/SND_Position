@@ -400,27 +400,40 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Cur
 		[Alarm_param2] ASC,
 		[Process_time] ASC
 	)
+END
 
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[MonitorSystem]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[MonitorSystem](
+		[Id] [int] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_MonitorSystem] PRIMARY KEY CLUSTERED ,
+		[Name] [nvarchar](100) NULL,
+		[CompanyMineId] [bigint] NULL,
+		[Information] [nvarchar](100) NULL,
+		[Remark] [nvarchar](200) NULL,
+	) ON [PRIMARY]
 END
 
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[MonitorContent]') AND type in (N'U')) BEGIN
 	CREATE TABLE [dbo].[MonitorContent](
-		[Id] [int] NOT NULL CONSTRAINT [PK_MonitorContent] PRIMARY KEY CLUSTERED,
-		[Name] [nvarchar](50) NOT NULL,
+		[Id] [bigint] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_MonitorContent] PRIMARY KEY CLUSTERED,
+		[Name] [nvarchar](50) NULL,
+		[MonitorSystemId] [int] NULL,
+		[Information] [nvarchar](100) NULL,
+		[Remark] [nvarchar](200) NULL,
 		[Image] [varchar](50) NULL, /*Name of the image file*/
-		[OffsetX] [int] NOT NULL CONSTRAINT [DF_MonitorContent_OffsetX] DEFAULT (0), /*Offset in pixel of the pointer to the Image position-left.*/
-		[OffsetY] [int] NOT NULL CONSTRAINT [DF_MonitorContent_OffsetY] DEFAULT (0), /*Offset in pixel of the pointer to the Image position-top.*/
+		[ImageOverview] [varchar](50) NULL, /*Name of the image file shown on overview area */
+		[OffsetX] [int] NOT NULL CONSTRAINT [DF_MonitorContent_OffsetX] DEFAULT 0, /*Offset in pixel of the pointer to the Image position-left.*/
+		[OffsetY] [int] NOT NULL CONSTRAINT [DF_MonitorContent_OffsetY] DEFAULT 0 /*Offset in pixel of the pointer to the Image position-top.*/
 	) ON [PRIMARY]
 END
 
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[MonitorPoint]') AND type in (N'U')) BEGIN
 	CREATE TABLE [dbo].[MonitorPoint](
-		[Id] [int] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_MonitorPosition] PRIMARY KEY CLUSTERED,
+		[Id] [bigint] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_MonitorPosition] PRIMARY KEY CLUSTERED,
 		[Name] [nvarchar](50) NOT NULL,
 		[Information] [nvarchar](100) NULL,
 		[OffsetX] [int] NOT NULL,
 		[OffsetY] [int] NOT NULL,
-		[MonitorContentId] [int] NOT NULL,
+		[MonitorContentId] [bigint] NOT NULL,
 		[AlarmUp] [decimal](10, 2) NULL,
 		[AlarmDown] [decimal](10, 2) NULL,
 		[RangeUp] [decimal](10, 2) NULL,
@@ -433,17 +446,15 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Mon
 	REFERENCES [dbo].[MonitorContent] ([Id])
 END
 
-IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Map]') AND type in (N'U')) BEGIN
-	CREATE TABLE [dbo].[Map](
-		[Id] [int] IDENTITY(1, 1) NOT NULL,
+IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[MonitorMap]') AND type in (N'U')) BEGIN
+	CREATE TABLE [dbo].[MonitorMap](
+		[Id] [int] IDENTITY(1, 1) NOT NULL CONSTRAINT [PK_MonitorMap] PRIMARY KEY CLUSTERED,
+		[MonitorSystemId] [int] NOT NULL,
 		[Name] [nvarchar](50) NOT NULL,
 		[StartX] [int] NOT NULL,
 		[StartY] [int] NOT NULL,
-		[Scale] [int] NOT NULL CONSTRAINT [DF_Map_Scale] DEFAULT (0),
-		[DTStamp] [smalldatetime] NOT NULL CONSTRAINT [DF_Map_DTStamp] DEFAULT (getdate()),
-		CONSTRAINT [PK_Map] PRIMARY KEY CLUSTERED 
-		(
-			[Id] ASC
-		)
+		[Scale] [int] NOT NULL CONSTRAINT [DF_MonitorMap_Scale] DEFAULT (0),
+		[DisplayName] [nvarchar](50) NOT NULL,
+		[DTStamp] [smalldatetime] NOT NULL CONSTRAINT [DF_MonitorMap_DTStamp] DEFAULT (getdate())
 	) ON [PRIMARY]
 END

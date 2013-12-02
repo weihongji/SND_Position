@@ -13,16 +13,16 @@ namespace DataAccess
     public class Dao
     {
         private PositionContext context;
-        private DataAccess.Models.Map _settingMap_hard_to_remember;
+        private DataAccess.Models.MonitorMap _settingMap_hard_to_remember;
 
         public Dao() {
             context = new PositionContext();
         }
 
-        private DataAccess.Models.Map SettingMap {
+        private DataAccess.Models.MonitorMap SettingMap {
             get {
                 if (_settingMap_hard_to_remember == null) {
-                    _settingMap_hard_to_remember = context.Maps.Where(x => x.Scale == (int)MapScale.Small).First();
+                    _settingMap_hard_to_remember = context.MonitorMaps.Where(x => x.Scale == (int)MapScale.Small).First();
                 }
                 return _settingMap_hard_to_remember;
             }
@@ -52,14 +52,47 @@ namespace DataAccess
             return context.Positions.ToList();
         }
 
-        public List<Map> GetMaps() {
-            return context.Maps.ToList();
+        public List<MonitorSystem> GetMonitorSystems() {
+            return context.MonitorSystems.ToList();
         }
 
-        public Map GetMap(MapScale scale) {
-            var map = context.Maps.Where(x => x.Scale == (int)scale).FirstOrDefault();
+        public MonitorSystem GetMonitorSystem(int systemId) {
+            var system = context.MonitorSystems.Where(x => x.Id == systemId).FirstOrDefault();
+            if (system == null) {
+                throw new ArgumentException(string.Format("Monitory system with id {0} cannot be found.", systemId));
+            }
+            return system;
+        }
+
+        public List<MonitorContent> GetMonitorContents(int systemId) {
+            return context.MonitorContents.Where(x => x.MonitorSystemId == systemId).ToList();
+        }
+
+        public MonitorContent GetMonitorContent(int id) {
+            var type = context.MonitorContents.Find(id);
+            if (type == null) {
+                throw new ArgumentException(string.Format("Cannot find monitor content with id {0}.", id));
+            }
+            return type;
+        }
+
+        public List<MonitorPoint> GetMonitorPoints(int systemId) {
+            var query = context.MonitorPoints.Include(x => x.MonitorContent);
+            var contentIds = context.MonitorContents.Where(c => c.MonitorSystemId == systemId).Select(c => c.Id);
+            query = query.Where(x => contentIds.Contains(x.MonitorContentId.Value));
+            var list = query.ToList();
+            list.ForEach(x => ConvertMonitorPointPosition(x, true));
+            return list;
+        }
+
+        public List<MonitorMap> GetMonitorMaps(int systemId) {
+            return context.MonitorMaps.Where(x => x.MonitorSystemId == systemId).ToList();
+        }
+
+        public MonitorMap GetMonitorMap(int systemId, MapScale scale) {
+            var map = context.MonitorMaps.Where(x => x.MonitorSystemId == systemId && x.Scale == (int)scale).FirstOrDefault();
             if (map == null) {
-                throw new ArgumentException(string.Format("Cannot find map of scale {0}.", scale));
+                throw new ArgumentException(string.Format("Cannot find map of scale {0} for system id {1}.", scale, systemId));
             }
             return map;
         }
@@ -245,28 +278,6 @@ namespace DataAccess
             return list;
         }
 
-        public MonitorContent GetMonitorContent(int id) {
-            var type = context.MonitorContents.Find(id);
-            if (type == null) {
-                throw new ArgumentException(string.Format("Cannot find monitor content with id {0}.", id));
-            }
-            return type;
-        }
-
-        public List<MonitorContent> GetMonitorContents() {
-            return context.MonitorContents.ToList();
-        }
-
-        public List<MonitorPoint> GetMonitorPoints(MonitorContent type) {
-            var query = context.MonitorPoints.Include(x => x.MonitorContent);
-            if (type != null && type.Id > 0) {
-                query = query.Where(x => x.MonitorContentId == type.Id);
-            }
-            var list = query.ToList();
-            list.ForEach(x => ConvertMonitorPointPosition(x, true));
-            return list;
-        }
-
         public int SaveMonitorPoint(MonitorPoint entity) {
             if (entity == null) {
                 return 0;
@@ -328,5 +339,27 @@ namespace DataAccess
                 point.OffsetY = point.Y - SettingMap.StartY;
             }
         }
+
+        public int SaveMonitorMap(MonitorMap entity) {
+            if (entity == null) {
+                return 0;
+            }
+
+            if (entity.Id > 0) {
+                var tracked = context.MonitorMaps.Find(entity.Id);
+                if (tracked == null) {
+                    return 0;
+                }
+                else {
+                    context.Entry(tracked).CurrentValues.SetValues(entity);
+                    entity = tracked;
+                }
+            }
+            else {
+                entity = context.MonitorMaps.Add(entity);
+            }
+            return context.SaveChanges();
+        }
+
     }
 }

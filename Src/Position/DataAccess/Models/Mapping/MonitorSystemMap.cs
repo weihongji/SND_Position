@@ -3,9 +3,9 @@ using System.Data.Entity.ModelConfiguration;
 
 namespace DataAccess.Models.Mapping
 {
-    public class MonitorContentMap : EntityTypeConfiguration<MonitorContent>
+    public class MonitorSystemMap : EntityTypeConfiguration<MonitorSystem>
     {
-        public MonitorContentMap() {
+        public MonitorSystemMap() {
             // Primary Key
             this.HasKey(t => t.Id);
 
@@ -18,14 +18,12 @@ namespace DataAccess.Models.Mapping
                 .HasMaxLength(50);
 
             // Table & Column Mappings
-            this.ToTable("MonitorContent");
+            this.ToTable("MonitorSystem");
             this.Property(t => t.Id).HasColumnName("Id");
             this.Property(t => t.Name).HasColumnName("Name");
-            this.Property(t => t.MonitorSystemId).HasColumnName("MonitorSystemId");
-            this.Property(t => t.Image).HasColumnName("Image");
-            this.Property(t => t.ImageOverview).HasColumnName("ImageOverview");
-            this.Property(t => t.StartX).HasColumnName("StartX");
-            this.Property(t => t.StartY).HasColumnName("StartY");
+            this.Property(t => t.CompanyMineId).HasColumnName("CompanyMineId");
+            this.Property(t => t.Information).HasColumnName("Information");
+            this.Property(t => t.Remark).HasColumnName("Remark");
         }
     }
 }

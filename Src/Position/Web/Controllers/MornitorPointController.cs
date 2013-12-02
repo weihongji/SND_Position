@@ -1,24 +1,31 @@
-﻿using System;
+﻿using DataAccess.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
 using Web.Models;
-using DataAccess.Models;
 
 namespace Web.Controllers
 {
-    public class MapController : Controller
+    public class MonitorPointController : Controller
     {
         private DataAccess.Dao dao = new DataAccess.Dao();
-        //
-        // GET: /Home/
 
         public ActionResult Index() {
-            var model = new MapMgmtModel();
-            model.Map = dao.GetMap(MapScale.Small);
-            model.MonitorList = dao.GetMonitorPoints(null);
+            var model = new MonitorPointIndexModel {
+                MonitorSystems = dao.GetMonitorSystems()
+            };
+
+            return View(model);
+        }
+
+        public ActionResult Edit(int id) {
+            var model = new MonitorPointModel();
+            model.System = dao.GetMonitorSystem(id);
+            model.Map = dao.GetMonitorMap(id, MapScale.Small);
+            model.ContentList = dao.GetMonitorContents(id);
+            model.MonitorList = dao.GetMonitorPoints(id);
             return View(model);
         }
 
@@ -71,10 +78,6 @@ namespace Web.Controllers
                 error = ex.Message;
             }
             return Json(new { success = result > 0, message = error }, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult SunSet() {
-            return View();
         }
     }
 }

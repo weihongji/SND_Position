@@ -1,7 +1,7 @@
-﻿@model MapMgmtModel
+﻿@model MonitorPointModel
 @{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_LayoutMap.cshtml";
+    ViewBag.Title = Model.System.Name + "检测点";
+    Layout = "~/Views/Shared/_LayoutMonitorPoint.cshtml";
 
     var rootPath = Request.ApplicationPath;
     if (rootPath.EndsWith("/")) {
@@ -62,7 +62,7 @@
     }
 </style>
 
-<h2>Map Management</h2>
+<h2>@ViewBag.Title</h2>
 <div>
     <button id="btnPinPanel">隐藏面板</button>
 </div>
@@ -93,9 +93,12 @@
                     <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
                     <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
                 </div>
-                <img pin_type="1" id="imgPinBlue" style="position: absolute; left: 1px; top: 0px; cursor: pointer;" src="~/Images/pin-blue.png" />
+                @foreach (var content in Model.ContentList) {
+                    <img pin_type="@content.Id" pin_overview="@(content.ImageOverview)" style="position: absolute; left: 1px; top: 0px; cursor: pointer;" src="~/Images/@(content.Image)" />
+                }
+                @*                <img pin_type="1" id="imgPinBlue" style="position: absolute; left: 1px; top: 0px; cursor: pointer;" src="~/Images/pin-blue.png" />
                 <img pin_type="2" id="imgPinRed" style="position: absolute; left: 0px; top: 61px; cursor: pointer;" src="~/Images/pin-red.png" />
-                <img pin_type="3" id="imgPinGreen" style="position: absolute; left: 1px; top: 121px; cursor: pointer;" src="~/Images/pin-green.png" />
+                <img pin_type="3" id="imgPinGreen" style="position: absolute; left: 1px; top: 121px; cursor: pointer;" src="~/Images/pin-green.png" />*@
             </div>
             <!--Context Menu-->
             <ul id="menu" style="display: none;">
@@ -157,13 +160,15 @@
     var _hidePinPanelForDrag = false;
 
     $(window).bind("load", function () {
-        _pin_width = $("#imgPinBlue").width();
-        _pin_height = $("#imgPinBlue").height();
+        _pin_width = $("#divPinPanel>img:first").width();
+        _pin_height = $("#divPinPanel>img:first").height();
         _map_width = $("#divMap").width();
         _map_height = $("#divMap").height();
         _frame_width = $("#divFrame").width();
         _frame_height = $("#divFrame").height();
         _frame_offset = $("#divFrame").offset();
+
+        showPinPanel();
 
         _overview_height = $("#divOverview").height();
         _overview_width = _overview_height * _map_width / _map_height;
@@ -304,7 +309,7 @@
             stop: function () {
                 if (!$(this).draggable("option", "revert")) {
                     if (!$(this).attr("pinned")) {
-                        $(this).removeAttr("id").attr("pinned", 1).appendTo($("#divPinLocated"));
+                        $(this).attr("pinned", 1).appendTo($("#divPinLocated"));
                         $(_pinOnSeat).appendTo($("#divPinPanel"));
                         makeItDraggable($(_pinOnSeat));
                     }
@@ -447,9 +452,9 @@
         var leftToMove = 0 - safeParseInt($("#divMap").css("left"));
         var topToMove = 0 - safeParseInt($("#divMap").css("top"));
         $("#divPinPanel>div").css({ left: leftToMove, top: topToMove });
-        $("#divPinPanel>img[pin_type=1]").css({ left: leftToMove + 1, top: topToMove });
-        $("#divPinPanel>img[pin_type=2]").css({ left: leftToMove + 0, top: topToMove + 61 });
-        $("#divPinPanel>img[pin_type=3]").css({ left: leftToMove + 1, top: topToMove + 121 });
+        $("#divPinPanel>img[pin_type]").each(function (index) {
+            $(this).css({ left: leftToMove, top: topToMove + index * _pin_height });
+        });
 
         $("#divPinPanel").show();
     }
@@ -474,14 +479,14 @@
     function updatePinsInOverview() {
         var wr = (_overview_width - _overview_border_width * 2) / _map_width;
         var hr = (_overview_height - _overview_border_width * 2) / _map_height;
-        var dots = ["", "dot-blue.png", "dot-red.png", "dot-green.png"];
         $("#divOverviewPins").html("");
         $("#divPinLocated>img").each(function () {
             var pin = $(this);
-            var type = parseInt(pin.attr("pin_type"));
+            var type = pin.attr("pin_type");
+            var overview = $("#divPinPanel>img[pin_type=" + type + "]").attr("pin_overview");
             var left = parseInt(pin.css("left")) * wr;
             var top = (parseInt(pin.css("top")) + _pin_height) * hr;
-            $("#divOverviewPins").append("<img src='@(rootPath)/Images/" + dots[type] + "' style='position: absolute; left: " + left + "px; top: " + top + "px;' />\n");
+            $("#divOverviewPins").append("<img src='@(rootPath)/Images/" + overview + "' style='position: absolute; left: " + left + "px; top: " + top + "px;' />\n");
         });
     }
 

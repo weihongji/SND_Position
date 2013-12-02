@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 namespace DataAccess.Models
 {
-    public partial class Map
+    public partial class MonitorMap
     {
         public int Id { get; set; }
+        public int MonitorSystemId { get; set; }
         public string Name { get; set; }
         public int StartX { get; set; }
         public int StartY { get; set; }
         public int Scale { get; set; }
-        public DateTime DTStamp { get; set; }
+        public string DisplayName { get; set; }
     }
 }

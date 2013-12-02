@@ -7,8 +7,10 @@ namespace DataAccess.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public int MonitorSystemId { get; set; }
         public string Image { get; set; }
-        public int OffsetX { get; set; }
-        public int OffsetY { get; set; }
+        public string ImageOverview { get; set; }
+        public int StartX { get; set; }
+        public int StartY { get; set; }
     }
 }
