@@ -14,105 +14,51 @@
 <h2>@ViewBag.Title</h2>
 
 @using (Html.BeginForm("Upload", "MonitorMap", new { id = Model.System.Id }, FormMethod.Post, new { enctype = "multipart/form-data" })) {
+    int i = -1;
+    foreach (var map in Model.Maps) {
     <fieldset>
-        <legend>最小地图</legend>
+        <legend>@Model.MapNames[++i]</legend>
         <table>
             <tr>
                 <td>地图图片：</td>
                 <td>
-                    @if (Model.SmallMap == null) {
-                        Html.DisplayText("尚未设置");
+                    @if (map.Id > 0) {
+                        <a href="~/Images/@map.Name" target="_blank">@map.DisplayName</a>
                     }
                     else {
-                        <a href="~/Images/@Model.SmallMap.Name" target="_blank">@Model.SmallMap.DisplayName</a>
+                        Write(map.DisplayName);
                     }
                 </td>
             </tr>
             <tr>
-                <td>参考坐标：</td>
+                <td>起点坐标：</td>
                 <td>
-                    @if (Model.SmallMap == null) {
-                        Write("无");
-                    }
-                    else {
-                        Write(string.Format("({0}, {1})", Model.SmallMap.StartX, Model.SmallMap.StartY));
+                    @string.Format("({0}, {1})", map.StartX, map.StartY)
+                    @if (map.Id > 0) {
+                        <button style="margin-left:20px;" map_id="@map.Id">设置...</button>
                     }
                 </td>
             </tr>
             <tr>
-                <td>选择地图：</td>
+                <td>更换地图：</td>
                 <td>
-                    <input type="file" name="smallMap" /></td>
+                    <input type="file" name="@((MapScale)map.Scale)Map" /></td>
             </tr>
         </table>
     </fieldset>
-    
-    <fieldset>
-        <legend>中等地图</legend>
-        <table>
-            <tr>
-                <td>地图图片：</td>
-                <td>
-                    @if (Model.MedimMap == null) {
-                        Html.DisplayText("尚未设置");
-                    }
-                    else {
-                        <a href="~/Images/@Model.MedimMap.Name" target="_blank">@Model.MedimMap.DisplayName</a>
-                    }
-                </td>
-            </tr>
-            <tr>
-                <td>参考坐标：</td>
-                <td>
-                    @if (Model.MedimMap == null) {
-                        Write("无");
-                    }
-                    else {
-                        Write(string.Format("({0}, {1})", Model.MedimMap.StartX, Model.MedimMap.StartY));
-                    }
-                </td>
-            </tr>
-            <tr>
-                <td>选择地图：</td>
-                <td>
-                    <input type="file" name="medimMap" /></td>
-            </tr>
-        </table>
-    </fieldset>
-    
-    <fieldset>
-        <legend>最大地图</legend>
-        <table>
-            <tr>
-                <td>地图图片：</td>
-                <td>
-                    @if (Model.LargeMap == null) {
-                        Html.DisplayText("尚未设置");
-                    }
-                    else {
-                        <a href="~/Images/@Model.LargeMap.Name" target="_blank">@Model.LargeMap.DisplayName</a>
-                    }
-                </td>
-            </tr>
-            <tr>
-                <td>参考坐标：</td>
-                <td>
-                    @if (Model.LargeMap == null) {
-                        Write("无");
-                    }
-                    else {
-                        Write(string.Format("({0}, {1})", Model.LargeMap.StartX, Model.LargeMap.StartY));
-                    }
-                </td>
-            </tr>
-            <tr>
-                <td>选择地图：</td>
-                <td>
-                    <input type="file" name="largeMap" /></td>
-            </tr>
-        </table>
-    </fieldset>
+    }
     <div style="padding-left: 200px; padding-top: 20px;">
         <button type="submit">保存</button>
     </div>
 }
+
+<script type="text/javascript">
+    $(function () {
+        $("button[map_id]").each(function () {
+            $(this).click(function () {
+                location.href = "@Url.Action("StartPoint")" + "/" + $(this).attr("map_id");
+                return false;
+            });
+        });
+    });
+</script>

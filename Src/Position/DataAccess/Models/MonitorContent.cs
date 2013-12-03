@@ -10,7 +10,7 @@ namespace DataAccess.Models
         public int MonitorSystemId { get; set; }
         public string Image { get; set; }
         public string ImageOverview { get; set; }
-        public int StartX { get; set; }
-        public int StartY { get; set; }
+        public int PointerX { get; set; }
+        public int PointerY { get; set; }
     }
 }

@@ -23,13 +23,13 @@ namespace DataAccess.Models
 
         public int Left {
             get {
-                return this.X - (MonitorContent == null ? 0 : MonitorContent.StartX);
+                return this.X - (MonitorContent == null ? 0 : MonitorContent.PointerX);
             }
         }
 
         public int Top {
             get {
-                return this.Y - (MonitorContent == null ? 0 : MonitorContent.StartY);
+                return this.Y - (MonitorContent == null ? 0 : MonitorContent.PointerY);
             }
         }
 
@@ -51,8 +51,8 @@ namespace DataAccess.Models
             : this() {
             this.Id = id;
             this.MonitorContentId = contentId;
-            this.X = left + (monitorContent == null ? 0 : monitorContent.StartX);
-            this.Y = top + (monitorContent == null ? 0 : monitorContent.StartY);
+            this.X = left + (monitorContent == null ? 0 : monitorContent.PointerX);
+            this.Y = top + (monitorContent == null ? 0 : monitorContent.PointerY);
         }
     }
 }

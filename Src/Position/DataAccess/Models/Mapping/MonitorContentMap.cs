@@ -24,8 +24,8 @@ namespace DataAccess.Models.Mapping
             this.Property(t => t.MonitorSystemId).HasColumnName("MonitorSystemId");
             this.Property(t => t.Image).HasColumnName("Image");
             this.Property(t => t.ImageOverview).HasColumnName("ImageOverview");
-            this.Property(t => t.StartX).HasColumnName("StartX");
-            this.Property(t => t.StartY).HasColumnName("StartY");
+            this.Property(t => t.PointerX).HasColumnName("PointerX");
+            this.Property(t => t.PointerY).HasColumnName("PointerY");
         }
     }
 }

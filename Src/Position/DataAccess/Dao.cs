@@ -85,8 +85,18 @@ namespace DataAccess
             return list;
         }
 
+        public MonitorPoint GetMonitorPoint(int id) {
+            var point = context.MonitorPoints.Single(x => x.Id == id);
+            return point;
+        }
+
         public List<MonitorMap> GetMonitorMaps(int systemId) {
             return context.MonitorMaps.Where(x => x.MonitorSystemId == systemId).ToList();
+        }
+
+        public MonitorMap GetMonitorMap(int id) {
+            var map = context.MonitorMaps.Single(x => x.Id == id);
+            return map;
         }
 
         public MonitorMap GetMonitorMap(int systemId, MapScale scale) {

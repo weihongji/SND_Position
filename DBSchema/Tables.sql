@@ -414,15 +414,15 @@ END
 
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[MonitorContent]') AND type in (N'U')) BEGIN
 	CREATE TABLE [dbo].[MonitorContent](
-		[Id] [bigint] IDENTITY(1,1) NOT NULL CONSTRAINT [PK_MonitorContent] PRIMARY KEY CLUSTERED,
+		[Id] [bigint] IDENTITY(0,1) NOT NULL CONSTRAINT [PK_MonitorContent] PRIMARY KEY CLUSTERED,
 		[Name] [nvarchar](50) NULL,
 		[MonitorSystemId] [int] NULL,
 		[Information] [nvarchar](100) NULL,
 		[Remark] [nvarchar](200) NULL,
 		[Image] [varchar](50) NULL, /*Name of the image file*/
 		[ImageOverview] [varchar](50) NULL, /*Name of the image file shown on overview area */
-		[OffsetX] [int] NOT NULL CONSTRAINT [DF_MonitorContent_OffsetX] DEFAULT 0, /*Offset in pixel of the pointer to the Image position-left.*/
-		[OffsetY] [int] NOT NULL CONSTRAINT [DF_MonitorContent_OffsetY] DEFAULT 0 /*Offset in pixel of the pointer to the Image position-top.*/
+		[PointerX] [int] NOT NULL CONSTRAINT [DF_MonitorContent_PointerX] DEFAULT 0, /*Offset in pixel of the pointer to the Image position-left.*/
+		[PointerY] [int] NOT NULL CONSTRAINT [DF_MonitorContent_PointerY] DEFAULT 0 /*Offset in pixel of the pointer to the Image position-top.*/
 	) ON [PRIMARY]
 END
 

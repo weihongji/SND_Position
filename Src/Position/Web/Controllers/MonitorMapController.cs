@@ -24,19 +24,27 @@ namespace Web.Controllers
 
         public ActionResult Edit(int id) {
             var model = new MonitorMapModel {
-                System = _dao.GetMonitorSystem(id)
+                System = _dao.GetMonitorSystem(id),
+                MapNames = new List<string> { "小地图", "中地图", "大地图" }
             };
+
             var maps = _dao.GetMonitorMaps(id);
-            model.SmallMap = maps.SingleOrDefault(x => x.Scale == (int)MapScale.Small);
-            model.MedimMap = maps.SingleOrDefault(x => x.Scale == (int)MapScale.Medim);
-            model.LargeMap = maps.SingleOrDefault(x => x.Scale == (int)MapScale.Large);
+            var map = maps.SingleOrDefault(x => x.Scale == (int)MapScale.Small);
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", Scale = (int)MapScale.Small });
+
+            map = maps.SingleOrDefault(x => x.Scale == (int)MapScale.Medim);
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", Scale = (int)MapScale.Medim });
+
+            map = maps.SingleOrDefault(x => x.Scale == (int)MapScale.Large);
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", Scale = (int)MapScale.Large });
+
             return View(model);
         }
 
-        public ActionResult Upload(int id, HttpPostedFileBase smallMap, HttpPostedFileBase medimMap, HttpPostedFileBase largeMap) {
-            SaveMap(id, smallMap, MapScale.Small);
-            SaveMap(id, medimMap, MapScale.Medim);
-            SaveMap(id, largeMap, MapScale.Large);
+        public ActionResult Upload(int id, HttpPostedFileBase SmallMap, HttpPostedFileBase MedimMap, HttpPostedFileBase LargeMap) {
+            SaveMap(id, SmallMap, MapScale.Small);
+            SaveMap(id, MedimMap, MapScale.Medim);
+            SaveMap(id, LargeMap, MapScale.Large);
 
             return RedirectToAction("Edit", new { id = id });
         }
@@ -74,5 +82,45 @@ namespace Web.Controllers
             var name2 = map2.Substring(0, map2.LastIndexOf('.'));
             return string.Compare(name1, name2, true) == 0;
         }
+
+        [HttpGet]
+        public ActionResult StartPoint(int id) {
+            var model = new MonitorMapStartPointModel {
+                Map = _dao.GetMonitorMap(id),
+                Pin = _dao.GetMonitorContent(0)
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult StartPoint(int id, int startX, int startY) {
+            var tracked = _dao.GetMonitorMap(id);
+            tracked.StartX = startX;
+            tracked.StartY = startY;
+            _dao.SaveMonitorMap(tracked);
+            return RedirectToAction("Edit", new { id = tracked.MonitorSystemId });
+        }
+
+        public ActionResult SaveStartPointPosition_Deprecated(int id, int startX, int startY) {
+            MonitorMap tracked = null;
+            string error = string.Empty;
+            try {
+                tracked = _dao.GetMonitorMap(id);
+                tracked.StartX = startX;
+                tracked.StartY = startY;
+                _dao.SaveMonitorMap(tracked);
+            }
+            catch (Exception ex) {
+                error = ex.Message;
+            }
+            return Json(new
+            {
+                success = string.IsNullOrEmpty(error),
+                startX = string.IsNullOrEmpty(error) ? 0 : tracked.StartX,
+                startY = string.IsNullOrEmpty(error) ? 0 : tracked.StartY,
+                message = error
+            }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

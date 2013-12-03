@@ -96,9 +96,6 @@
                 @foreach (var content in Model.ContentList) {
                     <img pin_type="@content.Id" pin_overview="@(content.ImageOverview)" style="position: absolute; left: 1px; top: 0px; cursor: pointer;" src="~/Images/@(content.Image)" />
                 }
-                @*                <img pin_type="1" id="imgPinBlue" style="position: absolute; left: 1px; top: 0px; cursor: pointer;" src="~/Images/pin-blue.png" />
-                <img pin_type="2" id="imgPinRed" style="position: absolute; left: 0px; top: 61px; cursor: pointer;" src="~/Images/pin-red.png" />
-                <img pin_type="3" id="imgPinGreen" style="position: absolute; left: 1px; top: 121px; cursor: pointer;" src="~/Images/pin-green.png" />*@
             </div>
             <!--Context Menu-->
             <ul id="menu" style="display: none;">
@@ -146,7 +143,7 @@
     var _pinOnSeat;
     var _clickedPin;
     var _maxPinIndex = 0;
-    var _pin_count = 3;
+    var _pin_count = "@(Model.ContentList.Count)";
 
     // sizes
     var _pin_width, _pin_height;
@@ -166,7 +163,6 @@
         _map_height = $("#divMap").height();
         _frame_width = $("#divFrame").width();
         _frame_height = $("#divFrame").height();
-        _frame_offset = $("#divFrame").offset();
 
         showPinPanel();
 

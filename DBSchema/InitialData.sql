@@ -35,22 +35,25 @@ IF @enforce = 1 BEGIN
 END
 
 IF NOT EXISTS(SELECT * FROM MonitorContent) BEGIN
-	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [StartX], [StartY])
+	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [PointerX], [PointerY])
+	VALUES (N'地图起始点', 0, 'pin-start.png', 'dot-red.png', 9, 27)
+
+	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [PointerX], [PointerY])
 	VALUES (N'氮气', 1, 'pin-blue.png', 'dot-blue.png', 0, 60)
 
-	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [StartX], [StartY])
+	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [PointerX], [PointerY])
 	VALUES (N'二氧化碳', 1, 'pin-red.png', 'dot-red.png', 0, 60)
 
-	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [StartX], [StartY])
+	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [PointerX], [PointerY])
 	VALUES (N'瓦斯', 1, 'pin-green.png', 'dot-green.png', 0, 60)
 
-	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [StartX], [StartY])
+	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [PointerX], [PointerY])
 	VALUES (N'风压', 2, 'pin-blue.png', 'dot-blue.png', 0, 60)
 
-	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [StartX], [StartY])
+	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [PointerX], [PointerY])
 	VALUES (N'供水', 3, 'pin-blue.png', 'dot-blue.png', 0, 60)
 
-	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [StartX], [StartY])
+	INSERT INTO MonitorContent ([Name], [MonitorSystemId], [Image], [ImageOverview], [PointerX], [PointerY])
 	VALUES (N'接收器', 6, 'pin-blue.png', 'dot-blue.png', 0, 60)
 END
 

@@ -48,6 +48,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="RouteDebugger, Version=2.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\RouteDebugger.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -131,6 +135,7 @@
     </Compile>
     <Compile Include="Models\AlarmSearchModel.cs" />
     <Compile Include="Models\MonitorMapModel.cs" />
+    <Compile Include="Models\MonitorMapStartPointModel.cs" />
     <Compile Include="Models\MonitorPointModel.cs" />
     <Compile Include="Models\MonitorMapIndexModel.cs" />
     <Compile Include="Models\MonitorPointIndexModel.cs" />
@@ -230,6 +235,8 @@
     <Content Include="Images\pin-blue.png" />
     <Content Include="Images\pin-green.png" />
     <Content Include="Images\pin-red.png" />
+    <Content Include="Images\pin-start.png" />
+    <Content Include="Images\pin-start.cur" />
     <Content Include="Images\Transparent.png" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.custom.js" />
@@ -275,6 +282,7 @@
     <Content Include="Views\MonitorPoint\Index.cshtml" />
     <Content Include="Views\MonitorMap\Index.cshtml" />
     <Content Include="Views\MonitorMap\Edit.cshtml" />
+    <Content Include="Views\MonitorMap\StartPoint.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
