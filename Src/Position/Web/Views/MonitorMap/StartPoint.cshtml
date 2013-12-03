@@ -115,9 +115,7 @@
             $("#startX").val(x);
             $("#startY").val(y);
             var o = $("#imgPin");
-            console.log("(x,y): " + x + ", " + y);
             o.css({ left: x - _pin_pointerX, top: y - _pin_pointerY });
-            console.log("(l,t): " + o.css("left") + ", " + o.css("top"));
             onStartPositionChanged();
         });
 
@@ -144,7 +142,6 @@
                 if (!$(this).draggable("option", "revert")) {
                     onStartPositionChanged();
                 }
-                logPosition(this);
             }
         });
     }
@@ -159,7 +156,7 @@
 
         // pin's position
         var o = $(pinImage);
-        var x = parseInt(o.css("left"));
+        var x = parseInt(o.css("left")) + _pin_pointerX;
         if (isNaN(x)) {
             return false;
         }
@@ -167,12 +164,12 @@
             x += safeParseInt($("#divMap").css("left"));
         }
         if (edgeX1 < x && x < edgeX2) {
-            var y = parseInt(o.css("top"));
+            var y = parseInt(o.css("top")) + _pin_pointerY;
             if (isNaN(y)) {
                 return false;
             }
             if (_isMapDraggable) {
-                y += o.height() + safeParseInt($("#divMap").css("top"));
+                y += safeParseInt($("#divMap").css("top"));
             }
             if (edgeY1 < y && y < edgeY2) {
                 return true;
@@ -211,21 +208,6 @@
         $("#divMap").css("left", left + "px");
         var top = _map_height * parseInt($("#divMagnifier").css("top")) / _overview_height * (-1);
         $("#divMap").css("top", top + "px");
-    }
-
-    function logPosition(pinImage) {
-        var p = getPinPosition(pinImage);
-        logIt(p);
-    }
-
-    function logIt(s) {
-        var is = "@Request.QueryString["debug"]";
-        if (is.length == 0) {
-            return;
-        }
-        if (s != null) {
-            console.log(s.toString());
-        }
     }
 
     function getPinPosition(pinImage) {

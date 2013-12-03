@@ -14,6 +14,15 @@
         font-size: 62.5%;
     }
 
+    table.grid {
+        border-collapse: collapse;
+    }
+
+        table.grid td, table.grid th {
+            border: 1px solid #808080;
+            padding: 3px;
+        }
+
     .ui-menu {
         width: 80px;
         z-index: 1000;
@@ -67,7 +76,7 @@
     <button id="btnPinPanel">隐藏面板</button>
 </div>
 <div>
-    <div id="divFrame" style="position: relative; border: 1px solid blue; width: 512px; height: 384px; overflow: hidden;">
+    <div id="divFrame" style="position: relative; border: 1px solid blue; width: 1024px; height: 768px; overflow: hidden;">
         <div id="divMap" style="display: inline-block; background: url(@(rootPath)/Images/@(Model.Map.Name));">
             <img src="~/Images/@(Model.Map.Name)" style="visibility: hidden;" />
             <div id="divPinLocated">
@@ -88,13 +97,16 @@
             </div>
             <!--Pin Panel-->
             <div id="divPinPanel">
-                <div style="position: absolute; left: 0px; top: 0px; width: 35px; height: 180px; border: 1px solid black;">
-                    <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
-                    <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
-                    <div style="height: 60px; background-image: url(@(rootPath)/Images/pin-black.png); background-repeat: no-repeat;"></div>
-                </div>
+                <table class="grid" style="position: absolute; left: 0px; top: 0px; padding: 3px; background-color: silver;">
+                    @foreach (var content in Model.ContentList) {
+                        <tr>
+                            <td>
+                                <img src="~/Images/@(content.Image)" style="visibility:hidden" /></td>
+                        </tr>
+                    }
+                </table>
                 @foreach (var content in Model.ContentList) {
-                    <img pin_type="@content.Id" pin_overview="@(content.ImageOverview)" style="position: absolute; left: 1px; top: 0px; cursor: pointer;" src="~/Images/@(content.Image)" />
+                    <img pin_type="@content.Id" pin_overview="@(content.ImageOverview)" style="position: absolute; left: 0px; top: 0px; cursor: pointer;" src="~/Images/@(content.Image)" />
                 }
             </div>
             <!--Context Menu-->
@@ -142,23 +154,23 @@
 <script type="text/javascript">
     var _pinOnSeat;
     var _clickedPin;
-    var _maxPinIndex = 0;
-    var _pin_count = "@(Model.ContentList.Count)";
 
     // sizes
-    var _pin_width, _pin_height;
+    var _panel_width, _panel_height;
     var _map_width, _map_height;
     var _frame_width, _frame_height;
     var _overview_width, _overview_height;
     var _overview_border_width = 1;
+    var _pin_pointerX = parseInt("@(Model.ContentList.Any() ? Model.ContentList[0].PointerX : 0)");
+    var _pin_pointerY = parseInt("@(Model.ContentList.Any() ? Model.ContentList[0].PointerY : 0)");
 
     // flags
     var _isMapDraggable;
     var _hidePinPanelForDrag = false;
 
     $(window).bind("load", function () {
-        _pin_width = $("#divPinPanel>img:first").width();
-        _pin_height = $("#divPinPanel>img:first").height();
+        _panel_width = $("#divPinPanel>table").width() + 3 * 2 + 1 * 2; //padding + border
+        _panel_height = $("#divPinPanel>table").height() + 3 * 2 + 1 * 2; //padding + border
         _map_width = $("#divMap").width();
         _map_height = $("#divMap").height();
         _frame_width = $("#divFrame").width();
@@ -277,13 +289,13 @@
         });
 
         $("#btnPinPanel").click(function () {
-            if ($("#divPinPanel:visible").length > 0) {
-                $("#divPinPanel").hide();
-                $("#btnPinPanel").html("显示面板");
-            }
-            else {
+            if ($("#divPinPanel").css("visibility") == "hidden") {
                 showPinPanel();
                 $("#btnPinPanel").html("隐藏面板");
+            }
+            else {
+                $("#divPinPanel").css("visibility", "hidden");
+                $("#btnPinPanel").html("显示面板");
             }
         });
 
@@ -300,7 +312,6 @@
             },
             drag: function () {
                 $(this).draggable("option", "revert", !isInBoundary(this));
-                logPosition(this);
             },
             stop: function () {
                 if (!$(this).draggable("option", "revert")) {
@@ -312,7 +323,6 @@
                     savePosition(this);
                     updatePinsInOverview();
                 }
-                logPosition(this);
             }
         });
     }
@@ -324,12 +334,10 @@
         var edgeX2 = (_isMapDraggable ? _frame_width : _map_width) - padding;
         var edgeY1 = padding;
         var edgeY2 = (_isMapDraggable ? _frame_height : _map_height) - padding;
-        var panelX2 = _pin_width;
-        var panelY2 = _pin_height * _pin_count;
 
         // pin's position
         var o = $(pinImage);
-        var x = parseInt(o.css("left"));
+        var x = parseInt(o.css("left")) + _pin_pointerX;
         if (isNaN(x)) {
             return false;
         }
@@ -337,15 +345,15 @@
             x += safeParseInt($("#divMap").css("left"));
         }
         if (edgeX1 < x && x < edgeX2) {
-            var y = parseInt(o.css("top"));
+            var y = parseInt(o.css("top")) + _pin_pointerY;
             if (isNaN(y)) {
                 return false;
             }
             if (_isMapDraggable) {
-                y += o.height() + safeParseInt($("#divMap").css("top"));
+                y += safeParseInt($("#divMap").css("top"));
             }
             if (edgeY1 < y && y < edgeY2) {
-                if (x < panelX2 && y < panelY2) { // In the pin panel area
+                if (x < _panel_width + padding && y < _panel_height + padding) { // In the pin panel area
                     return false;
                 }
                 return true;
@@ -433,7 +441,7 @@
     function onMapDragStart() {
         if ($("#divPinPanel:visible").length > 0) {
             _hidePinPanelForDrag = true;
-            $("#divPinPanel").hide();
+            $("#divPinPanel").css("visibility", "hidden");
         }
     }
 
@@ -447,12 +455,17 @@
     function showPinPanel() {
         var leftToMove = 0 - safeParseInt($("#divMap").css("left"));
         var topToMove = 0 - safeParseInt($("#divMap").css("top"));
-        $("#divPinPanel>div").css({ left: leftToMove, top: topToMove });
+        $("#divPinPanel>table").css({ left: leftToMove, top: topToMove });
+
+        var frameOffset = $("#divFrame").offset();
         $("#divPinPanel>img[pin_type]").each(function (index) {
-            $(this).css({ left: leftToMove, top: topToMove + index * _pin_height });
+            var pinOffset = $("#divPinPanel>table img:eq(" + index + ")").offset();
+            var lf = pinOffset.left - frameOffset.left + leftToMove;
+            var tp = pinOffset.top - frameOffset.top + topToMove;
+            $(this).css({ left: lf, top: tp });
         });
 
-        $("#divPinPanel").show();
+        $("#divPinPanel").css("visibility", "visible");
     }
 
     function updateMagnifierPosition() {
@@ -473,32 +486,17 @@
     }
 
     function updatePinsInOverview() {
-        var wr = (_overview_width - _overview_border_width * 2) / _map_width;
-        var hr = (_overview_height - _overview_border_width * 2) / _map_height;
+        var wr = (_overview_width - _overview_border_width * 2) / _map_width; // ratio on width
+        var hr = (_overview_height - _overview_border_width * 2) / _map_height; // ratio on height
         $("#divOverviewPins").html("");
         $("#divPinLocated>img").each(function () {
             var pin = $(this);
             var type = pin.attr("pin_type");
             var overview = $("#divPinPanel>img[pin_type=" + type + "]").attr("pin_overview");
-            var left = parseInt(pin.css("left")) * wr;
-            var top = (parseInt(pin.css("top")) + _pin_height) * hr;
+            var left = (parseInt(pin.css("left")) + _pin_pointerX) * wr;
+            var top = (parseInt(pin.css("top")) + _pin_pointerY) * hr;
             $("#divOverviewPins").append("<img src='@(rootPath)/Images/" + overview + "' style='position: absolute; left: " + left + "px; top: " + top + "px;' />\n");
         });
-    }
-
-    function logPosition(pinImage) {
-        var p = getPinPosition(pinImage);
-        logIt(p);
-    }
-
-    function logIt(s) {
-        var is = "@Request.QueryString["debug"]";
-        if (is.length == 0) {
-            return;
-        }
-        if (s != null) {
-            console.log(s.toString());
-        }
     }
 
     function getPinPosition(pinImage) {
