@@ -13,7 +13,7 @@
 </style>
 <h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm("Upload", "MonitorMap", new { id = Model.System.Id }, FormMethod.Post, new { enctype = "multipart/form-data" })) {
+@using (Html.BeginForm("Edit", "MonitorMap", new { id = Model.System.Id }, FormMethod.Post, new { enctype = "multipart/form-data" })) {
     int i = -1;
     foreach (var map in Model.Maps) {
     <fieldset>

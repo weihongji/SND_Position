@@ -22,31 +22,33 @@ namespace Web.Controllers
             return View(model);
         }
 
-        public ActionResult Edit(int id) {
+        [HttpGet]
+        public ActionResult Edit([Bind(Prefix = "id")] int systemId) {
             var model = new MonitorMapModel {
-                System = _dao.GetMonitorSystem(id),
+                System = _dao.GetMonitorSystem(systemId),
                 MapNames = new List<string> { "小地图", "中地图", "大地图" }
             };
 
-            var maps = _dao.GetMonitorMaps(id);
+            var maps = _dao.GetMonitorMaps(systemId);
             var map = maps.SingleOrDefault(x => x.SizeType == (int)MapSize.Small);
-            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", SizeType = (int)MapSize.Small });
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = systemId, DisplayName = "尚未设置", SizeType = (int)MapSize.Small });
 
             map = maps.SingleOrDefault(x => x.SizeType == (int)MapSize.Medim);
-            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", SizeType = (int)MapSize.Medim });
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = systemId, DisplayName = "尚未设置", SizeType = (int)MapSize.Medim });
 
             map = maps.SingleOrDefault(x => x.SizeType == (int)MapSize.Large);
-            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", SizeType = (int)MapSize.Large });
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = systemId, DisplayName = "尚未设置", SizeType = (int)MapSize.Large });
 
             return View(model);
         }
 
-        public ActionResult Upload(int id, HttpPostedFileBase SmallMap, HttpPostedFileBase MedimMap, HttpPostedFileBase LargeMap) {
-            SaveMap(id, SmallMap, MapSize.Small);
-            SaveMap(id, MedimMap, MapSize.Medim);
-            SaveMap(id, LargeMap, MapSize.Large);
+        [HttpPost]
+        public ActionResult Edit([Bind(Prefix = "id")] int systemId, HttpPostedFileBase SmallMap, HttpPostedFileBase MedimMap, HttpPostedFileBase LargeMap) {
+            SaveMap(systemId, SmallMap, MapSize.Small);
+            SaveMap(systemId, MedimMap, MapSize.Medim);
+            SaveMap(systemId, LargeMap, MapSize.Large);
 
-            return RedirectToAction("Edit", new { id = id });
+            return RedirectToAction("Edit", new { id = systemId });
         }
 
         private int SaveMap(int systemId, HttpPostedFileBase uploadedFile, MapSize size) {
@@ -100,27 +102,5 @@ namespace Web.Controllers
             _dao.SaveMonitorMap(tracked);
             return RedirectToAction("Edit", new { id = tracked.MonitorSystemId });
         }
-
-        public ActionResult SaveStartPointPosition_Deprecated(int id, int startX, int startY) {
-            MonitorMap tracked = null;
-            string error = string.Empty;
-            try {
-                tracked = _dao.GetMonitorMap(id);
-                tracked.StartX = startX;
-                tracked.StartY = startY;
-                _dao.SaveMonitorMap(tracked);
-            }
-            catch (Exception ex) {
-                error = ex.Message;
-            }
-            return Json(new
-            {
-                success = string.IsNullOrEmpty(error),
-                startX = string.IsNullOrEmpty(error) ? 0 : tracked.StartX,
-                startY = string.IsNullOrEmpty(error) ? 0 : tracked.StartY,
-                message = error
-            }, JsonRequestBehavior.AllowGet);
-        }
-
     }
 }

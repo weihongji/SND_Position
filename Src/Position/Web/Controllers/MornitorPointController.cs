@@ -20,21 +20,21 @@ namespace Web.Controllers
             return View(model);
         }
 
-        public ActionResult Show(int id, MapSize size) {
+        public ActionResult Show([Bind(Prefix = "id")] int systemId, MapSize size) {
             var model = new MonitorPointModel();
-            model.System = dao.GetMonitorSystem(id);
-            model.Map = dao.GetMonitorMap(id, size);
-            model.ContentList = dao.GetMonitorContents(id);
-            model.MonitorList = dao.GetMonitorPoints(id);
+            model.System = dao.GetMonitorSystem(systemId);
+            model.Map = dao.GetMonitorMap(systemId, size);
+            model.ContentList = dao.GetMonitorContents(systemId);
+            model.MonitorList = dao.GetMonitorPoints(systemId);
             return View(model);
         }
 
-        public ActionResult Edit(int id) {
+        public ActionResult Edit([Bind(Prefix = "id")] int systemId) {
             var model = new MonitorPointModel();
-            model.System = dao.GetMonitorSystem(id);
-            model.Map = dao.GetMonitorMap(id, MapSize.Small);
-            model.ContentList = dao.GetMonitorContents(id);
-            model.MonitorList = dao.GetMonitorPoints(id);
+            model.System = dao.GetMonitorSystem(systemId);
+            model.Map = dao.GetMonitorMap(systemId, MapSize.Small);
+            model.ContentList = dao.GetMonitorContents(systemId);
+            model.MonitorList = dao.GetMonitorPoints(systemId);
             return View(model);
         }
 
