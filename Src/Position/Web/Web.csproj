@@ -283,6 +283,7 @@
     <Content Include="Views\MonitorMap\Index.cshtml" />
     <Content Include="Views\MonitorMap\Edit.cshtml" />
     <Content Include="Views\MonitorMap\StartPoint.cshtml" />
+    <Content Include="Views\MonitorPoint\Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

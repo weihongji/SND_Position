@@ -1,17 +1,25 @@
-﻿@model MonitorMapStartPointModel
-
+﻿@model MonitorPointModel
 @{
-    ViewBag.Title = "地图参考坐标";
-    Layout = "~/Views/Shared/_LayoutMap.cshtml";
+    ViewBag.Title = Model.System.Name;
+    Layout = "~/Views/Shared/_LayoutMonitorPoint.cshtml";
 
     var rootPath = Request.ApplicationPath;
     if (rootPath.EndsWith("/")) {
         rootPath = rootPath.Substring(0, rootPath.Length - 1);
     }
 }
+
 <style type="text/css">
     body {
         font-size: 62.5%;
+    }
+
+    #divScaleLink {
+        padding: 10px 0px;
+    }
+
+    #divScaleLink > a {
+        margin: 10px 20px;
     }
 
     /*Overview box*/
@@ -31,19 +39,28 @@
             visibility: visible;
         }
 </style>
-<h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm()) {
-    <div style="margin: 20px 200px">
-        <button type="submit">保存</button>
-    </div>
+<h2>@ViewBag.Title</h2>
+<div id="divScaleLink">
+    @Html.ActionLink("小图", "Show", new { id = Model.System.Id, scale = MapScale.Small })
+    @Html.ActionLink("中图", "Show", new { id = Model.System.Id, scale = MapScale.Medim })
+    @Html.ActionLink("大图", "Show", new { id = Model.System.Id, scale = MapScale.Large })
+</div>
+<div>
     <div id="divFrame" style="position: relative; border: 1px solid blue; width: 512px; height: 384px; overflow: hidden;">
-        <div id="divMap" style="display: inline-block; background: url(@(rootPath)/Images/@(Model.Map.Name)); cursor:url(@(rootPath)/Images/pin-start.cur), auto;">
+        <div id="divMap" style="display: inline-block; background: url(@(rootPath)/Images/@(Model.Map.Name));">
             <img src="~/Images/@(Model.Map.Name)" style="visibility: hidden;" />
-            <img id="imgPin" style="position: absolute; left: @(Model.Map.StartX - Model.Pin.PointerX)px; top: @(Model.Map.StartY - Model.Pin.PointerY)px; cursor: move;"
-                src="~/Images/@Model.Pin.Image"
-                pin_x="@Model.Map.StartX"
-                pin_y="@Model.Map.StartY" />
+            <div id="divPinLocated">
+                @foreach (var pin in Model.MonitorList) {
+                    <img id="pin_@(pin.Id)" title="@pin.ToString()"
+                        pin_id="@pin.Id"
+                        pin_name="@pin.Name"
+                        pin_x="@pin.X"
+                        pin_y="@pin.Y"
+                        pin_type="@pin.MonitorContentId"
+                        style="position: absolute; left: @(pin.Left)px; top: @(pin.Top)px; cursor: pointer;" src="~/Images/@(pin.Image)" />
+                }
+            </div>
         </div>
         <div id="divOverview" style="position: absolute; left: 0px; bottom: 0px; border: 1px solid black; display: inline-block; z-index: 1000;" class="extend">
             <div style="width: inherit; height: inherit; position: relative;">
@@ -53,22 +70,19 @@
                 </div>
                 <img id="imgOverview" draggable="false" src="~/Images/@(Model.Map.Name)" style="display: inline; width: inherit; height: inherit;" />
             </div>
-            <img id="imgPinOverview" src='@(rootPath)/Images/@Model.Pin.ImageOverview' style='position: absolute; left: 0px; top: 0px;' />
+            <div id="divOverviewPins"></div>
         </div>
     </div>
-    <div>
-        @Html.Hidden("startX", Model.Map.StartX)
-        @Html.Hidden("startY", Model.Map.StartY)
-    </div>
-}
+</div>
 
 <script type="text/javascript">
-    var _pin_pointerX = parseInt("@Model.Pin.PointerX");
-    var _pin_pointerY = parseInt("@Model.Pin.PointerY");
+    // sizes
     var _map_width, _map_height;
     var _frame_width, _frame_height;
     var _overview_width, _overview_height;
     var _overview_border_width = 1;
+    var _pin_pointerX = parseInt("@(Model.ContentList.Any() ? Model.ContentList[0].PointerX : 0)");
+    var _pin_pointerY = parseInt("@(Model.ContentList.Any() ? Model.ContentList[0].PointerY : 0)");
 
     // flags
     var _isMapDraggable;
@@ -80,7 +94,6 @@
         _frame_height = $("#divFrame").height();
         _overview_height = $("#divOverview").height();
         _overview_width = _overview_height * _map_width / _map_height;
-
         $("#divOverview").width(_overview_width);
         $("#divCollapse").css("left", (_overview_width - 14).toString() + "px");
         $("#divMagnifier").width(_overview_width * _frame_width / _map_width);
@@ -88,6 +101,8 @@
 
         _isMapDraggable = isDraggable();
         if (_isMapDraggable) {
+            $("#divMap").css("cursor", (navigator.userAgent.toString().indexOf("WebKit") > 0 ? "-webkit-grab" : "move"));
+
             var offset = $("#divMap").offset();
             var x1 = (-1) * (_map_width - _frame_width) + offset.left; //-670;
             var x2 = offset.left; //50;
@@ -95,9 +110,7 @@
             var y2 = offset.top; //80;
             $("#divMap").draggable({
                 containment: [x1, y1, x2, y2],
-                drag: function () {
-                    updateMagnifierPosition();
-                }
+                drag: updateMagnifierPosition
             });
 
             $("#divMagnifier").draggable({
@@ -109,16 +122,6 @@
             $("#divOverview").hide();
         }
 
-        $("#divMap").click(function () {
-            var x = event.offsetX;
-            var y = event.offsetY;
-            $("#startX").val(x);
-            $("#startY").val(y);
-            var o = $("#imgPin");
-            o.css({ left: x - _pin_pointerX, top: y - _pin_pointerY });
-            onStartPositionChanged();
-        });
-
         $("#divCollapse").click(function () {
             $("#divOverview").toggleClass("collapse extend");
             if ($("#divOverview").hasClass("extend")) {
@@ -126,72 +129,8 @@
             }
         });
 
-        //Pin Draggable
-        makeItDraggable($("#imgPin"));
-
-        onStartPositionChanged();
+        updatePinsInOverview();
     });
-
-    function makeItDraggable(o) {
-        $(o).draggable({
-            cursor: "move",
-            drag: function () {
-                $(this).draggable("option", "revert", !isInBoundary(this));
-            },
-            stop: function () {
-                if (!$(this).draggable("option", "revert")) {
-                    onStartPositionChanged();
-                }
-            }
-        });
-    }
-
-    function isInBoundary(pinImage) {
-        // frame boundary
-        var padding = 10;
-        var edgeX1 = padding;
-        var edgeX2 = (_isMapDraggable ? _frame_width : _map_width) - padding;
-        var edgeY1 = padding;
-        var edgeY2 = (_isMapDraggable ? _frame_height : _map_height) - padding;
-
-        // pin's position
-        var o = $(pinImage);
-        var x = parseInt(o.css("left")) + _pin_pointerX;
-        if (isNaN(x)) {
-            return false;
-        }
-        if (_isMapDraggable) {
-            x += safeParseInt($("#divMap").css("left"));
-        }
-        if (edgeX1 < x && x < edgeX2) {
-            var y = parseInt(o.css("top")) + _pin_pointerY;
-            if (isNaN(y)) {
-                return false;
-            }
-            if (_isMapDraggable) {
-                y += safeParseInt($("#divMap").css("top"));
-            }
-            if (edgeY1 < y && y < edgeY2) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    function onStartPositionChanged() {
-        var pin = $("#imgPin");
-
-        // Update form fields
-        $("#startX").val(safeParseInt(pin.css("left")) + _pin_pointerX);
-        $("#startY").val(safeParseInt(pin.css("top")) + _pin_pointerY);
-
-        // Update the overview
-        var wr = (_overview_width - _overview_border_width * 2) / _map_width; // ratio on width
-        var hr = (_overview_height - _overview_border_width * 2) / _map_height; // ratio on height
-        var left = (parseInt(pin.css("left")) + _pin_pointerX) * wr;
-        var top = (parseInt(pin.css("top")) + _pin_pointerY) * hr;
-        $("#imgPinOverview").css({ left: left, top: top });
-    }
 
     function updateMagnifierPosition() {
         if ($("#divOverview").hasClass("collapse")) {
@@ -208,6 +147,33 @@
         $("#divMap").css("left", left + "px");
         var top = _map_height * parseInt($("#divMagnifier").css("top")) / _overview_height * (-1);
         $("#divMap").css("top", top + "px");
+    }
+
+    function updatePinsInOverview() {
+        var contentTypes = [
+            @for (int i = 0; i < Model.ContentList.Count; i++) {
+                var content = Model.ContentList[i];
+                WriteLiteral(string.Format("{0}\"{1}\"", (i == 0 ? "" : ", "), content.Id));
+            }
+        ];
+        var contentImages = [
+            @for (int i = 0; i < Model.ContentList.Count; i++) {
+                var content = Model.ContentList[i];
+                WriteLiteral(string.Format("{0}\"{1}\"", (i == 0 ? "" : ", "), content.ImageOverview));
+            }
+        ];
+        var wr = (_overview_width - _overview_border_width * 2) / _map_width; // ratio on width
+        var hr = (_overview_height - _overview_border_width * 2) / _map_height; // ratio on height
+        $("#divOverviewPins").html("");
+        $("#divPinLocated>img").each(function () {
+            var pin = $(this);
+            var type = pin.attr("pin_type");
+            var index = $.inArray(type, contentTypes);
+            var overview = (index >= 0 ? contentImages[index] : "");
+            var left = (parseInt(pin.css("left")) + _pin_pointerX) * wr;
+            var top = (parseInt(pin.css("top")) + _pin_pointerY) * hr;
+            $("#divOverviewPins").append("<img src='@(rootPath)/Images/" + overview + "' style='position: absolute; left: " + left + "px; top: " + top + "px;' />\n");
+        });
     }
 
     function safeParseInt(value) {

@@ -20,6 +20,15 @@ namespace Web.Controllers
             return View(model);
         }
 
+        public ActionResult Show(int id, MapScale scale) {
+            var model = new MonitorPointModel();
+            model.System = dao.GetMonitorSystem(id);
+            model.Map = dao.GetMonitorMap(id, scale);
+            model.ContentList = dao.GetMonitorContents(id);
+            model.MonitorList = dao.GetMonitorPoints(id);
+            return View(model);
+        }
+
         public ActionResult Edit(int id) {
             var model = new MonitorPointModel();
             model.System = dao.GetMonitorSystem(id);
