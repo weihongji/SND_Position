@@ -31,52 +31,62 @@ namespace Web.Controllers
 
             var maps = _dao.GetMonitorMaps(systemId);
             var map = maps.SingleOrDefault(x => x.SizeType == (int)MapSize.Small);
-            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = systemId, DisplayName = "尚未设置", SizeType = (int)MapSize.Small });
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = systemId, DisplayName = "尚未设置", Scale=10000, SizeType = (int)MapSize.Small });
 
             map = maps.SingleOrDefault(x => x.SizeType == (int)MapSize.Medim);
-            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = systemId, DisplayName = "尚未设置", SizeType = (int)MapSize.Medim });
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = systemId, DisplayName = "尚未设置", Scale = 10000, SizeType = (int)MapSize.Medim });
 
             map = maps.SingleOrDefault(x => x.SizeType == (int)MapSize.Large);
-            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = systemId, DisplayName = "尚未设置", SizeType = (int)MapSize.Large });
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = systemId, DisplayName = "尚未设置", Scale = 10000, SizeType = (int)MapSize.Large });
 
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult Edit([Bind(Prefix = "id")] int systemId, HttpPostedFileBase SmallMap, HttpPostedFileBase MedimMap, HttpPostedFileBase LargeMap) {
-            SaveMap(systemId, SmallMap, MapSize.Small);
-            SaveMap(systemId, MedimMap, MapSize.Medim);
-            SaveMap(systemId, LargeMap, MapSize.Large);
+        public ActionResult Edit([Bind(Prefix = "id")] int systemId, int[] StartX, int[] StartY, int[] Scale, HttpPostedFileBase[] MapFile) {
+            for (int i = 0; i < 3; i++) {
+                SaveMap(systemId, StartX[i], StartY[i], Scale[i], (MapSize)(i + 1), MapFile[i]);
+            }
 
             return RedirectToAction("Edit", new { id = systemId });
         }
 
-        private int SaveMap(int systemId, HttpPostedFileBase uploadedFile, MapSize size) {
+        private int SaveMap(int systemId, int startX, int startY, int scale, MapSize size, HttpPostedFileBase uploadedFile) {
+            if (_mapList == null) {
+                _mapList = _dao.GetMonitorMaps(systemId);
+            }
+            var tracked = _mapList.FirstOrDefault(x => x.MonitorSystemId == systemId && x.SizeType == (int)size);
+            if (tracked == null) {
+                tracked = new MonitorMap {
+                    MonitorSystemId = systemId,
+                    SizeType = (int)size,
+                    Name = "",
+                    DisplayName = ""
+                };
+            }
+            tracked.StartX= startX;
+            tracked.StartY = startY;
+            tracked.Scale = scale;
+
             if (uploadedFile != null && uploadedFile.ContentLength > 0) {
-                var displayName = Path.GetFileName(uploadedFile.FileName);
                 var ext = Path.GetExtension(uploadedFile.FileName);
                 var mapName = string.Format("Map_{0}_{1}{2}", systemId, (int)size, ext);
-                var filePath = Path.Combine(HttpContext.Server.MapPath("~/Images"), mapName);
-
-                var map = new MonitorMap {
-                    Name = mapName,
-                    DisplayName = displayName,
-                    MonitorSystemId = systemId,
-                    SizeType = (int)size
-                };
-
-                if (_mapList == null) {
-                    _mapList = _dao.GetMonitorMaps(systemId);
+                var displayName = Path.GetFileName(uploadedFile.FileName);
+                var filePath = "";
+                if (!string.IsNullOrEmpty(tracked.Name)) {
+                    filePath = Path.Combine(HttpContext.Server.MapPath("~/Images"), tracked.Name);
+                    if (System.IO.File.Exists(filePath)) {
+                        System.IO.File.Delete(filePath);
+                    }
                 }
-                var tracked = _mapList.FirstOrDefault(x => IsSameMap(x.Name, map.Name));
-                if (tracked != null) {
-                    map.Id = tracked.Id;
-                    System.IO.File.Delete(Path.Combine(HttpContext.Server.MapPath("~/Images"), tracked.Name));
-                }
+
+                filePath = Path.Combine(HttpContext.Server.MapPath("~/Images"), mapName);
                 uploadedFile.SaveAs(filePath);
-                return _dao.SaveMonitorMap(map);
+
+                tracked.Name = mapName;
+                tracked.DisplayName = displayName;
             }
-            return 0;
+            return _dao.SaveMonitorMap(tracked);
         }
 
         private bool IsSameMap(string map1, string map2) {

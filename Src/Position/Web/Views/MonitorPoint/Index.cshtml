@@ -3,10 +3,15 @@
     ViewBag.Title = "检测点";
     Layout = "~/Views/Shared/_LayoutMonitorPoint.cshtml";
 }
-
+<style type="text/css">
+    ul.list>li>:first-child {
+        display: inline-block;
+        width: 130px;
+    }
+</style>
 <h2>@ViewBag.Title</h2>
-<ul>
+<ul class="list">
     @foreach (var item in Model.MonitorSystems) {
-        <li>@item.Name @Html.ActionLink("显示", "Show", new {id = item.Id, size = MapSize.Medim}) @Html.ActionLink("设置", "Edit", new {id = item.Id})</li>
+        <li><span>@item.Name</span> @Html.ActionLink("显示", "Show", new {id = item.Id, size = MapSize.Medim}) @Html.ActionLink("设置", "Edit", new {id = item.Id})</li>
     }
 </ul>

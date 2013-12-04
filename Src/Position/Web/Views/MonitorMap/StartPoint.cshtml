@@ -63,6 +63,11 @@
 }
 
 <script type="text/javascript">
+    // Set navigation links -- this block can be removed when apply standard UI.
+    $(function () {
+        $("a[href*=MonitorMap]").attr("href", "@Url.Action("Edit", new { id = Model.Map.MonitorSystemId })");
+    });
+
     var _pin_pointerX = parseInt("@Model.Pin.PointerX");
     var _pin_pointerY = parseInt("@Model.Pin.PointerY");
     var _map_width, _map_height;

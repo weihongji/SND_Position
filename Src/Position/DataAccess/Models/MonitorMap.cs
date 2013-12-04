@@ -10,6 +10,7 @@ namespace DataAccess.Models
         public string Name { get; set; }
         public int StartX { get; set; }
         public int StartY { get; set; }
+        public int Scale { get; set; }
         public int SizeType { get; set; }
         public string DisplayName { get; set; }
     }

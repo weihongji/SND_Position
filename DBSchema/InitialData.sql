@@ -61,21 +61,21 @@ IF @enforce = 1 BEGIN
 	TRUNCATE TABLE MonitorMap
 END
 IF NOT EXISTS(SELECT * FROM MonitorMap) BEGIN
-	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, SizeType, DisplayName)
-	VALUES (1, 'Map_1_1.gif', 846, 137, 1, 'Map_1_1.gif')
+	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, Scale, SizeType, DisplayName)
+	VALUES (1, 'Map_1_1.gif', 846, 137, 3000, 1, 'Map_1_1.gif')
 
-	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, SizeType, DisplayName)
-	VALUES (1, 'Map_1_2.gif', 1692, 274, 2, 'Map_1_2.gif')
+	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, Scale, SizeType, DisplayName)
+	VALUES (1, 'Map_1_2.gif', 1692, 274, 2000, 2, 'Map_1_2.gif')
 
-	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, SizeType, DisplayName)
-	VALUES (1, 'Map_1_3.gif', 2538, 411, 3, 'Map_1_3.gif')
+	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, Scale, SizeType, DisplayName)
+	VALUES (1, 'Map_1_3.gif', 2538, 411, 1000, 3, 'Map_1_3.gif')
 
-	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, SizeType, DisplayName)
-	VALUES (2, 'Map_2_1.gif', 846, 137, 1, 'Map_2_1.gif')
+	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, Scale, SizeType, DisplayName)
+	VALUES (2, 'Map_2_1.gif', 846, 137, 3000, 1, 'Map_2_1.gif')
 
-	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, SizeType, DisplayName)
-	VALUES (2, 'Map_2_2.gif', 1692, 274, 2, 'Map_2_2.gif')
+	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, Scale, SizeType, DisplayName)
+	VALUES (2, 'Map_2_2.gif', 1692, 274, 2000, 2, 'Map_2_2.gif')
 
-	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, SizeType, DisplayName)
-	VALUES (2, 'Map_2_3.gif', 2538, 411, 3, 'Map_2_3.gif')
+	INSERT INTO MonitorMap (MonitorSystemId, Name, StartX, StartY, Scale, SizeType, DisplayName)
+	VALUES (2, 'Map_2_3.gif', 2538, 411, 1000, 3, 'Map_2_3.gif')
 END

@@ -453,6 +453,7 @@ IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Mon
 		[Name] [nvarchar](50) NOT NULL,
 		[StartX] [int] NOT NULL,
 		[StartY] [int] NOT NULL,
+		[Scale] [int] NOT NULL,
 		[SizeType] [int] NOT NULL CONSTRAINT [DF_MonitorMap_SizeType] DEFAULT (0),
 		[DisplayName] [nvarchar](50) NOT NULL,
 		[DTStamp] [smalldatetime] NOT NULL CONSTRAINT [DF_MonitorMap_DTStamp] DEFAULT (getdate())
