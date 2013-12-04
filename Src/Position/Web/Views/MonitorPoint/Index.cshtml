@@ -7,6 +7,6 @@
 <h2>@ViewBag.Title</h2>
 <ul>
     @foreach (var item in Model.MonitorSystems) {
-        <li>@item.Name @Html.ActionLink("显示", "Show", new {id = item.Id, scale = MapScale.Medim}) @Html.ActionLink("设置", "Edit", new {id = item.Id})</li>
+        <li>@item.Name @Html.ActionLink("显示", "Show", new {id = item.Id, size = MapSize.Medim}) @Html.ActionLink("设置", "Edit", new {id = item.Id})</li>
     }
 </ul>

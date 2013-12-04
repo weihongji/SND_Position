@@ -29,38 +29,38 @@ namespace Web.Controllers
             };
 
             var maps = _dao.GetMonitorMaps(id);
-            var map = maps.SingleOrDefault(x => x.Scale == (int)MapScale.Small);
-            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", Scale = (int)MapScale.Small });
+            var map = maps.SingleOrDefault(x => x.SizeType == (int)MapSize.Small);
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", SizeType = (int)MapSize.Small });
 
-            map = maps.SingleOrDefault(x => x.Scale == (int)MapScale.Medim);
-            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", Scale = (int)MapScale.Medim });
+            map = maps.SingleOrDefault(x => x.SizeType == (int)MapSize.Medim);
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", SizeType = (int)MapSize.Medim });
 
-            map = maps.SingleOrDefault(x => x.Scale == (int)MapScale.Large);
-            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", Scale = (int)MapScale.Large });
+            map = maps.SingleOrDefault(x => x.SizeType == (int)MapSize.Large);
+            model.Maps.Add(map ?? new MonitorMap { MonitorSystemId = id, DisplayName = "尚未设置", SizeType = (int)MapSize.Large });
 
             return View(model);
         }
 
         public ActionResult Upload(int id, HttpPostedFileBase SmallMap, HttpPostedFileBase MedimMap, HttpPostedFileBase LargeMap) {
-            SaveMap(id, SmallMap, MapScale.Small);
-            SaveMap(id, MedimMap, MapScale.Medim);
-            SaveMap(id, LargeMap, MapScale.Large);
+            SaveMap(id, SmallMap, MapSize.Small);
+            SaveMap(id, MedimMap, MapSize.Medim);
+            SaveMap(id, LargeMap, MapSize.Large);
 
             return RedirectToAction("Edit", new { id = id });
         }
 
-        private int SaveMap(int systemId, HttpPostedFileBase uploadedFile, MapScale scale) {
+        private int SaveMap(int systemId, HttpPostedFileBase uploadedFile, MapSize size) {
             if (uploadedFile != null && uploadedFile.ContentLength > 0) {
                 var displayName = Path.GetFileName(uploadedFile.FileName);
                 var ext = Path.GetExtension(uploadedFile.FileName);
-                var mapName = string.Format("Map_{0}_{1}{2}", systemId, (int)scale, ext);
+                var mapName = string.Format("Map_{0}_{1}{2}", systemId, (int)size, ext);
                 var filePath = Path.Combine(HttpContext.Server.MapPath("~/Images"), mapName);
 
                 var map = new MonitorMap {
                     Name = mapName,
                     DisplayName = displayName,
                     MonitorSystemId = systemId,
-                    Scale = (int)scale
+                    SizeType = (int)size
                 };
 
                 if (_mapList == null) {

@@ -22,7 +22,7 @@ namespace DataAccess
         private DataAccess.Models.MonitorMap SettingMap {
             get {
                 if (_settingMap_hard_to_remember == null) {
-                    _settingMap_hard_to_remember = context.MonitorMaps.Where(x => x.Scale == (int)MapScale.Small).First();
+                    _settingMap_hard_to_remember = context.MonitorMaps.Where(x => x.SizeType == (int)MapSize.Small).First();
                 }
                 return _settingMap_hard_to_remember;
             }
@@ -99,10 +99,10 @@ namespace DataAccess
             return map;
         }
 
-        public MonitorMap GetMonitorMap(int systemId, MapScale scale) {
-            var map = context.MonitorMaps.Where(x => x.MonitorSystemId == systemId && x.Scale == (int)scale).FirstOrDefault();
+        public MonitorMap GetMonitorMap(int systemId, MapSize size) {
+            var map = context.MonitorMaps.Where(x => x.MonitorSystemId == systemId && x.SizeType == (int)size).FirstOrDefault();
             if (map == null) {
-                throw new ArgumentException(string.Format("Cannot find map of scale {0} for system id {1}.", scale, systemId));
+                throw new ArgumentException(string.Format("Cannot find map of size {0} for system id {1}.", size, systemId));
             }
             return map;
         }

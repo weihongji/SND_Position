@@ -21,7 +21,7 @@ namespace DataAccess.Models
         Rank = 4
     }
 
-    public enum MapScale
+    public enum MapSize
     {
         Small = 1,
         Medim = 2,

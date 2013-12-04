@@ -14,11 +14,11 @@
         font-size: 62.5%;
     }
 
-    #divScaleLink {
+    #divSizeLink {
         padding: 10px 0px;
     }
 
-    #divScaleLink > a {
+    #divSizeLink > a {
         margin: 10px 20px;
     }
 
@@ -41,10 +41,10 @@
 </style>
 
 <h2>@ViewBag.Title</h2>
-<div id="divScaleLink">
-    @Html.ActionLink("小图", "Show", new { id = Model.System.Id, scale = MapScale.Small })
-    @Html.ActionLink("中图", "Show", new { id = Model.System.Id, scale = MapScale.Medim })
-    @Html.ActionLink("大图", "Show", new { id = Model.System.Id, scale = MapScale.Large })
+<div id="divSizeLink">
+    @Html.ActionLink("小图", "Show", new { id = Model.System.Id, size = MapSize.Small })
+    @Html.ActionLink("中图", "Show", new { id = Model.System.Id, size = MapSize.Medim })
+    @Html.ActionLink("大图", "Show", new { id = Model.System.Id, size = MapSize.Large })
 </div>
 <div>
     <div id="divFrame" style="position: relative; border: 1px solid blue; width: 512px; height: 384px; overflow: hidden;">

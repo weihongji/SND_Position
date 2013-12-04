@@ -17,7 +17,7 @@ namespace DataAccess.Models.Mapping
             this.Property(t => t.Name).HasColumnName("Name");
             this.Property(t => t.StartX).HasColumnName("StartX");
             this.Property(t => t.StartY).HasColumnName("StartY");
-            this.Property(t => t.Scale).HasColumnName("Scale");
+            this.Property(t => t.SizeType).HasColumnName("SizeType");
             this.Property(t => t.DisplayName).HasColumnName("DisplayName");
         }
     }

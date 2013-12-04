@@ -20,10 +20,10 @@ namespace Web.Controllers
             return View(model);
         }
 
-        public ActionResult Show(int id, MapScale scale) {
+        public ActionResult Show(int id, MapSize size) {
             var model = new MonitorPointModel();
             model.System = dao.GetMonitorSystem(id);
-            model.Map = dao.GetMonitorMap(id, scale);
+            model.Map = dao.GetMonitorMap(id, size);
             model.ContentList = dao.GetMonitorContents(id);
             model.MonitorList = dao.GetMonitorPoints(id);
             return View(model);
@@ -32,7 +32,7 @@ namespace Web.Controllers
         public ActionResult Edit(int id) {
             var model = new MonitorPointModel();
             model.System = dao.GetMonitorSystem(id);
-            model.Map = dao.GetMonitorMap(id, MapScale.Small);
+            model.Map = dao.GetMonitorMap(id, MapSize.Small);
             model.ContentList = dao.GetMonitorContents(id);
             model.MonitorList = dao.GetMonitorPoints(id);
             return View(model);
