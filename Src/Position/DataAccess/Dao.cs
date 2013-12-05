@@ -12,6 +12,8 @@ namespace DataAccess
 {
     public class Dao
     {
+        const MapSize SettingMapSize = MapSize.Large;
+
         private PositionContext context;
         private DataAccess.Models.MonitorMap _settingMap_hard_to_remember;
 
@@ -22,7 +24,7 @@ namespace DataAccess
         private DataAccess.Models.MonitorMap SettingMap {
             get {
                 if (_settingMap_hard_to_remember == null) {
-                    _settingMap_hard_to_remember = context.MonitorMaps.Where(x => x.SizeType == (int)MapSize.Small).First();
+                    _settingMap_hard_to_remember = context.MonitorMaps.Where(x => x.SizeType == (int)SettingMapSize).First();
                 }
                 return _settingMap_hard_to_remember;
             }
@@ -82,6 +84,26 @@ namespace DataAccess
             query = query.Where(x => contentIds.Contains(x.MonitorContentId.Value));
             var list = query.ToList();
             list.ForEach(x => ConvertMonitorPointPosition(x, true));
+            return list;
+        }
+
+        public List<MonitorPoint> GetMonitorPoints(int systemId, MapSize size) {
+            var query = context.MonitorPoints.Include(x => x.MonitorContent);
+            var contentIds = context.MonitorContents.Where(c => c.MonitorSystemId == systemId).Select(c => c.Id);
+            query = query.Where(x => contentIds.Contains(x.MonitorContentId.Value));
+            var list = query.ToList();
+
+            var currentMap = this.GetMonitorMap(systemId, size);
+
+            decimal ratio = 1;
+            if (size != SettingMapSize) {
+                ratio = ((decimal)SettingMap.Scale) / currentMap.Scale;
+            }
+
+            list.ForEach(p => {
+                p.X = currentMap.StartX + (int)(p.OffsetX * ratio);
+                p.Y = currentMap.StartY + (int)(p.OffsetY * ratio);
+            });
             return list;
         }
 

@@ -25,7 +25,7 @@ namespace Web.Controllers
             model.System = dao.GetMonitorSystem(systemId);
             model.Map = dao.GetMonitorMap(systemId, size);
             model.ContentList = dao.GetMonitorContents(systemId);
-            model.MonitorList = dao.GetMonitorPoints(systemId);
+            model.MonitorList = dao.GetMonitorPoints(systemId, size);
             return View(model);
         }
 
