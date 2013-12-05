@@ -24,7 +24,7 @@ END
 
 IF NOT EXISTS(SELECT * FROM sys.tables WHERE  object_id = OBJECT_ID(N'[dbo].[Department]') AND type in (N'U')) BEGIN
 	CREATE TABLE [dbo].[Department](
-		[Company_id] [smallint] NOT NULL,
+		[Company_id] [smallint] NOT NULL CONSTRAINT DF_Department_Company_id DEFAULT (1),
 		[Dept_id] [smallint] NOT NULL,
 		[Dept_name] [varchar](32) NOT NULL,
 		[Dept_fullname] [varchar](64) NOT NULL,
