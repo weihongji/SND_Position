@@ -97,7 +97,7 @@ namespace DataAccess
 
             decimal ratio = 1;
             if (size != SettingMapSize) {
-                ratio = ((decimal)SettingMap.Scale) / currentMap.Scale;
+                ratio = ((decimal)currentMap.Scale) / SettingMap.Scale;
             }
 
             list.ForEach(p => {

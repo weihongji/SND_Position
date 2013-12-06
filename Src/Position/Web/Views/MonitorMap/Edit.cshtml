@@ -31,6 +31,13 @@
                 </td>
             </tr>
             <tr>
+                <td>比例尺：</td>
+                <td>
+                    <input type="text" style="width:80px;" maxlength="10" name="Scale" id="Scale_@map.SizeType" value="@map.Scale" />
+                    <label> : 1</label>
+                </td>
+            </tr>
+            <tr>
                 <td>起点坐标：</td>
                 <td>
                     <label for="StartX_1">X</label>
@@ -40,13 +47,6 @@
                     @if (!string.IsNullOrEmpty(map.Name)) {
                         <button style="margin-left:20px;" map_id="@map.Id">设置...</button>
                     }
-                </td>
-            </tr>
-            <tr>
-                <td>比例尺：</td>
-                <td>
-                    <label>1 : </label>
-                    <input type="text" style="width:80px;" maxlength="10" name="Scale" id="Scale_@map.SizeType" value="@map.Scale" />
                 </td>
             </tr>
             <tr>
