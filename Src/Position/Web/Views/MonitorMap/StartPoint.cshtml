@@ -37,7 +37,7 @@
     <div style="margin: 20px 200px">
         <button type="submit">保存</button>
     </div>
-    <div id="divFrame" style="position: relative; border: 1px solid blue; width: 512px; height: 384px; overflow: hidden;">
+    <div id="divFrame" style="position: relative; border: 1px solid blue; width: 1024px; height: 768px; overflow: hidden;">
         <div id="divMap" style="display: inline-block; background: url(@(rootPath)/Images/@(Model.Map.Name)); cursor:url(@(rootPath)/Images/pin-start.cur), auto;">
             <img src="~/Images/@(Model.Map.Name)" style="visibility: hidden;" />
             <img id="imgPin" style="position: absolute; left: @(Model.Map.StartX - Model.Pin.PointerX)px; top: @(Model.Map.StartY - Model.Pin.PointerY)px; cursor: move;"

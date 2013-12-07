@@ -1,6 +1,6 @@
 ﻿@model MonitorPointModel
 @{
-    ViewBag.Title = Model.System.Name + "检测点";
+    ViewBag.Title = Model.System.Name + "检测点设置";
     Layout = "~/Views/Shared/_LayoutMonitorPoint.cshtml";
 
     var rootPath = Request.ApplicationPath;
@@ -76,7 +76,7 @@
     <button id="btnPinPanel">隐藏面板</button>
 </div>
 <div>
-    <div id="divFrame" style="position: relative; border: 1px solid blue; width: 512px; height: 384px; overflow: hidden;">
+    <div id="divFrame" style="position: relative; border: 1px solid blue; width: 1024px; height: 768px; overflow: hidden;">
         <div id="divMap" style="display: inline-block; background: url(@(rootPath)/Images/@(Model.Map.Name));">
             <img src="~/Images/@(Model.Map.Name)" style="visibility: hidden;" />
             <div id="divPinLocated">
@@ -106,7 +106,7 @@
                     }
                 </table>
                 @foreach (var content in Model.ContentList) {
-                    <img pin_type="@content.Id" pin_overview="@(content.ImageOverview)" style="position: absolute; left: 0px; top: 0px; cursor: pointer;" src="~/Images/@(content.Image)" />
+                    <img pin_type="@content.Id" style="position: absolute; left: 0px; top: 0px; cursor: pointer;" src="~/Images/@(content.Image)" />
                 }
             </div>
             <!--Context Menu-->
@@ -439,7 +439,7 @@
     }
 
     function onMapDragStart() {
-        if ($("#divPinPanel:visible").length > 0) {
+        if ($("#divPinPanel").css("visibility") == "visible") {
             _hidePinPanelForDrag = true;
             $("#divPinPanel").css("visibility", "hidden");
         }
@@ -486,13 +486,26 @@
     }
 
     function updatePinsInOverview() {
+        var contentTypes = [
+            @for (int i = 0; i < Model.ContentList.Count; i++) {
+                var content = Model.ContentList[i];
+                WriteLiteral(string.Format("{0}\"{1}\"", (i == 0 ? "" : ", "), content.Id));
+            }
+        ];
+        var contentImages = [
+            @for (int i = 0; i < Model.ContentList.Count; i++) {
+                var content = Model.ContentList[i];
+                WriteLiteral(string.Format("{0}\"{1}\"", (i == 0 ? "" : ", "), content.ImageOverview));
+            }
+        ];
         var wr = (_overview_width - _overview_border_width * 2) / _map_width; // ratio on width
         var hr = (_overview_height - _overview_border_width * 2) / _map_height; // ratio on height
         $("#divOverviewPins").html("");
         $("#divPinLocated>img").each(function () {
             var pin = $(this);
             var type = pin.attr("pin_type");
-            var overview = $("#divPinPanel>img[pin_type=" + type + "]").attr("pin_overview");
+            var index = $.inArray(type, contentTypes);
+            var overview = (index >= 0 ? contentImages[index] : "");
             var left = (parseInt(pin.css("left")) + _pin_pointerX) * wr;
             var top = (parseInt(pin.css("top")) + _pin_pointerY) * hr;
             $("#divOverviewPins").append("<img src='@(rootPath)/Images/" + overview + "' style='position: absolute; left: " + left + "px; top: " + top + "px;' />\n");

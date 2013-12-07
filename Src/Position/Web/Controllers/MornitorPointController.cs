@@ -10,6 +10,8 @@ namespace Web.Controllers
 {
     public class MonitorPointController : Controller
     {
+        const MapSize SettingMapSize = MapSize.Large;
+
         private DataAccess.Dao dao = new DataAccess.Dao();
 
         public ActionResult Index() {
@@ -32,7 +34,7 @@ namespace Web.Controllers
         public ActionResult Edit([Bind(Prefix = "id")] int systemId) {
             var model = new MonitorPointModel();
             model.System = dao.GetMonitorSystem(systemId);
-            model.Map = dao.GetMonitorMap(systemId, MapSize.Small);
+            model.Map = dao.GetMonitorMap(systemId, SettingMapSize);
             model.ContentList = dao.GetMonitorContents(systemId);
             model.MonitorList = dao.GetMonitorPoints(systemId);
             return View(model);
