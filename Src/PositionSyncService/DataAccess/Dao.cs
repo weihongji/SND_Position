@@ -366,7 +366,9 @@ namespace DataAccess
         public List<AlarmReport> GetExternalAlarmReportsFrom(int lastId, int maxRows = 0) {
             var context = new PositionContext(DBSource.External);
             if (maxRows > 0) {
-                return context.AlarmReports.Where(x => x.Alarm_id > lastId).OrderBy(x => x.Alarm_id).Take(maxRows).ToList();
+                var query = string.Format("SELECT TOP {0} * FROM AlarmReport WHERE Alarm_id > {1} ORDER BY Alarm_id", maxRows, lastId);
+                var list = context.Database.SqlQuery<AlarmReport>(query).ToList();
+                return list;
             }
             else {
                 return context.AlarmReports.Where(x => x.Alarm_id > lastId).ToList();
