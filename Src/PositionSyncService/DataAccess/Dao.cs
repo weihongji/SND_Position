@@ -390,7 +390,7 @@ namespace DataAccess
         public List<PositionReport> GetExternalPositionReportsFrom(DateTime lastTime, int maxRows = 0) {
             var context = new PositionContext(DBSource.External);
             var top = maxRows > 0 ? string.Format("TOP {0}", maxRows) : "";
-            var query = string.Format("SELECT {0} * FROM PositionReport WHERE Report_time>'{1}'", top, lastTime.ToString("yyyyMMdd HH:mm:ss"));
+            var query = string.Format("SELECT DISTINCT {0} * FROM PositionReport WHERE Report_time>'{1}'", top, lastTime.ToString("yyyyMMdd HH:mm:ss"));
             var list = context.Database.SqlQuery<PositionReport>(query).ToList();
             return list;
         }

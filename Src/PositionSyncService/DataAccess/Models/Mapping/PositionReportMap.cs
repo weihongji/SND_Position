@@ -9,7 +9,7 @@ namespace DataAccess.Models.Mapping
         public PositionReportMap()
         {
             // Primary Key
-            this.HasKey(t => new { t.Sender_id, t.Position_id, t.Report_time });
+            this.HasKey(t => new { t.Sender_id, t.Branch_id, t.Receiver_id, t.Position_id, t.Report_time });
 
             // Properties
             this.Property(t => t.Sender_id)
