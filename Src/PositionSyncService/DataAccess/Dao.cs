@@ -365,32 +365,30 @@ namespace DataAccess
 
         public List<AlarmReport> GetExternalAlarmReportsFrom(int lastId, int maxRows = 0) {
             var context = new PositionContext(DBSource.External);
-            if (maxRows > 0) {
-                var query = string.Format("SELECT TOP {0} * FROM AlarmReport WHERE Alarm_id > {1} ORDER BY Alarm_id", maxRows, lastId);
-                var list = context.Database.SqlQuery<AlarmReport>(query).ToList();
-                return list;
-            }
-            else {
-                return context.AlarmReports.Where(x => x.Alarm_id > lastId).ToList();
-            }
+            var top = maxRows > 0 ? string.Format("TOP {0}", maxRows) : "";
+            var query = string.Format("SELECT {0} * FROM AlarmReport WITH(NOLOCK) WHERE Alarm_id > {1} ORDER BY Alarm_id", top, lastId);
+            var list = context.Database.SqlQuery<AlarmReport>(query).ToList();
+            return list;
         }
 
         public List<CurrentAlarmReport> GetExternalCurrentAlarmReportsFrom(int lastId) {
             var context = new PositionContext(DBSource.External);
-            return context.CurrentAlarmReports.Where(x => x.Alarm_id > lastId).ToList();
+            var query = string.Format("SELECT * FROM CurrentAlarmReport WITH(NOLOCK) WHERE Alarm_id>{0}", lastId);
+            var list = context.Database.SqlQuery<CurrentAlarmReport>(query).ToList();
+            return list;
         }
 
         public List<CurrentPositionReport> GetExternalCurrentPositionReportsFrom(DateTime lastTime) {
             var context = new PositionContext(DBSource.External);
-            var query = context.Database.SqlQuery<CurrentPositionReport>(string.Format("SELECT * FROM CurrentPositionReport WHERE Report_time>'{0}'", lastTime.ToString("yyyyMMdd HH:mm:ss")));
-            var list = query.ToList();
+            var query = string.Format("SELECT * FROM CurrentPositionReport WITH(NOLOCK) WHERE Report_time>'{0}'", lastTime.ToString("yyyyMMdd HH:mm:ss"));
+            var list = context.Database.SqlQuery<CurrentPositionReport>(query).ToList();
             return list;
         }
 
         public List<PositionReport> GetExternalPositionReportsFrom(DateTime lastTime, int maxRows = 0) {
             var context = new PositionContext(DBSource.External);
             var top = maxRows > 0 ? string.Format("TOP {0}", maxRows) : "";
-            var query = string.Format("SELECT DISTINCT {0} * FROM PositionReport WHERE Report_time>'{1}'", top, lastTime.ToString("yyyyMMdd HH:mm:ss"));
+            var query = string.Format("SELECT DISTINCT {0} * FROM PositionReport WITH(NOLOCK) WHERE Report_time>'{1}'", top, lastTime.ToString("yyyyMMdd HH:mm:ss"));
             var list = context.Database.SqlQuery<PositionReport>(query).ToList();
             return list;
         }
