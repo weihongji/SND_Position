@@ -36,6 +36,7 @@ namespace ServiceHost
         protected override void OnStart(string[] args) {
             StartTimers();
             log.Info("Service started");
+            log.InfoFormat("Configuration: SecondTimerInterval = {0}, MinuteTimerInterval = {1}", ConfigurationManager.AppSettings["secondTimerInterval"], ConfigurationManager.AppSettings["minuteTimerInterval"]);
         }
 
         protected override void OnStop() {

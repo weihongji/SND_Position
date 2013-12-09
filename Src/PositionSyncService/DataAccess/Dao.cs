@@ -156,7 +156,7 @@ namespace DataAccess
             var context = new PositionContext(DBSource.Internal);
 
             //Delete those 3 generated days ago
-            var deleted = context.Database.ExecuteSqlCommand(string.Format("DELETE FROM PositionReport WHERE Report_time < '{0}'", lastTime.ToString("yyyyMMdd HH:mm:ss")), new object[0]);
+            var deleted = context.Database.ExecuteSqlCommand(string.Format("DELETE FROM PositionReport WHERE Report_time < '{0}'", lastTime.AddDays(-3).ToString("yyyyMMdd HH:mm:ss")), new object[0]);
 
             var minTime = potentialEntries.Min(x => x.Report_time);
             var existingEntries = context.PositionReports.Where(x => x.Report_time >= minTime).ToList();
