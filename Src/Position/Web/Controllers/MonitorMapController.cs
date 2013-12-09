@@ -13,7 +13,6 @@ namespace Web.Controllers
     public class MonitorMapController : Controller
     {
         private DataAccess.Dao _dao = new DataAccess.Dao();
-        private List<MonitorMap> _mapList = null;
 
         public ActionResult Index() {
             var model = new MonitorMapIndexModel {
@@ -44,18 +43,16 @@ namespace Web.Controllers
 
         [HttpPost]
         public ActionResult Edit([Bind(Prefix = "id")] int systemId, int[] StartX, int[] StartY, int[] Scale, HttpPostedFileBase[] MapFile) {
+            var mapList = _dao.GetMonitorMaps(systemId);
             for (int i = 0; i < 3; i++) {
-                SaveMap(systemId, StartX[i], StartY[i], Scale[i], (MapSize)(i + 1), MapFile[i]);
+                SaveMap(mapList, systemId, StartX[i], StartY[i], Scale[i], (MapSize)(i + 1), MapFile[i]);
             }
 
             return RedirectToAction("Edit", new { id = systemId });
         }
 
-        private int SaveMap(int systemId, int startX, int startY, int scale, MapSize size, HttpPostedFileBase uploadedFile) {
-            if (_mapList == null) {
-                _mapList = _dao.GetMonitorMaps(systemId);
-            }
-            var tracked = _mapList.FirstOrDefault(x => x.MonitorSystemId == systemId && x.SizeType == (int)size);
+        private int SaveMap(List < MonitorMap > mapList, int systemId, int startX, int startY, int scale, MapSize size, HttpPostedFileBase uploadedFile) {
+            var tracked = mapList.FirstOrDefault(x => x.MonitorSystemId == systemId && x.SizeType == (int)size);
             if (tracked == null) {
                 tracked = new MonitorMap {
                     MonitorSystemId = systemId,

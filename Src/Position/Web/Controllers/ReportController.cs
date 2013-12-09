@@ -23,8 +23,7 @@ namespace Web.Controllers
         }
 
         public ActionResult PeopleOverview() {
-            var dao = new Dao();
-            var list = dao.GetPeopleOverviewReport();
+            var list = _dao.GetPeopleOverviewReport();
             return View(list);
 
         }

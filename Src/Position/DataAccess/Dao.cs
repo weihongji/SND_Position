@@ -15,13 +15,13 @@ namespace DataAccess
         const MapSize SettingMapSize = MapSize.Large;
 
         private PositionContext context;
-        private DataAccess.Models.MonitorMap _settingMap_hard_to_remember;
+        private MonitorMap _settingMap_hard_to_remember;
 
         public Dao() {
             context = new PositionContext();
         }
 
-        private DataAccess.Models.MonitorMap SettingMap {
+        private MonitorMap SettingMap {
             get {
                 if (_settingMap_hard_to_remember == null) {
                     _settingMap_hard_to_remember = context.MonitorMaps.Where(x => x.SizeType == (int)SettingMapSize).First();
