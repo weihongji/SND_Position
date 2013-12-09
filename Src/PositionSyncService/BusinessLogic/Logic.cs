@@ -58,13 +58,9 @@ namespace BusinessLogic
         }
 
         public int SyncCurrentAlarmReports() {
-            var maxId = dao.GetCurrentAlarmReportMaxId();
-            var newEntries = dao.GetExternalCurrentAlarmReportsFrom(maxId);
-            log.DebugFormat("{0} records need to be imported.", newEntries.Count);
-            int count = 0;
-            if (newEntries.Count > 0) {
-                count = dao.SyncCurrentAlarmReports(newEntries);
-            }
+            var externals = dao.GetCurrentAlarmReports(DBSource.External);
+            log.DebugFormat("{0} records in the external table.", externals.Count);
+            var count = dao.SyncCurrentAlarmReports(externals);
             if (count > 0) {
                 log.InfoFormat("{0} records synchronized.", count);
             }
@@ -75,6 +71,8 @@ namespace BusinessLogic
         }
 
         public int SyncCurrentPositionReports() {
+            return 0;
+            /*
             var maxTime = dao.GetCurrentPositionReportMaxTime().AddMinutes(-5);
             var potentialEntries = dao.GetExternalCurrentPositionReportsFrom(maxTime);
             log.DebugFormat("About {0} records need to check.", potentialEntries.Count);
@@ -89,6 +87,7 @@ namespace BusinessLogic
                 log.DebugFormat("{0} records synchronized.", count);
             }
             return count;
+            */
         }
 
         public int SyncDepartments() {
@@ -162,7 +161,7 @@ namespace BusinessLogic
             log.DebugFormat("About {0} records need to check.", potentialEntries.Count);
             int count = 0;
             if (potentialEntries.Count > 0) {
-                count = dao.SyncPositionReports(potentialEntries);
+                count = dao.SyncPositionReports(potentialEntries, maxTime);
             }
             if (count > 0) {
                 log.InfoFormat("{0} records synchronized.", count);

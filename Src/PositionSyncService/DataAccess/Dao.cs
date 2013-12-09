@@ -149,11 +149,15 @@ namespace DataAccess
             return context.SaveChanges();
         }
 
-        public int SyncPositionReports(List<PositionReport> potentialEntries) {
+        public int SyncPositionReports(List<PositionReport> potentialEntries, DateTime lastTime) {
             if (!potentialEntries.Any()) {
                 return 0;
             }
             var context = new PositionContext(DBSource.Internal);
+
+            //Delete those 3 generated days ago
+            var deleted = context.Database.ExecuteSqlCommand(string.Format("DELETE FROM PositionReport WHERE Report_time < '{0}'", lastTime.ToString("yyyyMMdd HH:mm:ss")), new object[0]);
+
             var minTime = potentialEntries.Min(x => x.Report_time);
             var existingEntries = context.PositionReports.Where(x => x.Report_time >= minTime).ToList();
             foreach (var item in potentialEntries) {
@@ -214,6 +218,7 @@ namespace DataAccess
 
         public int SyncCurrentAlarmReports(List<CurrentAlarmReport> newEntries) {
             var context = new PositionContext(DBSource.Internal);
+            var deleted = context.Database.ExecuteSqlCommand("TRUNCATE TABLE CurrentAlarmReport", new object[0]);
             foreach (var item in newEntries) {
                 context.CurrentAlarmReports.Add(item);
             }
@@ -303,6 +308,12 @@ namespace DataAccess
             return context.Branches.ToList();
         }
 
+        public List<CurrentAlarmReport> GetCurrentAlarmReports(DBSource source) {
+            var context = new PositionContext(DBSource.External);
+            var list = context.Database.SqlQuery<CurrentAlarmReport>("SELECT * FROM CurrentAlarmReport WITH(NOLOCK)").ToList();
+            return list;
+        }
+
         public List<Department> GetDepartments(DBSource source) {
             var context = new PositionContext(source);
             return context.Departments.ToList();
@@ -368,13 +379,6 @@ namespace DataAccess
             var top = maxRows > 0 ? string.Format("TOP {0}", maxRows) : "";
             var query = string.Format("SELECT {0} * FROM AlarmReport WITH(NOLOCK) WHERE Alarm_id > {1} ORDER BY Alarm_id", top, lastId);
             var list = context.Database.SqlQuery<AlarmReport>(query).ToList();
-            return list;
-        }
-
-        public List<CurrentAlarmReport> GetExternalCurrentAlarmReportsFrom(int lastId) {
-            var context = new PositionContext(DBSource.External);
-            var query = string.Format("SELECT * FROM CurrentAlarmReport WITH(NOLOCK) WHERE Alarm_id>{0}", lastId);
-            var list = context.Database.SqlQuery<CurrentAlarmReport>(query).ToList();
             return list;
         }
 
