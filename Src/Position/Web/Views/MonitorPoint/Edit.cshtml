@@ -75,8 +75,8 @@
 <div>
     <button id="btnPinPanel">隐藏面板</button>
 </div>
-<div>
-    <div id="divFrame" style="position: relative; border: 1px solid blue; width: 1024px; height: 768px; overflow: hidden;">
+<div style="border: 1px dashed silver; width: 768px; height: 576px; padding: 20px;">
+    <div id="divFrame" style="position: relative; border: 1px solid blue; width: 0px; height: 0px; overflow: hidden;">
         <div id="divMap" style="display: inline-block; background: url(@(rootPath)/Images/@(Model.Map.Name));">
             <img src="~/Images/@(Model.Map.Name)" style="visibility: hidden;" />
             <div id="divPinLocated">
@@ -173,17 +173,25 @@
         _panel_height = $("#divPinPanel>table").height() + 3 * 2 + 1 * 2; //padding + border
         _map_width = $("#divMap").width();
         _map_height = $("#divMap").height();
-        _frame_width = $("#divFrame").width();
-        _frame_height = $("#divFrame").height();
-
-        showPinPanel();
-
+        var mapRatio = 1.0 * _map_width / _map_height;
+        _frame_width = $("#divFrame").parent().width();
+        _frame_height = $("#divFrame").parent().height();
+        if (_frame_width < _frame_height * mapRatio) {
+            _frame_height = parseInt(_frame_width / mapRatio);
+        }
+        else {
+            _frame_width = parseInt(_frame_height * mapRatio);
+        }
+        $("#divFrame").width(_frame_width);
+        $("#divFrame").height(_frame_height);
         _overview_height = $("#divOverview").height();
-        _overview_width = _overview_height * _map_width / _map_height;
+        _overview_width = _overview_height * mapRatio;
         $("#divOverview").width(_overview_width);
         $("#divCollapse").css("left", (_overview_width - 14).toString() + "px");
         $("#divMagnifier").width(_overview_width * _frame_width / _map_width);
         $("#divMagnifier").height(_overview_height * _frame_height / _map_height).css("display", "inline-block");
+
+        showPinPanel();
 
         _isMapDraggable = isDraggable();
         if (_isMapDraggable) {
