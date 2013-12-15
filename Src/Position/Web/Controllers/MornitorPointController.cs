@@ -15,10 +15,7 @@ namespace Web.Controllers
         private DataAccess.Dao dao = new DataAccess.Dao();
 
         public ActionResult Index() {
-            var model = new MonitorPointIndexModel {
-                MonitorSystems = dao.GetMonitorSystems()
-            };
-
+            var model = dao.GetMonitorSystems();
             return View(model);
         }
 
@@ -26,6 +23,9 @@ namespace Web.Controllers
             var model = new MonitorPointModel();
             model.System = dao.GetMonitorSystem(systemId);
             model.Map = dao.GetMonitorMap(systemId, size);
+            if (model.Map == null) {
+                return View("MapNotSet", model.System);
+            }
             model.ContentList = dao.GetMonitorContents(systemId);
             model.MonitorList = dao.GetMonitorPoints(systemId, size);
             return View(model);
@@ -35,6 +35,9 @@ namespace Web.Controllers
             var model = new MonitorPointModel();
             model.System = dao.GetMonitorSystem(systemId);
             model.Map = dao.GetMonitorMap(systemId, SettingMapSize);
+            if (model.Map == null) {
+                return View("MapNotSet", model.System);
+            }
             model.ContentList = dao.GetMonitorContents(systemId);
             model.MonitorList = dao.GetMonitorPoints(systemId);
             return View(model);

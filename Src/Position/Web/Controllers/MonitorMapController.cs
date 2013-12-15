@@ -15,9 +15,7 @@ namespace Web.Controllers
         private DataAccess.Dao _dao = new DataAccess.Dao();
 
         public ActionResult Index() {
-            var model = new MonitorMapIndexModel {
-                MonitorSystems = _dao.GetMonitorSystems()
-            };
+            var model = _dao.GetMonitorSystems();
             return View(model);
         }
 

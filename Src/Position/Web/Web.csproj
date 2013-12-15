@@ -137,8 +137,6 @@
     <Compile Include="Models\MonitorMapModel.cs" />
     <Compile Include="Models\MonitorMapStartPointModel.cs" />
     <Compile Include="Models\MonitorPointModel.cs" />
-    <Compile Include="Models\MonitorMapIndexModel.cs" />
-    <Compile Include="Models\MonitorPointIndexModel.cs" />
     <Compile Include="Models\PeopleSearchModel.cs" />
     <Compile Include="Models\PeopleCountModel.cs" />
     <Compile Include="Models\PositionSearchModel.cs" />
@@ -284,6 +282,7 @@
     <Content Include="Views\MonitorMap\Edit.cshtml" />
     <Content Include="Views\MonitorMap\StartPoint.cshtml" />
     <Content Include="Views\MonitorPoint\Show.cshtml" />
+    <Content Include="Views\MonitorPoint\MapNotSet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,6 +1,6 @@
 ﻿@model MonitorPointModel
 @{
-    ViewBag.Title = Model.System.Name + "检测点设置";
+    ViewBag.Title = Model.System.Name + "监测点设置";
     Layout = "~/Views/Shared/_LayoutMonitorPoint.cshtml";
 
     var rootPath = Request.ApplicationPath;
@@ -116,7 +116,7 @@
             </ul>
         </div>
         <!--Edit Dialog-->
-        <div id="dialog-form" style="display: none;" title="编辑风压检测站">
+        <div id="dialog-form" style="display: none;" title="编辑风压监测站">
             <form>
                 <fieldset>
                     <label for="field_name">名称</label>
@@ -388,7 +388,7 @@
                 o.attr("title", data.title);
             }
             else {
-                alert("保存检测点时报错。内容：\n" + data.message);
+                alert("保存监测点时报错。内容：\n" + data.message);
             }
         });
     }
@@ -425,7 +425,7 @@
                 $("#dialog-form").dialog("close");
             }
             else {
-                alert("保存检测点资料时报错。内容：\n" + data.message);
+                alert("保存监测点资料时报错。内容：\n" + data.message);
             }
         });
     }
@@ -440,7 +440,7 @@
                     updatePinsInOverview();
                 }
                 else {
-                    alert("删除检测点时报错。内容：\n" + data.message);
+                    alert("删除监测点时报错。内容：\n" + data.message);
                 }
             });
         }

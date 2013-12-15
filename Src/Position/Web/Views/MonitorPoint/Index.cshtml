@@ -1,6 +1,6 @@
-﻿@model MonitorPointIndexModel
+﻿@model IEnumerable<MonitorSystem>
 @{
-    ViewBag.Title = "检测点";
+    ViewBag.Title = "监测点";
     Layout = "~/Views/Shared/_LayoutMonitorPoint.cshtml";
 }
 <style type="text/css">
@@ -11,7 +11,7 @@
 </style>
 <h2>@ViewBag.Title</h2>
 <ul class="list">
-    @foreach (var item in Model.MonitorSystems) {
+    @foreach (var item in Model) {
         <li><span>@item.Name</span> @Html.ActionLink("显示", "Show", new {id = item.Id, size = MapSize.Medim}) @Html.ActionLink("设置", "Edit", new {id = item.Id})</li>
     }
 </ul>

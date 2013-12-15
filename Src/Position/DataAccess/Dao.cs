@@ -123,9 +123,6 @@ namespace DataAccess
 
         public MonitorMap GetMonitorMap(int systemId, MapSize size) {
             var map = context.MonitorMaps.Where(x => x.MonitorSystemId == systemId && x.SizeType == (int)size).FirstOrDefault();
-            if (map == null) {
-                throw new ArgumentException(string.Format("Cannot find map of size {0} for system id {1}.", size, systemId));
-            }
             return map;
         }
 

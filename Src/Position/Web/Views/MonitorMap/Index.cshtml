@@ -1,4 +1,4 @@
-﻿@model MonitorMapIndexModel
+﻿@model IEnumerable<MonitorSystem>
 @{
     ViewBag.Title = "监测系统地图";
     Layout = "~/Views/Shared/_LayoutMap.cshtml";
@@ -6,7 +6,7 @@
 
 <h2>@ViewBag.Title</h2>
 <ul>
-    @foreach (var item in Model.MonitorSystems) {
+    @foreach (var item in Model) {
         <li>@Html.ActionLink(item.Name, "Edit", new {id = item.Id})</li>
     }
 </ul>
