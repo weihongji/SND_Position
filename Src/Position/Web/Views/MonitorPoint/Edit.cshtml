@@ -84,13 +84,6 @@
                     <img id="pin_@(pin.Id)" pinned="1" title="@pin.ToString()"
                         pin_id="@pin.Id"
                         pin_name="@pin.Name"
-                        pin_info="@pin.Information"
-                        pin_alarmup="@pin.AlarmUp"
-                        pin_alarmdown="@pin.AlarmDown"
-                        pin_rangeup="@pin.RangeUp"
-                        pin_rangedown="@pin.RangeDown"
-                        pin_x="@pin.X"
-                        pin_y="@pin.Y"
                         pin_type="@pin.MonitorContentId"
                         style="position: absolute; left: @(pin.Left)px; top: @(pin.Top)px; cursor: pointer;" src="~/Images/@(pin.Image)" />
                 }
@@ -116,25 +109,21 @@
             </ul>
         </div>
         <!--Edit Dialog-->
-        <div id="dialog-form" style="display: none;" title="编辑风压监测站">
+        <div id="dialog-form" style="display: none;" title="编辑监测站点">
             <form>
                 <fieldset>
-                    <label for="field_name">名称</label>
-                    <input type="text" name="field_name" id="field_name" class="text ui-widget-content ui-corner-all" />
+                    <label for="field_id">名称</label>
+                    <select name="field_id" id="field_id"></select>
                     <label for="field_info">信息</label>
-                    <input type="text" name="field_info" id="field_info" class="text ui-widget-content ui-corner-all" />
+                    <input type="text" name="field_info" id="field_info" readonly class="text ui-state-disabled ui-widget-content ui-corner-all" />
                     <label for="field_alarmup">报警上限</label>
-                    <input type="text" name="field_alarmup" id="field_alarmup" class="text ui-widget-content ui-corner-all" />
+                    <input type="text" name="field_alarmup" id="field_alarmup" readonly class="text ui-state-disabled ui-widget-content ui-corner-all" />
                     <label for="field_alarmdown">报警下限</label>
-                    <input type="text" name="field_alarmdown" id="field_alarmdown" class="text ui-widget-content ui-corner-all" />
+                    <input type="text" name="field_alarmdown" id="field_alarmdown" readonly class="text ui-state-disabled ui-widget-content ui-corner-all" />
                     <label for="field_rangeup">量程上限</label>
-                    <input type="text" name="field_rangeup" id="field_rangeup" class="text ui-widget-content ui-corner-all" />
+                    <input type="text" name="field_rangeup" id="field_rangeup" readonly class="text ui-state-disabled ui-widget-content ui-corner-all" />
                     <label for="field_rangedown">量程下限</label>
-                    <input type="text" name="field_rangedown" id="field_rangedown" class="text ui-widget-content ui-corner-all" />
-                    <input type="hidden" name="field_id" id="field_id" />
-                    <input type="hidden" name="field_x" id="field_x" />
-                    <input type="hidden" name="field_y" id="field_y" />
-                    <input type="hidden" name="field_type" id="field_type" />
+                    <input type="text" name="field_rangedown" id="field_rangedown" readonly class="text ui-state-disabled ui-widget-content ui-corner-all" />
                 </fieldset>
             </form>
         </div>
@@ -237,17 +226,7 @@
         $("#menu").menu().css("position", "absolute").hide();
         $("#menu>li:eq(0)").click(function () {
             $("#menu").hide();
-            $("#field_id").val(_clickedPin.attr("pin_id"));
-            $("#field_name").val(_clickedPin.attr("pin_name"));
-            $("#field_info").val(_clickedPin.attr("pin_info"));
-            $("#field_alarmup").val(_clickedPin.attr("pin_alarmup"));
-            $("#field_alarmdown").val(_clickedPin.attr("pin_alarmdown"));
-            $("#field_rangeup").val(_clickedPin.attr("pin_rangeup"));
-            $("#field_rangedown").val(_clickedPin.attr("pin_rangedown"));
-            $("#field_x").val(_clickedPin.attr("pin_x"));
-            $("#field_y").val(_clickedPin.attr("pin_y"));
-            $("#field_type").val(_clickedPin.attr("pin_type"));
-            $("#dialog-form").dialog("open");
+            showEditDialog(_clickedPin);
             return false;
         });
         $("#menu>li:eq(1)").click(function () {
@@ -283,11 +262,19 @@
             buttons: {
                 Save: function () {
                     var bValid = true;
+                    if (safeParseInt($("#field_id").val()) <= 0) {
+                        alert("所选择的监测点无效，不能保存。");
+                        bValid = false;
+                    }
                     if (bValid) {
-                        saveMonitor();
+                        bindMonitorPoint();
+                        $(this).dialog("close");
                     }
                 },
                 Cancel: function () {
+                    if (safeParseInt(_clickedPin.attr("pin_id")) <= 0) {
+                        deleteMonitor(_clickedPin);
+                    }
                     $(this).dialog("close");
                 }
             },
@@ -306,6 +293,8 @@
                 $("#btnPinPanel").html("显示面板");
             }
         });
+
+        $("#field_id").change(monitorPoint_onchanged);
 
         updatePinsInOverview();
     });
@@ -327,9 +316,13 @@
                         $(this).attr("pinned", 1).appendTo($("#divPinLocated"));
                         $(_pinOnSeat).appendTo($("#divPinPanel"));
                         makeItDraggable($(_pinOnSeat));
+                        _clickedPin = $(this);
+                        showEditDialog(_clickedPin);
                     }
-                    savePosition(this);
-                    updatePinsInOverview();
+                    else {
+                        savePosition(this);
+                        updatePinsInOverview();
+                    }
                 }
             }
         });
@@ -370,21 +363,55 @@
         return false;
     }
 
-    function savePosition(o) {
+    function showEditDialog(o) {
+        loadMonitorPoints(o.attr("pin_id"), o.attr("pin_type"));
+        $("#dialog-form").dialog("open");
+    }
+
+    function loadMonitorPoints(selectedId, typeId) {
+        $.getJSON("@Url.Action("LoadMonitorPoints")",
+            { typeId: typeId, id: selectedId },
+            function (data) {
+                var options = "";
+                for (var i = 0; i < data.length; i++) {
+                    var o = data[i];
+                    var properties = " info='" + (o.Information || "") + "'"
+                        + " alarmup='" + (o.AlarmUp || "") + "'"
+                        + " alarmdown='" + (o.AlarmDown || "") + "'"
+                        + " rangeup='" + (o.RangeUp || "") + "'"
+                        + " rangedown='" + (o.RangeDown || "") + "'"
+                    ;
+                    options += "<option value='" + o.Id + "'" + properties + ">" + o.Name + "</option>";
+                }
+                $("#field_id").html(options);
+                if (safeParseInt(selectedId) > 0) {
+                    $("#field_id").val(selectedId).trigger("change");
+                }
+            }
+        );
+    }
+
+    function monitorPoint_onchanged() {
+        var option = $("#field_id option:selected");
+        $("#field_info").val(option ? option.attr("info") : "");
+        $("#field_alarmup").val(option ? option.attr("alarmup") : "");
+        $("#field_alarmdown").val(option ? option.attr("alarmdown") : "");
+        $("#field_rangeup").val(option ? option.attr("rangeup") : "");
+        $("#field_rangedown").val(option ? option.attr("rangedown") : "");
+    }
+
+    function savePosition(o, originalId) {
         o = $(o);
         var url = "@Url.Action("SaveMonitorPointPosition")";
         var monitor = {
             id: safeParseInt(o.attr("pin_id")),
             left: safeParseInt(o.css("left")),
             top: safeParseInt(o.css("top")),
-            typeId: safeParseInt(o.attr("pin_type"))
+            typeId: safeParseInt(o.attr("pin_type")),
+            originalId: originalId || 0
         };
         $.getJSON(url, monitor, function (data) {
             if (data.success) {
-                o.attr("pin_id", data.entity.Id);
-                o.attr("pin_x", data.entity.X);
-                o.attr("pin_y", data.entity.Y);
-                o.attr("pin_type", data.entity.MonitorContentId);
                 o.attr("title", data.title);
             }
             else {
@@ -393,56 +420,31 @@
         });
     }
 
-    function saveMonitor() {
-        o = $(_clickedPin);
-        var url = "@Url.Action("SaveMonitorPoint")";
-        var monitor = {
-            Id: safeParseInt(o.attr("pin_id")),
-            Name: $("#field_name").val(),
-            Information: $("#field_info").val(),
-            AlarmUp: $("#field_alarmup").val(),
-            AlarmDown: $("#field_alarmdown").val(),
-            RangeUp: $("#field_rangeup").val(),
-            RangeDown: $("#field_rangedown").val(),
-            X: $("#field_x").val(),
-            Y: $("#field_y").val(),
-            MonitorContentId: $("#field_type").val()
-        };
-
-        $.getJSON(url, monitor, function (data) {
-            if (data.success) {
-                o.attr("pin_id", data.entity.Id);
-                o.attr("pin_name", data.entity.Name);
-                o.attr("pin_info", data.entity.Information);
-                o.attr("pin_alarmup", data.entity.AlarmUp);
-                o.attr("pin_alarmdown", data.entity.AlarmDown);
-                o.attr("pin_rangeup", data.entity.RangeUp);
-                o.attr("pin_rangedown", data.entity.RangeDown);
-                o.attr("pin_x", data.entity.X);
-                o.attr("pin_y", data.entity.Y);
-                o.attr("pin_type", data.entity.MonitorContentId);
-                o.attr("title", data.title);
-                $("#dialog-form").dialog("close");
-            }
-            else {
-                alert("保存监测点资料时报错。内容：\n" + data.message);
-            }
-        });
+    function bindMonitorPoint() {
+        var originalId = _clickedPin.attr("pin_id");
+        _clickedPin.attr("pin_id", $("#field_id").val());
+        savePosition(_clickedPin, originalId);
+        updatePinsInOverview();
     }
 
     function deleteMonitor(o) {
         o = $(o);
-        var url = "@Url.Action("DeleteMonitorPoint")";
-        if (confirm("确认要删除" + $(o).attr("pin_name") + "吗？")) {
-            $.getJSON(url, { id: safeParseInt(o.attr("pin_id")) }, function (data) {
-                if (data.success) {
-                    $(o).remove();
-                    updatePinsInOverview();
-                }
-                else {
-                    alert("删除监测点时报错。内容：\n" + data.message);
-                }
-            });
+        if (safeParseInt($(o).attr("pin_id")) > 0) {
+            var url = "@Url.Action("DeleteMonitorPoint")";
+            if (confirm("确认要删除" + $(o).attr("pin_name") + "吗？")) {
+                $.getJSON(url, { id: safeParseInt(o.attr("pin_id")) }, function (data) {
+                    if (data.success) {
+                        $(o).remove();
+                        updatePinsInOverview();
+                    }
+                    else {
+                        alert("删除监测点时报错。内容：\n" + data.message);
+                    }
+                });
+            }
+        }
+        else {
+            $(o).remove();
         }
     }
 

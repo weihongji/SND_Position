@@ -15,19 +15,13 @@ namespace DataAccess
         const MapSize SettingMapSize = MapSize.Large;
 
         private PositionContext context;
-        private MonitorMap _settingMap_hard_to_remember;
 
         public Dao() {
             context = new PositionContext();
         }
 
-        private MonitorMap SettingMap {
-            get {
-                if (_settingMap_hard_to_remember == null) {
-                    _settingMap_hard_to_remember = context.MonitorMaps.Where(x => x.SizeType == (int)SettingMapSize).First();
-                }
-                return _settingMap_hard_to_remember;
-            }
+        private MonitorMap GetSettingMap(int systemId) {
+            return context.MonitorMaps.Where(x => x.MonitorSystemId == systemId && x.SizeType == (int)SettingMapSize).First();
         }
 
         public List<Region> GetRegions() {
@@ -79,31 +73,36 @@ namespace DataAccess
         }
 
         public List<MonitorPoint> GetMonitorPoints(int systemId) {
-            var query = context.MonitorPoints.Include(x => x.MonitorContent);
-            var contentIds = context.MonitorContents.Where(c => c.MonitorSystemId == systemId).Select(c => c.Id);
-            query = query.Where(x => contentIds.Contains(x.MonitorContentId.Value));
-            var list = query.ToList();
-            list.ForEach(x => ConvertMonitorPointPosition(x, true));
-            return list;
+            return GetMonitorPoints(systemId, SettingMapSize);
         }
 
         public List<MonitorPoint> GetMonitorPoints(int systemId, MapSize size) {
-            var query = context.MonitorPoints.Include(x => x.MonitorContent);
             var contentIds = context.MonitorContents.Where(c => c.MonitorSystemId == systemId).Select(c => c.Id);
-            query = query.Where(x => contentIds.Contains(x.MonitorContentId.Value));
+            var query = context.MonitorPoints
+                .Include(x => x.MonitorContent)
+                .Where(x => x.OffsetX != null && x.OffsetY != null)
+                .Where(x => contentIds.Contains(x.MonitorContentId.Value));
             var list = query.ToList();
 
             var currentMap = this.GetMonitorMap(systemId, size);
 
             decimal ratio = 1;
             if (size != SettingMapSize) {
-                ratio = ((decimal)SettingMap.Scale) / currentMap.Scale;
+                ratio = ((decimal)GetSettingMap(systemId).Scale) / currentMap.Scale;
             }
 
             list.ForEach(p => {
-                p.X = currentMap.StartX + (int)(p.OffsetX * ratio);
-                p.Y = currentMap.StartY + (int)(p.OffsetY * ratio);
+                p.X = currentMap.StartX + (int)((p.OffsetX ?? 0) * ratio);
+                p.Y = currentMap.StartY + (int)((p.OffsetY ?? 0) * ratio);
             });
+            return list;
+        }
+
+        public List<MonitorPoint> GetNotPinnedMonitorPoints(long contentId, long includePointId) {
+            var query = context.MonitorPoints
+                .Where(x => (x.MonitorContentId == contentId && x.OffsetX == null && x.OffsetY == null) || x.Id == includePointId)
+                .OrderBy(x => x.Name);
+            var list = query.ToList();
             return list;
         }
 
@@ -307,65 +306,55 @@ namespace DataAccess
             return list;
         }
 
-        public int SaveMonitorPoint(MonitorPoint entity) {
-            if (entity == null) {
-                return 0;
-            }
-            ConvertMonitorPointPosition(entity, false);
-
-            if (entity.Id > 0) {
-                var tracked = context.MonitorPoints.Find(entity.Id);
-                if (tracked == null) {
-                    return 0;
-                }
-                else {
-                    context.Entry(tracked).CurrentValues.SetValues(entity);
-                    entity = tracked;
-                }
-            }
-            else {
-                entity = context.MonitorPoints.Add(entity);
-            }
-            return context.SaveChanges();
+        public MonitorPoint SaveMonitorPointPosition(long id, int left, int top, int contentId, int removeId) {
+            var content = context.MonitorContents.Find(contentId);
+            var map = GetSettingMap(content.MonitorSystemId);
+            var x = left + content.PointerX;
+            var y = top + content.PointerY;
+            var offsetX = x - map.StartX;
+            var offsetY = y - map.StartY;
+            return SaveMonitorPointPosition(id, offsetX, offsetY, removeId);
         }
 
-        public int DeleteMonitorPoint(int id) {
+        private MonitorPoint SaveMonitorPointPosition(long id, int offsetX, int offsetY, long removeId) {
             var tracked = context.MonitorPoints.Find(id);
             if (tracked == null) {
-                throw new ArgumentException(string.Format("Cannot find monitor point with id {0}.", id));
+                throw new ArgumentException(string.Format("Monitor pointer is not found with id = {0}.", id));
             }
-            context.MonitorPoints.Remove(tracked);
-            return context.SaveChanges();
+            tracked.OffsetX = offsetX;
+            tracked.OffsetY = offsetY;
+            var result = context.SaveChanges();
+            if (id != removeId) {
+                DeleteMonitorPointPosition(removeId);
+            }
+            return tracked;
         }
 
-        public int SaveMonitorPointPosition(MonitorPoint point) {
-            ConvertMonitorPointPosition(point, false);
-            if (point.Id == 0) {
-                var entity = new MonitorPoint {
-                    OffsetX = point.OffsetX,
-                    OffsetY = point.OffsetY
-                };
-                context.MonitorPoints.Add(point);
+        public int DeleteMonitorPointPosition(long id) {
+            if (id <= 0) {
+                return 0;
             }
-            else {
-                var tracked = context.MonitorPoints.Find(point.Id);
-                tracked.OffsetX = point.OffsetX;
-                tracked.OffsetY = point.OffsetY;
+            var tracked = context.MonitorPoints.Find(id);
+            if (tracked != null) {
+                tracked.OffsetX = null;
+                tracked.OffsetY = null;
+                return context.SaveChanges();
             }
-            return context.SaveChanges();
+            return 0;
         }
 
-        private void ConvertMonitorPointPosition(MonitorPoint point, bool OffsetToPosition) {
+        private void ConvertMonitorPointPosition(int systemId, MonitorPoint point, bool OffsetToPosition) {
             if (point == null) {
                 return;
             }
+            var map = GetSettingMap(systemId);
             if (OffsetToPosition) {
-                point.X = point.OffsetX.Value + SettingMap.StartX;
-                point.Y = point.OffsetY.Value + SettingMap.StartY;
+                point.X = point.OffsetX.Value + map.StartX;
+                point.Y = point.OffsetY.Value + map.StartY;
             }
             else {
-                point.OffsetX = point.X - SettingMap.StartX;
-                point.OffsetY = point.Y - SettingMap.StartY;
+                point.OffsetX = point.X - map.StartX;
+                point.OffsetY = point.Y - map.StartY;
             }
         }
 

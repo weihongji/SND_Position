@@ -43,32 +43,20 @@ namespace Web.Controllers
             return View(model);
         }
 
-        public ActionResult SaveMonitorPoint(MonitorPoint point) {
-            int result = 0;
-            string error = string.Empty;
-            try {
-                result = dao.SaveMonitorPoint(point);
+        public ActionResult LoadMonitorPoints(int typeId, string id) {
+            int includeId;
+            if (!int.TryParse(id, out includeId)) {
+                includeId = 0;
             }
-            catch (Exception ex) {
-                error = ex.Message;
-            }
-            return Json(new
-            {
-                success = string.IsNullOrEmpty(error),
-                entity = point,
-                title = point == null ? "" : point.ToString(),
-                message = error
-            }, JsonRequestBehavior.AllowGet);
+            var pointers = dao.GetNotPinnedMonitorPoints(typeId, includeId);
+            return Json(pointers, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult SaveMonitorPointPosition(int id, int left, int top, int typeId) {
-            int result = 0;
-            string error = string.Empty;
+        public ActionResult SaveMonitorPointPosition(int id, int left, int top, int typeId, int originalId) {
             MonitorPoint point = null;
+            string error = string.Empty;
             try {
-                var monitorContent = dao.GetMonitorContent(typeId);
-                point = new MonitorPoint(id, left, top, typeId, monitorContent);
-                result = dao.SaveMonitorPointPosition(point);
+                point = dao.SaveMonitorPointPosition(id, left, top, typeId, originalId);
             }
             catch (Exception ex) {
                 error = ex.Message;
@@ -86,7 +74,7 @@ namespace Web.Controllers
             int result = 0;
             string error = string.Empty;
             try {
-                result = dao.DeleteMonitorPoint(id);
+                result = dao.DeleteMonitorPointPosition(id);
             }
             catch (Exception ex) {
                 error = ex.Message;

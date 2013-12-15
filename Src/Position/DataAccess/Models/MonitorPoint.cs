@@ -46,13 +46,5 @@ namespace DataAccess.Models
         public MonitorPoint() {
             this.Name = string.Empty;
         }
-
-        public MonitorPoint(int id, int left, int top, int contentId, MonitorContent monitorContent)
-            : this() {
-            this.Id = id;
-            this.MonitorContentId = contentId;
-            this.X = left + (monitorContent == null ? 0 : monitorContent.PointerX);
-            this.Y = top + (monitorContent == null ? 0 : monitorContent.PointerY);
-        }
     }
 }
